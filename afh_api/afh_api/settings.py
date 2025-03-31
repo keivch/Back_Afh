@@ -11,8 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import cloudinary.uploader
 import environ
 import os
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -165,3 +169,10 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:4200",  # Permite CSRF desde Angular
 ]
+
+#configuracion de cloudinary
+cloudinary.config(
+    cloud_name= os.getenv("CLOUD_NAME"),
+    api_key= os.getenv("API_KEY"),
+    api_secret= os.getenv("API_SECRET")
+)
