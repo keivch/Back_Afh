@@ -9,9 +9,6 @@ import cloudinary.uploader
 from rest_framework.response import Response
 from cloudinary.exceptions import Error
 
-
-
-
 # Create your views here.
 class ToolViewSet(viewsets.ModelViewSet):
     serializer_class = ToolSerializer
@@ -115,7 +112,15 @@ def getToolById(request, tool_id):
         return Response(serializer.data)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
-
+    
+@api_view(['DELETE'])
+def deleteTool(request, tool_id):
+    try:
+        tool = Tool.objects.filter(id = tool_id).first()
+        tool.delete()
+        return Response({'message': 'Herramienta eliminada con exito'}, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
 
             
             
