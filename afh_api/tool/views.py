@@ -34,7 +34,7 @@ def addTool(request):
                 status=400
             )
         initials = "".join([word[0].upper() for word in name.split()])
-        toolNames = Tool.objects.filter(name__iexact=name).count()
+        toolNames = Tool.objects.filter(name__iexact=name).count()                          
         if toolNames < 1:
             code = initials + "-1"
         else:
@@ -60,8 +60,67 @@ def addTool(request):
 def updateTool(request):
     try:
         name = request.data.get('name')
-        image = request.FILES.get('image')
-        
+        imageFile = request.FILES.get('image')
+        state = request.data.get('state')
+        id = request.data.get('id')
+
+        tool = Tool.objects.filter(id=id).first()
+
+        if name:
+            code = ""
+            initials = "".join([word[0].upper() for word in name.split()])
+            toolNames = Tool.objects.filter(name__iexact=name).count()
+            if toolNames < 1:
+                code = initials + "-1"
+            else:
+                number = toolNames + 1
+                code = f"{initials}-{number}"
+            tool.name = name
+            tool.code = code
+            tool.save()
+        if imageFile:
+            imageFile.seek(0)
+
+            result = cloudinary.uploader.upload(imageFile, folder="afhimages/")
+
+            imageUrl = result['secure_url']
+
+            tool.image = imageUrl
+
+            tool.save()
+        if state == 2:
+            tool.state = 2
+            tool.save()
+        if state == 3:
+            tool.state = 3
+            tool.save()
+        return Response({'message': 'Herramienta actualizada exitosamente'}, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
+@api_view(['GET'])
+def geTools(request):
+    try:
+        tools = Tool.objects.all()  
+        serializer = ToolSerializer(tools, many=True)  
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+@api_view(['GET'])
+def getToolById(request, tool_id):
+    try:
+        tool = Tool.objects.filter(id = tool_id).first()
+        serializer = ToolSerializer(tool)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+
+            
+            
+
+
 
 
 
