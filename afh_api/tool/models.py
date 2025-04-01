@@ -11,6 +11,7 @@ class Tool(models.Model):
     code = models.CharField(max_length=200, null=True, unique=True)
     state = models.IntegerField(choices=STATE_CHOICES, default=1)
     image = models.CharField(max_length=500)
+    marca = models.CharField(max_length=200, null=True)
     
 
     def __str__(self):

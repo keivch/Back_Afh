@@ -20,8 +20,9 @@ def addTool(request):
     try:
         name = request.data.get('name')
         imageFile = request.FILES.get('image')
-        if not name:
-            return Response({'error': 'Falta el nombre de la herramienta'}, status=400)
+        marca = request.data.get('marca')
+        if not name or not marca:
+            return Response({'error': 'Falta el nombre de la herramienta o la marca'}, status=400)
         if not imageFile:
             return Response({'error ': 'falta la imagen de la herramienta'}, status=404)
         valid_image_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
@@ -46,7 +47,8 @@ def addTool(request):
         Tool.objects.create(
             name = name,
             image = imageUrl,
-            code = code
+            code = code,
+            marca = marca
         )
 
         return Response({'message': 'Herramienta creada con exito'}, status=201)
@@ -60,6 +62,7 @@ def updateTool(request):
         imageFile = request.FILES.get('image')
         state = request.data.get('state')
         id = request.data.get('id')
+        marca = request.data.get('marca')
 
         tool = Tool.objects.filter(id=id).first()
 
@@ -90,6 +93,9 @@ def updateTool(request):
             tool.save()
         if state == 3:
             tool.state = 3
+            tool.save()
+        if marca:
+            tool.marca = marca
             tool.save()
         return Response({'message': 'Herramienta actualizada exitosamente'}, status=200)
     except Exception as e:
