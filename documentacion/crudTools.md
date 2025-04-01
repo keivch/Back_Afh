@@ -8,6 +8,8 @@ Parámetros (Body):
 
 name (string): Nombre de la herramienta.
 
+marca (string): Marca de la herramienta
+
 image (file): Imagen asociada a la herramienta (formatos permitidos: JPEG, PNG, GIF, WEBP).
 
 Respuesta exitosa:
@@ -43,6 +45,8 @@ name (string, opcional): Nuevo nombre de la herramienta.
 image (file, opcional): Nueva imagen asociada a la herramienta.
 
 state (integer, opcional): Nuevo estado de la herramienta. (1: Activo, 2: En proceso, 3: Inactivo)
+
+marca (string, opcional): Marca de la herramienta
 
 Respuesta exitosa:
 
