@@ -88,10 +88,13 @@ def updateTool(request):
             tool.image = imageUrl
 
             tool.save()
-        if state == 2:
+        if int(state) == 1:
+            tool.state = 1
+            tool.save()
+        if int(state) == 2:
             tool.state = 2
             tool.save()
-        if state == 3:
+        if int(state) == 3:
             tool.state = 3
             tool.save()
         if marca:

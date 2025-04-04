@@ -81,6 +81,15 @@ def getTickets(request):
     except Exception as e:
         return Response({'error': str(e)}, status=500)
     
+@api_view(['GET'])
+def gtTicketById(request, ticket_id):
+    try:
+        ticket = Ticket.objects.get(id = ticket_id)
+        serializer = TicketSerializer(ticket)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
 @api_view(['PATCH'])
 def changeState(request):
     data = request.data
