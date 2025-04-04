@@ -20,7 +20,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('users.urls')),#endpoints de autenticacion
-    path('reset/', include('passwordresetcode.urls')),
-    path('tool/', include('tool.urls'))
+    path('reset/', include('passwordresetcode.urls')),#endpoints de reset el codigo de autenticacion
+    path('tool/', include('tool.urls')),#endpoints de las herramientas
+    path('ticket/', include('ticket.urls')) #enpoints de los tickets
 ]
 
