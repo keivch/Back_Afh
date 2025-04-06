@@ -11,7 +11,11 @@ import pytz
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+from io import BytesIO
+from django.template.loader import get_template
 # Create your views here.
 # Create your views here.
 class TicketViewSet(viewsets.ModelViewSet):
@@ -106,5 +110,39 @@ def changeState(request):
         return Response({'message': 'estado del ticket actualizado correctamente'})
     except Exception as e:
         return  Response({'error': str(e)}, status=500)
+    
+@api_view(['GET'])
+def createPdfTicket(request, ticket_id):
+    try:
+        ticket = Ticket.objects.get(id = ticket_id)
+
+        template = get_template('ticket/solicitud.html')
+
+        html = template.render({
+        'solicitante': ticket.applicant.user.first_name,
+        'receptor': ticket.receiver.user.first_name,
+        'fecha': ticket.entry_date.strftime("%d/%m/%Y %H:%M:%S"),
+        'descripcion': ticket.description,
+        'lugar': ticket.place,
+        'herramientas': ticket.tools.all(),
+        'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+
+    })
+         # Crear el PDF
+        buffer = BytesIO()
+        pisa_status = pisa.CreatePDF(html, dest=buffer)
+
+        if pisa_status.err:
+            return HttpResponse({'error': 'Error generando el PDF'}, status=500)
+
+        buffer.seek(0)
+
+        # Preparar respuesta como archivo descargable
+        response = HttpResponse(buffer, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="solicitud{ticket.place}.pdf"'
+        return response
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
         
 

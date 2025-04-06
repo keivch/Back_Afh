@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Solicitud de Herramientas</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo {
+        width: 80px;
+      }
+      h2 {
+        margin: 0;
+      }
+      .section {
+        margin-top: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: left;
+        vertical-align: middle;
+      }
+      .imagen-herramienta {
+        width: 50px;
+        height: auto;
+      }
+      .firma {
+        text-align: center;
+        width: 40%;
+      }
+      footer {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        align-items: center;
+        justify-content: end;
+        flex-grow: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img src="{{ logo_url }}" class="logo" alt="Logo AFH" />
+      <h2>AFH - Solicitud de Herramientas</h2>
+    </div>
+
+    <div class="section">
+      <p><strong>Fecha:</strong> {{ fecha }}</p>
+      <p><strong>Solicitante:</strong> {{ solicitante }}</p>
+      <p><strong>Recibe:</strong> {{ receptor }}</p>
+      <p><strong>Descripción del trabajo:</strong> {{ descripcion }}</p>
+      <p><strong>Lugar de trabajo:</strong> {{ lugar }}</p>
+    </div>
+
+    <div class="section">
+      <h3>Herramientas solicitadas:</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Código</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for herramienta in herramientas %}
+          <tr>
+            <td>
+              {% if herramienta.image %}
+              <img src="{{ herramienta.image }}" class="imagen-herramienta" />
+              {% else %} No disponible {% endif %}
+            </td>
+            <td>{{ herramienta.name }}</td>
+            <td>{{ herramienta.code }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <footer>
+        <div class="firma">
+          <p>__________________________</p>
+          <p>Firma del Solicitante</p>
+        </div>
+        <div class="firma">
+          <p>__________________________</p>
+          <p>Firma del Administrador</p>
+        </div>
+    </footer>
+  </body>
+</html>
