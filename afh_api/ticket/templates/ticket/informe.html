@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AFH - Informe de Herramientas</title>
+  <style>
+    @page {
+      size: letter portrait;
+      margin: 2cm;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      width: 100%;
+      position: relative;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .logo {
+      display: block;
+      margin: 0 auto;
+      max-width: 200px;
+      max-height: 80px;
+    }
+    
+    h2 {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 18px;
+    }
+    
+    h3 {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #333;
+    }
+    
+    .section {
+      margin-bottom: 20px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    
+    table, th, td {
+      border: 1px solid #000;
+    }
+    
+    th, td {
+      padding: 5px;
+      text-align: left;
+      font-size: 12px;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+    }
+    
+    .fecha-generacion {
+      margin-bottom: 20px;
+      font-size: 12px;
+    }
+    
+    .resumen {
+      margin-bottom: 30px;
+    }
+    
+    .resumen table {
+      width: 80%;
+      margin: 0 auto;
+    }
+    
+    .firmas-container {
+      position: fixed;
+      bottom: 2cm;
+      left: 0;
+      width: 100%;
+      text-align: center;
+    }
+    
+    .firma {
+      display: inline-block;
+      margin: 0 40px;
+      text-align: center;
+    }
+    
+    .firma p {
+      margin: 5px 0;
+    }
+    
+    .estado-activa {
+      color: green;
+      font-weight: bold;
+    }
+    
+    .estado-inactiva {
+      color: red;
+      font-weight: bold;
+    }
+    
+    .estado-en-uso {
+      color: blue;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="{{ logo_url }}" class="logo" alt="Logo AFH" />
+      <h2>AFH - Informe de Herramientas</h2>
+    </div>
+
+    <div class="fecha-generacion">
+      <p><strong>Fecha de generación:</strong> {{ fecha_generacion }}</p>
+    </div>
+
+    <div class="resumen">
+      <h3>Resumen General</h3>
+      <table cellpadding="5" cellspacing="0">
+        <tr>
+          <th>Total de Herramientas</th>
+          <td>{{ total_herramientas }}</td>
+        </tr>
+        <tr>
+          <th>Herramientas Activas</th>
+          <td>{{ total_activas }}</td>
+        </tr>
+        <tr>
+          <th>Herramientas Inactivas</th>
+          <td>{{ total_inactivas }}</td>
+        </tr>
+        <tr>
+          <th>Herramientas en Uso</th>
+          <td>{{ total_en_uso }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Herramientas Activas</h3>
+      <table cellpadding="5" cellspacing="0">
+        <thead>
+          <tr>
+            <th width="40%">Nombre</th>
+            <th width="30%">Código</th>
+            <th width="30%">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for herramienta in herramientas_activas %}
+          <tr>
+            <td>{{ herramienta.name }}</td>
+            <td>{{ herramienta.code }}</td>
+            <td class="estado-activa">Activa</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Herramientas en Uso</h3>
+      <table cellpadding="5" cellspacing="0">
+        <thead>
+          <tr>
+            <th width="30%">Nombre</th>
+            <th width="20%">Código</th>
+            <th width="50%">Lugar de Trabajo</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for herramienta in herramientas_en_uso %}
+          <tr>
+            <td>{{ herramienta.name }}</td>
+            <td>{{ herramienta.code }}</td>
+            <td>{{ herramienta.place }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Herramientas Inactivas</h3>
+      <table cellpadding="5" cellspacing="0">
+        <thead>
+          <tr>
+            <th width="40%">Nombre</th>
+            <th width="30%">Código</th>
+            <th width="30%">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for herramienta in herramientas_inactivas %}
+          <tr>
+            <td>{{ herramienta.name }}</td>
+            <td>{{ herramienta.code }}</td>
+            <td class="estado-inactiva">Inactiva</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

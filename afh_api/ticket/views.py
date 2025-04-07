@@ -30,6 +30,7 @@ def addTicket(request):
     zona_colombia = pytz.timezone('America/Bogota')
     # Hora actual en Colombia
     hora_colombia = datetime.now(zona_colombia)
+    print(hora_colombia)
     try:
         tools_ids = data.get('tools', [])
         tools = Tool.objects.filter(id__in = tools_ids)
@@ -57,7 +58,7 @@ def addTicket(request):
         newTicket.tools.add(*tools)
 
         # Enviar el código por correo
-        subject = "Codigo de recuperacion"
+        subject = "Solicitud de Herramienta"
         message = (
                 f"Hola {receiver.user.first_name},\n\n"
                 f"Tienes una nueva solicitud de retiro de herramientas en el sistema\n\n"
@@ -104,6 +105,19 @@ def changeState(request):
 
         ticket = Ticket.objects.get(id = id)
 
+        if state == 1:
+            for tool in ticket.tools.all():
+                tool.state = 3
+                tool.save()
+
+        ticket.state = int(state)
+        ticket.save()
+
+        if state == 4:
+            for tool in ticket.tools.all():
+                tool.state = 1
+                tool.save()
+
         ticket.state = int(state)
         ticket.save()
 
@@ -118,16 +132,42 @@ def createPdfTicket(request, ticket_id):
 
         template = get_template('ticket/solicitud.html')
 
-        html = template.render({
-        'solicitante': ticket.applicant.user.first_name,
-        'receptor': ticket.receiver.user.first_name,
-        'fecha': ticket.entry_date.strftime("%d/%m/%Y %H:%M:%S"),
-        'descripcion': ticket.description,
-        'lugar': ticket.place,
-        'herramientas': ticket.tools.all(),
-        'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+        zona_colombia = pytz.timezone('America/Bogota')
+
+        fecha_colombia = ticket.entry_date.astimezone(zona_colombia)
+        
+
+        html = None
+
+        if ticket.state == 3:
+            html = template.render({
+            'titulo': "Solicitud de Herramienta",
+            'solicitante': f"{ticket.applicant.user.first_name} {ticket.applicant.user.last_name}",
+            'receptor': f"{ticket.receiver.user.first_name} {ticket.receiver.user.last_name}",
+            'fecha_solicitud': fecha_colombia.strftime("%d/%m/%Y %H:%M:%S"),
+            'descripcion': ticket.description,
+            'lugar': ticket.place,
+            'herramientas': ticket.tools.all(),
+            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
 
     })
+        if ticket.state == 1:
+            hora_colombia = datetime.now(zona_colombia)
+            ticket.departure_date = hora_colombia
+            ticket.save()
+            fecha_salida = ticket.departure_date.astimezone(zona_colombia)
+            html = template.render({
+            'titulo': "Entrega de Herramienta",
+            'solicitante': f"{ticket.applicant.user.first_name} {ticket.applicant.user.last_name}",
+            'receptor': f"{ticket.receiver.user.first_name} {ticket.receiver.user.last_name}",
+            'fecha_solicitud': fecha_colombia.strftime("%d/%m/%Y %H:%M:%S"),
+            'fecha_entrega': fecha_salida.strftime("%d/%m/%Y %H:%M:%S"),
+            'descripcion': ticket.description,
+            'lugar': ticket.place,
+            'herramientas': ticket.tools.all(),
+            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+            })
+
          # Crear el PDF
         buffer = BytesIO()
         pisa_status = pisa.CreatePDF(html, dest=buffer)
@@ -144,5 +184,56 @@ def createPdfTicket(request, ticket_id):
     except Exception as e:
         return Response({'error': str(e)}, status=500)
 
-        
+@api_view(['GET'])
+def getInforme(request):
+    try:
+        toolsInUse = Ticket.objects.filter().all()
+        totalToolsInUse = Tool.objects.filter(state = 3).all()
+        toolsActive = Tool.objects.filter(state=1).all()
+        toolsInactive = Tool.objects.filter(state = 2).all()       
+        totalTools = Tool.objects.all().count()
 
+        toolsInUseWithPlace = []
+        seen_codes = set()
+
+        for ticket in toolsInUse:
+            for tool in ticket.tools.all():
+                if tool.code not in seen_codes and tool.state == 3:
+                    toolsInUseWithPlace.append({
+                        'name': tool.name,
+                        'code': tool.code,
+                        'place': ticket.place
+                    })
+                    seen_codes.add(tool.code)
+        zona_colombia = pytz.timezone('America/Bogota')
+        
+        template = get_template('ticket/informe.html')
+
+        html = template.render({
+            'fecha_generacion': datetime.now(zona_colombia).strftime("%d/%m/%Y %H:%M:%S"),
+            'total_herramientas': totalTools,
+            'total_activas': toolsActive.count(),
+            'total_inactivas': toolsInactive.count(),
+            'total_en_uso': totalToolsInUse.count(),
+            'herramientas_activas': toolsActive,
+            'herramientas_inactivas': toolsInactive,
+            'herramientas_en_uso': toolsInUseWithPlace,
+            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+        })
+
+        
+         # Crear el PDF
+        buffer = BytesIO()
+        pisa_status = pisa.CreatePDF(html, dest=buffer)
+
+        if pisa_status.err:
+            return HttpResponse({'error': 'Error generando el PDF'}, status=500)
+
+        buffer.seek(0)
+
+        # Preparar respuesta como archivo descargable
+        response = HttpResponse(buffer, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="informe.pdf"'
+        return response
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)

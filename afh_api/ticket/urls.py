@@ -11,5 +11,6 @@ urlpatterns = [
     path('tickets/', views.getTickets, name='obtener-tickets'),
     path('ticket/<int:ticket_id>', views.gtTicketById, name='obtener-ticket'),
     path('changestate/', views.changeState, name="cambiar-estado"),
-    path('getpdf/<int:ticket_id>', views.createPdfTicket, name='crear-el-pdf')
+    path('getpdf/<int:ticket_id>', views.createPdfTicket, name='crear-el-pdf'),
+    path('getinforme/', views.getInforme, name='get-informe')
 ]
