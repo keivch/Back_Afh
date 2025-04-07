@@ -65,13 +65,14 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'afh_api.urls'
 
@@ -162,13 +163,14 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 #Configuracion del corsheaders
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",  # Permite peticiones desde tu frontend en Angular
-]
+CORS_ALLOW_ALL_ORIGINS = True 
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:4200",  # Permite CSRF desde Angular
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+
 
 #configuracion de cloudinary
 cloudinary.config(
