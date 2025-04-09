@@ -105,21 +105,34 @@ def changeState(request):
 
         ticket = Ticket.objects.get(id = id)
 
-        if state == 1:
+        if int(state) == 1:
             for tool in ticket.tools.all():
                 tool.state = 3
                 tool.save()
 
-        ticket.state = int(state)
-        ticket.save()
+            ticket.state = int(state)
+            ticket.save()
 
-        if state == 4:
+        if int(state) == 4:
+            # Zona horaria de Colombia
+            zona_colombia = pytz.timezone('America/Bogota')
+            # Hora actual en Colombia
+            hora_colombia = datetime.now(zona_colombia)
+            ticket.departure_date = hora_colombia
             for tool in ticket.tools.all():
                 tool.state = 1
                 tool.save()
 
-        ticket.state = int(state)
-        ticket.save()
+            ticket.state = int(state)
+            ticket.save()
+            print('cambiao')
+        
+        if int(state) == 2:
+            ticket.state = int(state)
+            ticket.save()
+        
+
+
 
         return Response({'message': 'estado del ticket actualizado correctamente'})
     except Exception as e:
@@ -151,10 +164,7 @@ def createPdfTicket(request, ticket_id):
             'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
 
     })
-        if ticket.state == 1:
-            hora_colombia = datetime.now(zona_colombia)
-            ticket.departure_date = hora_colombia
-            ticket.save()
+        if ticket.state == 4:
             fecha_salida = ticket.departure_date.astimezone(zona_colombia)
             html = template.render({
             'titulo': "Entrega de Herramienta",
@@ -198,7 +208,7 @@ def getInforme(request):
 
         for ticket in toolsInUse:
             for tool in ticket.tools.all():
-                if tool.code not in seen_codes and tool.state == 3:
+                if tool.code not in seen_codes and tool.state == 3 and ticket.state == 1:
                     toolsInUseWithPlace.append({
                         'name': tool.name,
                         'code': tool.code,
