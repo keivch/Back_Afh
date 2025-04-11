@@ -55,6 +55,10 @@ def addTicket(request):
             departure_date = None
         )
 
+        for tool in tools:
+            tool.state = 4
+            tool.save()
+
         newTicket.tools.add(*tools)
 
         # Enviar el código por correo
@@ -125,10 +129,14 @@ def changeState(request):
 
             ticket.state = int(state)
             ticket.save()
-            print('cambiao')
         
         if int(state) == 2:
             ticket.state = int(state)
+            for tool in ticket.tools.all():
+                tool.state = 1
+                tool.save()
+                ticket.tools.remove(tool)
+
             ticket.save()
         
 
@@ -200,11 +208,13 @@ def getInforme(request):
         toolsInUse = Ticket.objects.filter().all()
         totalToolsInUse = Tool.objects.filter(state = 3).all()
         toolsActive = Tool.objects.filter(state=1).all()
-        toolsInactive = Tool.objects.filter(state = 2).all()       
+        toolsInactive = Tool.objects.filter(state = 2).all() 
+        toolsReserve = Tool.objects.filter(state = 4).all()      
         totalTools = Tool.objects.all().count()
 
         toolsInUseWithPlace = []
         seen_codes = set()
+        toolsInReserve = []
 
         for ticket in toolsInUse:
             for tool in ticket.tools.all():
@@ -215,9 +225,17 @@ def getInforme(request):
                         'place': ticket.place
                     })
                     seen_codes.add(tool.code)
+                if tool.code not in seen_codes and tool.state == 4 and ticket.state == 3:
+                    toolsInReserve.append({
+                        'name': tool.name,
+                        'code': tool.code
+                    })
+                    seen_codes.add(tool.code)
+
         zona_colombia = pytz.timezone('America/Bogota')
         
         template = get_template('ticket/informe.html')
+
 
         html = template.render({
             'fecha_generacion': datetime.now(zona_colombia).strftime("%d/%m/%Y %H:%M:%S"),
@@ -225,9 +243,11 @@ def getInforme(request):
             'total_activas': toolsActive.count(),
             'total_inactivas': toolsInactive.count(),
             'total_en_uso': totalToolsInUse.count(),
+            'total_en_reserva': toolsReserve.count(),
             'herramientas_activas': toolsActive,
             'herramientas_inactivas': toolsInactive,
             'herramientas_en_uso': toolsInUseWithPlace,
+            'herramientas_en_reserva': toolsInReserve,
             'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
         })
 
@@ -246,4 +266,5 @@ def getInforme(request):
         response['Content-Disposition'] = f'attachment; filename="informe.pdf"'
         return response
     except Exception as e:
+        print(str(e))
         return Response({'error': str(e)}, status=500)
