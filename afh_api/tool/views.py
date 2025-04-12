@@ -53,6 +53,7 @@ def addTool(request):
 
         return Response({'message': 'Herramienta creada con exito'}, status=201)
     except Exception as e:
+        print(str(e))
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PATCH'])
@@ -97,6 +98,9 @@ def updateTool(request):
         if int(state) == 3:
             tool.state = 3
             tool.save()
+        if int(state) == 4:
+            tool.state = 4
+            tool.save()
         if marca:
             tool.marca = marca
             tool.save()
@@ -126,6 +130,9 @@ def getToolById(request, tool_id):
 def deleteTool(request, tool_id):
     try:
         tool = Tool.objects.filter(id = tool_id).first()
+        if tool.state == 3 or tool.state == 4:
+            return Response({'error': 'La herramienta no puede ser eliminada ya que esta en uso o reservada'}, status=400)
+
         tool.delete()
         return Response({'message': 'Herramienta eliminada con exito'}, status=200)
     except Exception as e:

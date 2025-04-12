@@ -224,7 +224,10 @@ json
 
 {
   "id": 1,        // ID del ticket
-  "status": 2     // Nuevo estado (por ejemplo: 0 = Pendiente, 1 = En proceso, 2 = Resuelto)
+  "status": 2     // Nuevo estado (1, 'Aceptado'),
+        (2, 'Rechazado'),
+        (3, 'En Espera'),
+        (4, 'Finalizado')
 }
 📤 Respuestas:
 200 OK

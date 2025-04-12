@@ -30,7 +30,6 @@ def addTicket(request):
     zona_colombia = pytz.timezone('America/Bogota')
     # Hora actual en Colombia
     hora_colombia = datetime.now(zona_colombia)
-    print(hora_colombia)
     try:
         tools_ids = data.get('tools', [])
         tools = Tool.objects.filter(id__in = tools_ids)
@@ -55,15 +54,21 @@ def addTicket(request):
             departure_date = None
         )
 
+        for tool in tools:
+            tool.state = 4
+            tool.save()
+
         newTicket.tools.add(*tools)
 
+        fecha_colombia = newTicket.entry_date.astimezone(zona_colombia)
+
         # Enviar el código por correo
-        subject = "Solicitud de Herramienta"
+        subject = "Solicitud de retiro Herramienta"
         message = (
-                f"Hola {receiver.user.first_name},\n\n"
+                f"Hola {receiver.user.first_name} {receiver.user.last_name},\n\n"
                 f"Tienes una nueva solicitud de retiro de herramientas en el sistema\n\n"
                 f"Lugar de trabajo: {place}\n\n"
-                f"fecha de solicitud {entry_date}\n\n"
+                f"fecha y hora de la solicitud {fecha_colombia.strftime("%d/%m/%Y %H:%M:%S")}\n\n"
                 f"Atentamente,\n"
                 f"Equipo de Serenity"
             )
@@ -105,21 +110,38 @@ def changeState(request):
 
         ticket = Ticket.objects.get(id = id)
 
-        if state == 1:
+        if int(state) == 1:
             for tool in ticket.tools.all():
                 tool.state = 3
                 tool.save()
 
-        ticket.state = int(state)
-        ticket.save()
+            ticket.state = int(state)
+            ticket.save()
 
-        if state == 4:
+        if int(state) == 4:
+            # Zona horaria de Colombia
+            zona_colombia = pytz.timezone('America/Bogota')
+            # Hora actual en Colombia
+            hora_colombia = datetime.now(zona_colombia)
+            ticket.departure_date = hora_colombia
             for tool in ticket.tools.all():
                 tool.state = 1
                 tool.save()
 
-        ticket.state = int(state)
-        ticket.save()
+            ticket.state = int(state)
+            ticket.save()
+        
+        if int(state) == 2:
+            ticket.state = int(state)
+            for tool in ticket.tools.all():
+                tool.state = 1
+                tool.save()
+                ticket.tools.remove(tool)
+
+            ticket.save()
+        
+
+
 
         return Response({'message': 'estado del ticket actualizado correctamente'})
     except Exception as e:
@@ -151,10 +173,7 @@ def createPdfTicket(request, ticket_id):
             'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
 
     })
-        if ticket.state == 1:
-            hora_colombia = datetime.now(zona_colombia)
-            ticket.departure_date = hora_colombia
-            ticket.save()
+        if ticket.state == 4:
             fecha_salida = ticket.departure_date.astimezone(zona_colombia)
             html = template.render({
             'titulo': "Entrega de Herramienta",
@@ -190,24 +209,34 @@ def getInforme(request):
         toolsInUse = Ticket.objects.filter().all()
         totalToolsInUse = Tool.objects.filter(state = 3).all()
         toolsActive = Tool.objects.filter(state=1).all()
-        toolsInactive = Tool.objects.filter(state = 2).all()       
+        toolsInactive = Tool.objects.filter(state = 2).all() 
+        toolsReserve = Tool.objects.filter(state = 4).all()      
         totalTools = Tool.objects.all().count()
 
         toolsInUseWithPlace = []
         seen_codes = set()
+        toolsInReserve = []
 
         for ticket in toolsInUse:
             for tool in ticket.tools.all():
-                if tool.code not in seen_codes and tool.state == 3:
+                if tool.code not in seen_codes and tool.state == 3 and ticket.state == 1:
                     toolsInUseWithPlace.append({
                         'name': tool.name,
                         'code': tool.code,
                         'place': ticket.place
                     })
                     seen_codes.add(tool.code)
+                if tool.code not in seen_codes and tool.state == 4 and ticket.state == 3:
+                    toolsInReserve.append({
+                        'name': tool.name,
+                        'code': tool.code
+                    })
+                    seen_codes.add(tool.code)
+
         zona_colombia = pytz.timezone('America/Bogota')
         
         template = get_template('ticket/informe.html')
+
 
         html = template.render({
             'fecha_generacion': datetime.now(zona_colombia).strftime("%d/%m/%Y %H:%M:%S"),
@@ -215,9 +244,11 @@ def getInforme(request):
             'total_activas': toolsActive.count(),
             'total_inactivas': toolsInactive.count(),
             'total_en_uso': totalToolsInUse.count(),
+            'total_en_reserva': toolsReserve.count(),
             'herramientas_activas': toolsActive,
             'herramientas_inactivas': toolsInactive,
             'herramientas_en_uso': toolsInUseWithPlace,
+            'herramientas_en_reserva': toolsInReserve,
             'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
         })
 
@@ -236,4 +267,5 @@ def getInforme(request):
         response['Content-Disposition'] = f'attachment; filename="informe.pdf"'
         return response
     except Exception as e:
+        print(str(e))
         return Response({'error': str(e)}, status=500)

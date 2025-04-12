@@ -147,6 +147,10 @@
           <th>Herramientas en Uso</th>
           <td>{{ total_en_uso }}</td>
         </tr>
+        <tr>
+          <th>Herramientas en Reserva</th>
+          <td>{{ total_en_reserva }}</td>
+        </tr>
       </table>
     </div>
 
@@ -210,6 +214,25 @@
             <td>{{ herramienta.name }}</td>
             <td>{{ herramienta.code }}</td>
             <td class="estado-inactiva">Inactiva</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="section">
+      <h3>Herramientas en Reserva</h3>
+      <table cellpadding="5" cellspacing="0">
+        <thead>
+          <tr>
+            <th width="30%">Nombre</th>
+            <th width="20%">Código</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for herramienta in herramientas_en_reserva %}
+          <tr>
+            <td>{{ herramienta.name }}</td>
+            <td>{{ herramienta.code }}</td>
           </tr>
           {% endfor %}
         </tbody>
