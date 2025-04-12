@@ -17,6 +17,7 @@ import os
 import cloudinary
 import cloudinary.api
 import cloudinary.uploader
+import dj_database_url 
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -36,9 +37,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -99,11 +100,9 @@ WSGI_APPLICATION = 'afh_api.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+     'default': dj_database_url.config(default= 'postgresql://andres_felipe:YuvDnN0OA0U5RPnxCm3pStB1Ot9Cfph4@dpg-cvt9c3ruibrs73dg2rlg-a.oregon-postgres.render.com/afh_db')
 }
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -162,11 +161,14 @@ EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
-#Configuracion del corsheaders
-CORS_ALLOW_ALL_ORIGINS = True 
+# settings.py
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:4200",  # Permite CSRF desde Angular
+    "http://localhost:4200",
 ]
 
 CORS_ALLOW_CREDENTIALS = True

@@ -8,6 +8,7 @@ from tool.models import Tool
 from users.models import  Users
 from datetime import datetime
 import pytz
+from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
@@ -24,6 +25,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def addTicket(request):
     data = request.data
         # Zona horaria de Colombia
@@ -101,6 +103,7 @@ def gtTicketById(request, ticket_id):
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def changeState(request):
     data = request.data
 
