@@ -39,7 +39,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [env('BACKURL')]
+ALLOWED_HOSTS = ['back-afh.onrender.com']
 
 
 # Application definition
