@@ -100,7 +100,7 @@ WSGI_APPLICATION = 'afh_api.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-     'default': dj_database_url.config(default= 'postgresql://andres_felipe:YuvDnN0OA0U5RPnxCm3pStB1Ot9Cfph4@dpg-cvt9c3ruibrs73dg2rlg-a.oregon-postgres.render.com/afh_db')
+     'default': dj_database_url.config(default= env('URL_DB'))
 }
 
 
