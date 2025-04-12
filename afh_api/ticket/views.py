@@ -30,7 +30,6 @@ def addTicket(request):
     zona_colombia = pytz.timezone('America/Bogota')
     # Hora actual en Colombia
     hora_colombia = datetime.now(zona_colombia)
-    print(hora_colombia)
     try:
         tools_ids = data.get('tools', [])
         tools = Tool.objects.filter(id__in = tools_ids)
@@ -61,13 +60,15 @@ def addTicket(request):
 
         newTicket.tools.add(*tools)
 
+        fecha_colombia = newTicket.entry_date.astimezone(zona_colombia)
+
         # Enviar el código por correo
-        subject = "Solicitud de Herramienta"
+        subject = "Solicitud de retiro Herramienta"
         message = (
-                f"Hola {receiver.user.first_name},\n\n"
+                f"Hola {receiver.user.first_name} {receiver.user.last_name},\n\n"
                 f"Tienes una nueva solicitud de retiro de herramientas en el sistema\n\n"
                 f"Lugar de trabajo: {place}\n\n"
-                f"fecha de solicitud {entry_date}\n\n"
+                f"fecha y hora de la solicitud {fecha_colombia.strftime("%d/%m/%Y %H:%M:%S")}\n\n"
                 f"Atentamente,\n"
                 f"Equipo de Serenity"
             )
