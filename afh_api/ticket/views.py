@@ -70,7 +70,7 @@ def addTicket(request):
                 f"Hola {receiver.user.first_name} {receiver.user.last_name},\n\n"
                 f"Tienes una nueva solicitud de retiro de herramientas en el sistema\n\n"
                 f"Lugar de trabajo: {place}\n\n"
-                f"fecha y hora de la solicitud {fecha_colombia.strftime("%d/%m/%Y %H:%M:%S")}\n\n"
+                f"fecha y hora de la solicitud {fecha_colombia.strftime('%d/%m/%Y %H:%M:%S')}\n\n"
                 f"Atentamente,\n"
                 f"Equipo de Serenity"
             )
