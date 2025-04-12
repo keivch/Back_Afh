@@ -39,7 +39,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [env('BACKURL')]
 
 
 # Application definition
@@ -166,11 +166,11 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 # settings.py
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",
+    "https://metalmecanicos.vercel.app/",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:4200",
+    "https://metalmecanicos.vercel.app/",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
