@@ -65,19 +65,21 @@ def addTicket(request):
         fecha_colombia = newTicket.entry_date.astimezone(zona_colombia)
 
         # Enviar el código por correo
-        subject = "Solicitud de retiro Herramienta"
-        message = (
-                f"Hola {receiver.user.first_name} {receiver.user.last_name},\n\n"
-                f"Tienes una nueva solicitud de retiro de herramientas en el sistema\n\n"
-                f"Lugar de trabajo: {place}\n\n"
-                f"fecha y hora de la solicitud {fecha_colombia.strftime('%d/%m/%Y %H:%M:%S')}\n\n"
-                f"Atentamente,\n"
-                f"Equipo de Serenity"
-            )
-        
-        recipient = [receiver.user.email]
+        admins = Users.objects.filter(role = 1).all()
+        for admin in admins:
+            subject = "Solicitud de retiro Herramienta"
+            message = (
+                    f"Hola {admin.user.first_name} {admin.user.last_name},\n\n"
+                    f"Tienes una nueva solicitud de retiro de herramientas en el sistema\n\n"
+                    f"Lugar de trabajo: {place}\n\n"
+                    f"fecha y hora de la solicitud {fecha_colombia.strftime('%d/%m/%Y %H:%M:%S')}\n\n"
+                    f"Atentamente,\n"
+                    f"Equipo de Serenity"
+                )
+            
+            recipient = [admin.user.email]
 
-        send_mail(subject, message, settings.EMAIL_HOST_USER, recipient)
+            send_mail(subject, message, settings.EMAIL_HOST_USER, recipient)
 
         return Response({'message': 'Ticket creado con exito'}, status=200)
     except Exception as e:
