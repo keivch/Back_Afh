@@ -56,7 +56,10 @@ INSTALLED_APPS = [
     'tool',
     'ticket', 
     'passwordresetcode', 
-    'corsheaders'
+    'corsheaders',
+    'Quotes',
+    'WorkOrder',
+    'Customer'
     
 
 
