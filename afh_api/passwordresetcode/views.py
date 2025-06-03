@@ -1,11 +1,8 @@
-from django.core.mail import send_mail
-from django.utils.crypto import get_random_string
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .models import PasswordResetCode
-from django.conf import settings
 from .Serializer import PasswordResetCodeSerializer
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token

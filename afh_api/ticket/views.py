@@ -1,12 +1,9 @@
-from django.shortcuts import render
 from .Serializer import TicketSerializer
 from .models import Ticket
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from tool.models import Tool
-from users.models import  Users
-from datetime import datetime
 import pytz
 from django.contrib.auth.models import User
 from django.http import HttpResponse
