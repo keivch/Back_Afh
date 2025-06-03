@@ -10,6 +10,7 @@ from .Serializer import PasswordResetCodeSerializer
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from .Services import sendMailRecovery
 
 class PasswordResetCodeViewSet(viewsets.ModelViewSet):
     serializer_class= PasswordResetCodeSerializer
@@ -20,24 +21,7 @@ def request_password_reset(request):
     email = request.data.get('email')
     try:
         user = User.objects.get(email=email)
-        code = get_random_string(4, '0123456789')  
-
-        # Guardar el código en la BD
-        PasswordResetCode.objects.create(user=user, code=code)
-
-        # Enviar el código por correo
-        subject = "Codigo de recuperacion"
-        message = (
-                f"Hola {user.first_name},\n\n"
-                f"A continuacion te enviamos tu codigo para restablecer tu contrasena (tiene un tiempo de duracion de 20 minutos)\n\n"
-                f"Codigo: {code}\n\n"
-                f"Atentamente,\n"
-                f"Equipo de Serenity"
-            )
-        
-        recipient = [user.email]
-
-        send_mail(subject, message, settings.EMAIL_HOST_USER, recipient)
+        sendMailRecovery(email, user)
 
         token, created = Token.objects.get_or_create(user=user)
 
