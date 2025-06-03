@@ -5,6 +5,10 @@ import pytz
 from datetime import datetime
 from django.conf import settings
 from django.core.mail import send_mail
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from io import BytesIO
+from tool.models import Tool
 
 # Zona horaria de Colombia
 ZONA_COLOMBIA = pytz.timezone('America/Bogota')
@@ -85,5 +89,102 @@ def changeStateFunction(id, state):
             ticket.tools.remove(tool)
 
     ticket.save()
+
+def pdfCreator(ticket, type):
+    template = None
+    if type == 1:
+        template = get_template('ticket/solicitud.html')
+        fecha_colombia = ticket.entry_date.astimezone(ZONA_COLOMBIA)
+        html = None
+        if ticket.state == 3:
+            html = template.render({
+            'titulo': "Solicitud de Herramienta",
+            'solicitante': f"{ticket.applicant.user.first_name} {ticket.applicant.user.last_name}",
+            'receptor': f"{ticket.receiver.user.first_name} {ticket.receiver.user.last_name}",
+            'fecha_solicitud': fecha_colombia.strftime("%d/%m/%Y %H:%M:%S"),
+            'descripcion': ticket.description,
+            'lugar': ticket.place,
+            'herramientas': ticket.tools.all(),
+            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+
+    })
+        if ticket.state == 4:
+            fecha_salida = ticket.departure_date.astimezone(ZONA_COLOMBIA)
+            html = template.render({
+            'titulo': "Entrega de Herramienta",
+            'solicitante': f"{ticket.applicant.user.first_name} {ticket.applicant.user.last_name}",
+            'receptor': f"{ticket.receiver.user.first_name} {ticket.receiver.user.last_name}",
+            'fecha_solicitud': fecha_colombia.strftime("%d/%m/%Y %H:%M:%S"),
+            'fecha_entrega': fecha_salida.strftime("%d/%m/%Y %H:%M:%S"),
+            'descripcion': ticket.description,
+            'lugar': ticket.place,
+            'herramientas': ticket.tools.all(),
+            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+        })
+         # Crear el PDF
+        buffer = BytesIO()
+        pisa_status = pisa.CreatePDF(html, dest=buffer)
+        buffer.seek(0)
+        if pisa_status.err:
+            return None, 'Error generando el PDF'
+        return buffer, None 
+    elif type == 2:
+        toolsInUse = Ticket.objects.filter().all()
+        totalToolsInUse = Tool.objects.filter(state = 3).all()
+        toolsActive = Tool.objects.filter(state=1).all()
+        toolsInactive = Tool.objects.filter(state = 2).all() 
+        toolsReserve = Tool.objects.filter(state = 4).all()      
+        totalTools = Tool.objects.all().count()
+
+        toolsInUseWithPlace = []
+        seen_codes = set()
+        toolsInReserve = []
+
+        for ticket in toolsInUse:
+            for tool in ticket.tools.all():
+                if tool.code not in seen_codes and tool.state == 3 and ticket.state == 1:
+                    toolsInUseWithPlace.append({
+                        'name': tool.name,
+                        'code': tool.code,
+                        'place': ticket.place
+                    })
+                    seen_codes.add(tool.code)
+                if tool.code not in seen_codes and tool.state == 4 and ticket.state == 3:
+                    toolsInReserve.append({
+                        'name': tool.name,
+                        'code': tool.code
+                    })
+                    seen_codes.add(tool.code)
+        
+        template = get_template('ticket/informe.html')
+
+
+        html = template.render({
+            'fecha_generacion': datetime.now(ZONA_COLOMBIA).strftime("%d/%m/%Y %H:%M:%S"),
+            'total_herramientas': totalTools,
+            'total_activas': toolsActive.count(),
+            'total_inactivas': toolsInactive.count(),
+            'total_en_uso': totalToolsInUse.count(),
+            'total_en_reserva': toolsReserve.count(),
+            'herramientas_activas': toolsActive,
+            'herramientas_inactivas': toolsInactive,
+            'herramientas_en_uso': toolsInUseWithPlace,
+            'herramientas_en_reserva': toolsInReserve,
+            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+        })
+
+        
+         # Crear el PDF
+        buffer = BytesIO()
+        pisa_status = pisa.CreatePDF(html, dest=buffer)
+
+        if pisa_status.err:
+            return None, 'Error generando el PDF'
+
+        buffer.seek(0)
+        return buffer, None     
+    
+
+
         
      
