@@ -127,7 +127,7 @@ def pdfCreator(ticket, type):
         buffer.seek(0)
         if pisa_status.err:
             return None, 'Error generando el PDF'
-        return buffer, None 
+        return buffer
     elif type == 2:
         toolsInUse = Ticket.objects.filter().all()
         totalToolsInUse = Tool.objects.filter(state = 3).all()
@@ -182,7 +182,7 @@ def pdfCreator(ticket, type):
             return None, 'Error generando el PDF'
 
         buffer.seek(0)
-        return buffer, None     
+        return buffer     
     
 
 
