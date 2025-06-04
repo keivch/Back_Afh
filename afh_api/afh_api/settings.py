@@ -59,7 +59,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'Quotes',
     'WorkOrder',
-    'Customer'
+    'Customer',
+    'Option',
+    'item'
     
 
 
