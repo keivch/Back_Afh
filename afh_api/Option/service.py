@@ -2,7 +2,7 @@ from .models import Option
 
 def create_option(name, items):
     try:
-        newOption = Option.objects.create(name=name)
+        newOption = Option.objects.create(name=name, total_value=0)
         total_value = 0
         for item in items:
             newOption.items.add(item)
