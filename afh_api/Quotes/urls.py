@@ -6,7 +6,7 @@ router = routers.DefaultRouter()
 
 router.register('Quote', views.QuotesViewSet, basename='CrudQuote')
 
-patpatterns = [
+urlpatterns = [
     path('', include(router.urls)),
     path('addquote/', views.add_quote, name='anadir-quote'),
     path('updatequote/<int:quote_id>', views.update_quote_view, name='update-quote'),
