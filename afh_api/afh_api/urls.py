@@ -22,6 +22,7 @@ urlpatterns = [
     path('auth/', include('users.urls')),#endpoints de autenticacion
     path('reset/', include('passwordresetcode.urls')),#endpoints de reset el codigo de autenticacion
     path('tool/', include('tool.urls')),#endpoints de las herramientas
-    path('ticket/', include('ticket.urls')) #enpoints de los tickets
+    path('ticket/', include('ticket.urls')), #enpoints de los tickets
+    path('customer/', include('Customer.urls')), #endpoints de los clientes
 ]
 
