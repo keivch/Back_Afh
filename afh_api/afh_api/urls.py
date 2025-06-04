@@ -24,5 +24,6 @@ urlpatterns = [
     path('tool/', include('tool.urls')),#endpoints de las herramientas
     path('ticket/', include('ticket.urls')), #enpoints de los tickets
     path('customer/', include('Customer.urls')), #endpoints de los clientes
+    path('item/', include('item.urls')), #endpoints de los items
 ]
 
