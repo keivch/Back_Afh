@@ -23,8 +23,8 @@ def add_option(request):
         items = Item.objects.filter(id__in=items_ids)
         if not items:
             return Response({'error': 'Invalid items provided'}, status=400)
-        create_option(description, items)
-        return Response({'message': 'Option creada exitosamente'}, status=201)
+        option = create_option(description, items)
+        return Response({'message': 'Option creada exitosamente', 'option_id': option.id}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
     

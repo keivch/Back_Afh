@@ -21,8 +21,8 @@ def add_item(request):
         unit_value = data.get('unit_value')
         if not description or units is None or amount is None or unit_value is None:
             return Response({'error': 'All fields are required'}, status=400)
-        create_item(description, units, amount, unit_value)
-        return Response({'message': 'Item creado exitosamente'}, status=201)
+        item = create_item(description, units, amount, unit_value)
+        return Response({'message': 'Item creado exitosamente', 'item_id': item.id}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
 
