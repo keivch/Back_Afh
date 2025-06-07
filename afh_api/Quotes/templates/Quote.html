@@ -1,176 +1,214 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <title>Cotización {{ code }}</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 12px;
-      color: #000;
-      margin: 40px;
-      position: relative;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cotización {{ code }}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        color: #000;
+        margin: 40px;
+        position: relative;
+      }
 
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 30px;
-    }
+      /* Imagen de fondo con opacidad */
+      body::before {
+        content: "";
+        position: fixed; /* Fixed para que aparezca en todas las páginas */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px; /* Tamaño fijo grande */
+        height: 300px; /* Altura proporcional */
+        background-image: url('https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain; /* Mantiene proporción */
+        opacity: 0.08; /* Muy baja opacidad para que no interfiera */
+        z-index: -1;
+        pointer-events: none;
+      }
 
-    .logo {
-      height: 70px;
-    }
+      /* Asegurar que el contenido esté por encima */
+      .header,
+      .datos-cotizacion,
+      .opcion,
+      .condiciones,
+      .firma {
+        position: relative;
+        z-index: 1;
+      }
 
-    .titulo {
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 30px;
+      }
 
-    h1, h2, h3 {
-      margin: 0;
-    }
+      .logo {
+        height: 70px;
+      }
 
-    .datos-cotizacion,
-    .condiciones,
-    .firma {
-      margin-top: 30px;
-    }
+      .titulo {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+      }
 
-    th,
-    td {
-      border: 1px solid #000;
-      padding: 6px;
-      text-align: left;
-    }
+      .datos-cotizacion,
+      .condiciones,
+      .firma {
+        margin-top: 30px;
+      }
 
-    th {
-      background-color: #f2f2f2;
-    }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background-color: rgba(255, 255, 255, 0.9); /* Fondo semi-transparente para mejor legibilidad */
+      }
 
-    .total {
-      font-weight: bold;
-      text-align: right;
-    }
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 6px;
+        text-align: left;
+      }
 
-    ol.tareas {
-      margin-top: 10px;
-      padding-left: 20px;
-    }
+      th {
+        background-color: #f2f2f2;
+      }
 
-    .firma {
-      margin-top: 50px;
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <img src="{{ logo_url }}" alt="Logo empresa" class="logo" />
-    <div class="titulo">COTIZACIÓN N.º {{ code }}</div>
-  </div>
+      .total {
+        font-weight: bold;
+        text-align: right;
+      }
 
-  <div>
-    Palmira, {{ fecha }}
-    <br /><br />
-    Señores:<br />
-    {{ customer }}<br />
-    {{ contacto_cliente }}<br /><br />
-    Agradeciéndole de antemano su amable invitación para cotizarle el siguiente trabajo:<br />
-    <strong>"{{ descripcion }}"</strong>
-  </div>
+      ol.tareas {
+        margin-top: 10px;
+        padding-left: 20px;
+      }
 
-  <div class="datos-cotizacion">
-    <h3>ALCANCE DE LA OFERTA</h3>
-    <p>
-      A.F.H Metalmecánico S.A.S, ofrece el suministro de personal con experiencia, para desarrollar trabajo,
-      dirección técnica y supervisión, concerniente a: {{ descripcion }}.
-    </p>
+      .firma {
+        margin-top: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img src="{{ logo_url }}" alt="Logo empresa" class="logo" />
+      <div class="titulo">COTIZACIÓN N.º {{ code }}</div>
+    </div>
 
-    <ol class="tareas">
-      {% for task in tasks %}
-      <li>{{ task }}</li>
-      {% endfor %}
-    </ol>
-  </div>
+    <div>
+      Palmira, {{ fecha }}
+      <br /><br />
+      Señores:<br />
+      {{ customer }}<br />
+      {{ contacto_cliente }}<br /><br />
+      Agradeciéndole de antemano su amable invitación para cotizarle el
+      siguiente trabajo:<br />
+      <strong>"{{ descripcion }}"</strong>
+    </div>
 
-  {% for opcion in opciones %}
-  <div class="opcion">
-    <h3>{{ opcion.name }}</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>DESCRIPCIÓN</th>
-          <th>UND</th>
-          <th>CANT</th>
-          <th>VALOR UNITARIO</th>
-          <th>VALOR TOTAL</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in opcion.items.all %}
-        <tr>
-          <td>{{ item.description }}</td>
-          <td>{{ item.units }}</td>
-          <td>{{ item.amount }}</td>
-          <td>$ {{ item.unit_value }}</td>
-          <td>$ {{ item.total_value }}</td>
-        </tr>
+    <div class="datos-cotizacion">
+      <h3>ALCANCE DE LA OFERTA</h3>
+      <p>
+        A.F.H Metalmecánico S.A.S, ofrece el suministro de personal con
+        experiencia, para desarrollar trabajo, dirección técnica y supervisión,
+        concerniente a: {{ descripcion }}.
+      </p>
+
+      <ol class="tareas">
+        {% for task in tasks %}
+        <li>{{ task }}</li>
         {% endfor %}
-        <tr>
-          <td colspan="4" class="total">TOTAL</td>
-          <td>$ {{ opcion.total_value }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  {% endfor %}
+      </ol>
+    </div>
 
-  <div class="condiciones">
-    <h3>CONDICIONES COMERCIALES</h3>
-    <ul>
-      <li>El valor estimado de los trabajos a realizar está desglosado en los cuadros anteriores.</li>
-      <li>El valor final se ajustará según obra ejecutada y precios unitarios propuestos.</li>
-    </ul>
+    {% for opcion in opciones %}
+    <div class="opcion">
+      <h3>{{ opcion.name }}</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>DESCRIPCIÓN</th>
+            <th>UND</th>
+            <th>CANT</th>
+            <th>VALOR UNITARIO</th>
+            <th>VALOR TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in opcion.items.all %}
+          <tr>
+            <td>{{ item.description }}</td>
+            <td>{{ item.units }}</td>
+            <td>{{ item.amount }}</td>
+            <td>$ {{ item.unit_value }}</td>
+            <td>$ {{ item.total_value }}</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td colspan="4" class="total">TOTAL</td>
+            <td>$ {{ opcion.total_value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
 
-    <h3>CORRE POR CUENTA DEL CONTRATISTA</h3>
-    <ul>
-      <li>Elementos de protección personal</li>
-      <li>Herramientas manuales y eléctricas</li>
-      <li>Personal capacitado</li>
-      <li>Materiales y consumibles</li>
-    </ul>
+    <div class="condiciones">
+      <h3>CONDICIONES COMERCIALES</h3>
+      <ul>
+        <li>
+          El valor estimado de los trabajos a realizar está desglosado en los
+          cuadros anteriores.
+        </li>
+        <li>
+          El valor final se ajustará según obra ejecutada y precios unitarios
+          propuestos.
+        </li>
+      </ul>
 
-    <h3>CORRE POR CUENTA DEL CONTRATANTE</h3>
-    <ul>
-      <li>Disposición del sitio de trabajo</li>
-      <li>Suministro de energía 110V / 220V</li>
-    </ul>
+      <h3>CORRE POR CUENTA DEL CONTRATISTA</h3>
+      <ul>
+        <li>Elementos de protección personal</li>
+        <li>Herramientas manuales y eléctricas</li>
+        <li>Personal capacitado</li>
+        <li>Materiales y consumibles</li>
+      </ul>
 
-    <h3>FORMA DE PAGO</h3>
-    <p>50% anticipo y 50% contra entrega.</p>
+      <h3>CORRE POR CUENTA DEL CONTRATANTE</h3>
+      <ul>
+        <li>Disposición del sitio de trabajo</li>
+        <li>Suministro de energía 110V / 220V</li>
+      </ul>
 
-    <h3>PLAZO DE ENTREGA</h3>
-    <p>36 días hábiles.</p>
+      <h3>FORMA DE PAGO</h3>
+      <p>50% anticipo y 50% contra entrega.</p>
 
-    <h3>VALIDEZ DE LA PROPUESTA</h3>
-    <p>30 días desde su emisión.</p>
-  </div>
+      <h3>PLAZO DE ENTREGA</h3>
+      <p>36 días hábiles.</p>
 
-  <div class="firma">
-    <p>Atentamente,</p>
-    <br /><br />
-    <strong>ANDRES FELIPE HERNANDEZ</strong><br />
-    Gerente General
-  </div>
-</body>
+      <h3>VALIDEZ DE LA PROPUESTA</h3>
+      <p>30 días desde su emisión.</p>
+    </div>
+
+    <div class="firma">
+      <p>Atentamente,</p>
+      <br /><br />
+      <strong>ANDRES FELIPE HERNANDEZ</strong><br />
+      Gerente General
+    </div>
+  </body>
 </html>
-
