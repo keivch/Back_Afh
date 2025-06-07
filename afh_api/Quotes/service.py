@@ -2,6 +2,9 @@ from .models import Quotes
 from Customer.models import Customer
 from datetime import datetime
 import pytz
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from io import BytesIO
 
 YEAR = datetime.now().year
 # Zona horaria de Colombia
@@ -70,4 +73,28 @@ def get_quote_by_id(id):
         return quote
     except Exception as e:
         raise Exception(f"Error retrieving quote by ID: {str(e)}")
+    
+def pdf_quote(id_quote):
+    try:
+        quote = Quotes.objects.get(id=id_quote)
+        template = get_template('Quote.html')
+        html = template.render({
+            "code": quote.code,
+            "customer": quote.customer.name,
+            "contacto_cliente": quote.customer.email,
+            "descripcion": quote.description,
+            "tasks": quote.tasks,
+            "opciones": quote.options.all(),
+            "fecha": quote.issue_date
+        })
+
+        buffer = BytesIO()
+        pisa_status = pisa.CreatePDF(html, dest=buffer)
+        buffer.seek(0)
+        if pisa_status.err:
+            return None, 'Error generating PDF'
+        return buffer
+    except Exception as e:
+        raise Exception(f"Error generating PDF: {str(e)}")
+
     
