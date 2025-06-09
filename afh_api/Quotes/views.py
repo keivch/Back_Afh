@@ -4,8 +4,9 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from .models import Quotes
 from .Serializer import QuotesSerializer
+from django.http import HttpResponse
 from Option.models import Option
-from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id
+from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id, pdf_quote
 
 # Create your views here.
 class QuotesViewSet(viewsets.ModelViewSet):
@@ -73,5 +74,20 @@ def get_quote_by_id_view(request, quote_id):
         quote = get_quote_by_id(quote_id)
         serializer = QuotesSerializer(quote)
         return Response(serializer.data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
+@api_view(['GET'])
+def pdf_quote_view(request, id_quote):
+    try:
+        if not id_quote:
+            return Response({'error': 'Id de la cotizacion es requerido'}, status=400)
+        quote = Quotes.objects.get(id=id_quote)
+        buffer = pdf_quote(id_quote)
+
+        # Preparar respuesta como archivo descargable
+        response = HttpResponse(buffer, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="Cotizacion-{quote.code}.pdf"'
+        return response
     except Exception as e:
         return Response({'error': str(e)}, status=500)

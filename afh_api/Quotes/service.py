@@ -2,6 +2,9 @@ from .models import Quotes
 from Customer.models import Customer
 from datetime import datetime
 import pytz
+from django.template.loader import get_template
+import weasyprint
+from io import BytesIO
 
 YEAR = datetime.now().year
 # Zona horaria de Colombia
@@ -13,7 +16,7 @@ HORA_COLOMBIA = datetime.now(ZONA_COLOMBIA)
 def create_quote(customer_id, options, description, tasks):
     try:
         number = Quotes.objects.count() + 1
-        code = f"{YEAR}-{number}"
+        code = f"{number}-{YEAR}"
         new_quote = Quotes.objects.create(
             code = code,
             customer = Customer.objects.get(id=customer_id),
@@ -70,4 +73,27 @@ def get_quote_by_id(id):
         return quote
     except Exception as e:
         raise Exception(f"Error retrieving quote by ID: {str(e)}")
+    
+def pdf_quote(id_quote):
+    try:
+        quote = Quotes.objects.get(id=id_quote)
+        template = get_template('Quote.html')
+        html = template.render({
+            "code": quote.code,
+            "customer": quote.customer.name,
+            "contacto_cliente": quote.customer.email,
+            "descripcion": quote.description,
+            "tasks": quote.tasks,
+            "opciones": quote.options.all(),
+            "fecha": quote.issue_date.strftime("%d/%m/%Y"),
+            "logo_url": 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+        })
+
+        buffer = BytesIO()
+        weasyprint.HTML(string=html).write_pdf(buffer)
+        buffer.seek(0)
+        return buffer
+    except Exception as e:
+        raise Exception(f"Error generating PDF: {str(e)}")
+
     
