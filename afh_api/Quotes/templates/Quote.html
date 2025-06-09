@@ -3,34 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <title>Cotización {{ code }}</title>
-    <style>
+        <style>
       body {
         font-family: Arial, sans-serif;
         font-size: 12px;
         color: #000;
         margin: 40px;
         position: relative;
+        padding-bottom: 100px; /* Espacio para el footer */
       }
 
       /* Imagen de fondo con opacidad */
       body::before {
         content: "";
-        position: fixed; /* Fixed para que aparezca en todas las páginas */
+        position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 300px; /* Tamaño fijo grande */
-        height: 300px; /* Altura proporcional */
-        background-image: url('https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png');
+        width: 300px;
+        height: 300px;
+        background-image: url("https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png");
         background-repeat: no-repeat;
         background-position: center;
-        background-size: contain; /* Mantiene proporción */
-        opacity: 0.08; /* Muy baja opacidad para que no interfiera */
+        background-size: contain;
+        opacity: 0.08;
         z-index: -1;
         pointer-events: none;
       }
 
-      /* Asegurar que el contenido esté por encima */
       .header,
       .datos-cotizacion,
       .opcion,
@@ -58,9 +58,7 @@
         margin-bottom: 20px;
       }
 
-      h1,
-      h2,
-      h3 {
+      h1, h2, h3 {
         margin: 0;
       }
 
@@ -74,11 +72,10 @@
         width: 100%;
         border-collapse: collapse;
         margin-top: 15px;
-        background-color: rgba(255, 255, 255, 0.9); /* Fondo semi-transparente para mejor legibilidad */
+        background-color: rgba(255, 255, 255, 0.9);
       }
 
-      th,
-      td {
+      th, td {
         border: 1px solid #000;
         padding: 6px;
         text-align: left;
@@ -101,11 +98,93 @@
       .firma {
         margin-top: 50px;
       }
+
+      .tabla-cotizacion {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid black;
+      }
+
+      .tabla-cotizacion td {
+        border: 1px solid black;
+        padding: 8px;
+        vertical-align: middle;
+      }
+
+      .logo {
+        text-align: center;
+        width: 20%;
+      }
+
+      .logo img {
+        width: 80px;
+        margin-bottom: 5px;
+      }
+
+      .estado-vigente {
+        color: green;
+        font-weight: bold;
+      }
+
+      .titulo {
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .version {
+        text-align: center;
+      }
+
+      .datos-superior,
+      .datos-inferior {
+        width: 30%;
+        font-size: 14px;
+      }
+
+      .table-cotizacion {
+        margin-bottom: 20px;
+      }
+
+      .footer {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        font-size: 12px;
+        color: #000;
+        background-color: rgba(255, 255, 255, 0.8); /* Opacidad sutil */
+        padding: 8px 12px;
+        text-align: right;
+        z-index: 999;
+        border: none;
+        box-shadow: none;
+        opacity: 0.6; /* Opacidad del footer */
+      }
     </style>
   </head>
   <body>
+    <div class="table-cotizacion">
+      <table class="tabla-cotizacion">
+        <tr>
+          <td rowspan="2" class="logo">
+            <img src="{{ logo_url }}" alt="Logo de la empresa" />
+            <div class="estado-vigente">DOCUMENTO VIGENTE</div>
+          </td>
+          <td class="titulo" colspan="1">COTIZACIONES</td>
+          <td class="datos-superior">
+            <strong>Código:</strong> F-GC-05<br />
+            <strong>Fecha de Creación:</strong> {{ fecha}}
+          </td>
+        </tr>
+        <tr>
+          <td class="version">Versión-01</td>
+          <td class="datos-inferior">
+            <strong>Fecha de Revisión:</strong> {{fecha}} <br />
+          </td>
+        </tr>
+      </table>
+    </div>
+
     <div class="header">
-      <img src="{{ logo_url }}" alt="Logo empresa" class="logo" />
       <div class="titulo">COTIZACIÓN N.º {{ code }}</div>
     </div>
 
@@ -210,5 +289,14 @@
       <strong>ANDRES FELIPE HERNANDEZ</strong><br />
       Gerente General
     </div>
+
+    <footer class="footer">
+      <p>
+        Carrera 13A # 40 - 37 B/Primero de Mayo, Palmira - Colombia<br />
+        Cel (+57) 311 616 7972 | Fijo (602) 287 2362<br />
+        afh@afhmetalmecanico.com<br />
+        www.afhmetalmecanico.com
+      </p>
+    </footer>
   </body>
 </html>
