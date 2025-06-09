@@ -6,6 +6,9 @@ from django.template.loader import get_template
 import weasyprint
 from io import BytesIO
 from WorkOrder.models import WorkOrder
+from django.conf import settings
+from django.core.mail import send_mail
+from users.models import Users
 
 YEAR = datetime.now().year
 # Zona horaria de Colombia
@@ -110,6 +113,21 @@ def change_state_quote(id_quote, state):
                 start_date=HORA_COLOMBIA,
                 end_date=None  # End date can be set later
             )
+        
+            # Send email notification
+            admins = Users.objects.filter(role = 1).all()
+            for amdin in admins:
+                subject = f"Nueva orden de trabajo generada"
+                message = (
+                    f"Se ha generado una nueva orden de trabajo para la cotización {quote.code}.\n\n"
+                    f"Cliente: {quote.customer.name}\n\n"
+                    f"Descripción: {quote.description}\n\n"
+                    f"Fecha de emisión: {quote.issue_date.strftime('%d/%m/%Y')}\n\n"
+                    f"Atentamente,\n"
+                    f"Equipo de Serenity"
+                )
+                recipient = [amdin.user.email]
+                send_mail(subject, message, settings.EMAIL_HOST_USER, recipient)
         return quote
     except Quotes.DoesNotExist:
         raise Exception("Quote not found")
