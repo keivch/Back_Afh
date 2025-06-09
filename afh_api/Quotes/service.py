@@ -5,6 +5,7 @@ import pytz
 from django.template.loader import get_template
 import weasyprint
 from io import BytesIO
+from WorkOrder.models import WorkOrder
 
 YEAR = datetime.now().year
 # Zona horaria de Colombia
@@ -95,5 +96,26 @@ def pdf_quote(id_quote):
         return buffer
     except Exception as e:
         raise Exception(f"Error generating PDF: {str(e)}")
+    
+def change_state_quote(id_quote, state):
+    try:
+        quote = Quotes.objects.get(id=id_quote)
+        if state not in [1, 2, 3]:  # PROCESO, APROBADO, RECHAZADO
+            raise ValueError("Invalid state")
+        quote.state = state
+        quote.save()
+        if state == 2:
+            WorkOrder.objects.create(
+                Quotes=quote,
+                start_date=HORA_COLOMBIA,
+                end_date=None  # End date can be set later
+            )
+        return quote
+    except Quotes.DoesNotExist:
+        raise Exception("Quote not found")
+    except Exception as e:
+        raise Exception(f"Error changing quote state: {str(e)}")
+    
+
 
     
