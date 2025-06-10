@@ -11,6 +11,8 @@ from django.core.mail import send_mail
 from users.models import Users
 from Option.service import update_option
 from item.service import update_item
+from Option.models import Option
+from Option.service import create_option
 
 YEAR = datetime.now().year
 # Zona horaria de Colombia
@@ -135,6 +137,18 @@ def change_state_quote(id_quote, state):
         raise Exception("Quote not found")
     except Exception as e:
         raise Exception(f"Error changing quote state: {str(e)}")
+    
+
+def add_option_to_quote(quote_id, options):
+    try:
+        quote = Quotes.objects.get(id=quote_id)
+        for opt in options:
+            new_option = create_option(opt['description'], opt['items']) 
+            quote.options.add(new_option)
+        quote.save()
+        return quote
+    except Quotes.DoesNotExist:
+        raise Exception("Quote not found")
     
 
 

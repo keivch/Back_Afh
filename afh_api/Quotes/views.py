@@ -6,7 +6,7 @@ from .models import Quotes
 from .Serializer import QuotesSerializer
 from django.http import HttpResponse
 from Option.models import Option
-from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id, pdf_quote, change_state_quote
+from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id, pdf_quote, change_state_quote,add_option_to_quote
 
 # Create your views here.
 class QuotesViewSet(viewsets.ModelViewSet):
@@ -103,3 +103,17 @@ def change_state_quote_view(request, quote_id):
         return Response({'message': 'Estado de la cotizacion actualizado exitosamente'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
+    
+@api_view(['PATCH'])
+def add_option_to_quote_view(request, quote_id):
+    data = request.data
+    try:
+        option_id = data.get('option_id')
+        options = data.get('options', [])
+        if not option_id or not options:
+            return Response({'error': 'Todos los datos son requeridos'}, status=400)
+        add_option_to_quote(quote_id, options)
+        return Response({'message': 'Opciones agregadas a la cotizacion exitosamente'}, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+        
