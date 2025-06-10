@@ -20,8 +20,7 @@ def add_option(request):
         items_ids = data.get('items', [])
         if not description or not items_ids:
             return Response({'error': 'All fields are required'}, status=400)
-        items = Item.objects.filter(id__in=items_ids)
-        if not items:
+        if not items_ids:
             return Response({'error': 'Invalid items provided'}, status=400)
         option = create_option(description, items)
         return Response({'message': 'Option creada exitosamente', 'option_id': option.id}, status=201)

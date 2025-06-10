@@ -2,9 +2,10 @@ from .models import Option
 from item.models import Item
 from item.service import create_item
 
-def create_option(name, items):
+def create_option(name, items_ids):
     try:
         newOption = Option.objects.create(name=name, total_value=0)
+        items = Item.objects.filter(id__in=items_ids)
         total_value = 0
         for item in items:
             newOption.items.add(item)
