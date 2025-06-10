@@ -108,11 +108,11 @@ def change_state_quote_view(request, quote_id):
 def add_option_to_quote_view(request, quote_id):
     data = request.data
     try:
-        option_id = data.get('option_id')
-        options = data.get('options', [])
-        if not option_id or not options:
+        items = data.get('items', [])
+        description = data.get('description',)
+        if not quote_id or not items:
             return Response({'error': 'Todos los datos son requeridos'}, status=400)
-        add_option_to_quote(quote_id, options)
+        add_option_to_quote(quote_id, items, description)
         return Response({'message': 'Opciones agregadas a la cotizacion exitosamente'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)

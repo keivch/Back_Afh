@@ -139,12 +139,11 @@ def change_state_quote(id_quote, state):
         raise Exception(f"Error changing quote state: {str(e)}")
     
 
-def add_option_to_quote(quote_id, options):
+def add_option_to_quote(quote_id, items, description):
     try:
-        quote = Quotes.objects.get(id=quote_id)
-        for opt in options:
-            new_option = create_option(opt['description'], opt['items']) 
-            quote.options.add(new_option)
+        quote = Quotes.objects.get(id=quote_id)      
+        new_option = create_option(description, items) 
+        quote.options.add(new_option)
         quote.save()
         return quote
     except Quotes.DoesNotExist:
