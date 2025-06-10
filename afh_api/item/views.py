@@ -44,8 +44,8 @@ def update_item_view(request, item_id):
         if unit_value is None:
             unit_value = None
 
-        update_item(item_id, description, units, amount, unit_value)
-        return Response({'message': 'Item actualizado exitosamente'}, status=200)
+        item = update_item(item_id, description, units, amount, unit_value)
+        return Response({'message': 'Item actualizado exitosamente', 'id_item': item.id}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
     

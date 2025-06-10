@@ -1,4 +1,5 @@
 from .models import Option
+from item.models import Item
 
 def create_option(name, items):
     try:
@@ -53,3 +54,18 @@ def get_option_by_id(id):
         return option
     except Exception as e:
         raise Exception(f"Error retrieving option by ID: {str(e)}")
+    
+def add_item_to_option(option_id, items):
+    try:
+        option = Option.objects.get(id=option_id)
+        total_value = option.total_value
+        for item in items:
+            Item.objects.create(**item)  # Assuming items is a list of dicts with item data
+        for item in items:
+            option.items.add(item)
+            total_value += item.total_value
+        option.total_value = total_value
+        option.save()
+        return option
+    except Option.DoesNotExist:
+        raise Exception("Option not found")
