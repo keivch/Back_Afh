@@ -9,6 +9,8 @@ from WorkOrder.models import WorkOrder
 from django.conf import settings
 from django.core.mail import send_mail
 from users.models import Users
+from Option.service import update_option
+from item.service import update_item
 
 YEAR = datetime.now().year
 # Zona horaria de Colombia
