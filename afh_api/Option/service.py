@@ -63,7 +63,7 @@ def add_item_to_option(option_id, items):
         for item in items:
             new_item = create_item(item['description'], item['units'], item['amount'], item['unit_value'])  # Assuming items is a list of dicts with item data
             option.items.add(new_item)
-            total_value += item.total_value
+            total_value += new_item.total_value
         option.total_value = total_value
         option.save()
         return option
