@@ -22,7 +22,7 @@ def add_option(request):
             return Response({'error': 'All fields are required'}, status=400)
         if not items_ids:
             return Response({'error': 'Invalid items provided'}, status=400)
-        option = create_option(description, items)
+        option = create_option(description, items_ids)
         return Response({'message': 'Option creada exitosamente', 'option_id': option.id}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
