@@ -13,6 +13,7 @@ from Option.service import update_option
 from item.service import update_item
 from Option.models import Option
 from Option.service import create_option
+from .Serializer import QuotesSerializer
 
 YEAR = datetime.now().year
 # Zona horaria de Colombia
@@ -50,6 +51,9 @@ def update_quote(id, customer_id=None, options=None, description=None, tasks=Non
             for option in options:
                 quote.options.add(option)
         if description is not None:
+            for opt in quote.options.all():
+                opt.name = description
+                opt.save()
             quote.description = description
         if tasks is not None:
             quote.tasks = tasks
@@ -85,14 +89,15 @@ def get_quote_by_id(id):
 def pdf_quote(id_quote):
     try:
         quote = Quotes.objects.get(id=id_quote)
+        data = QuotesSerializer(quote).data
         template = get_template('Quote.html')
         html = template.render({
-            "code": quote.code,
-            "customer": quote.customer.name,
-            "contacto_cliente": quote.customer.email,
-            "descripcion": quote.description,
-            "tasks": quote.tasks,
-            "opciones": quote.options.all(),
+            "code": data['code'],
+            "customer": data['customer']['name'],
+            "contacto_cliente": data['customer']['email'],
+            "descripcion": data['description'],
+            "tasks": data['tasks'],
+            "opciones": data['options'],
             "fecha": quote.issue_date.strftime("%d/%m/%Y"),
             "logo_url": 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
         })

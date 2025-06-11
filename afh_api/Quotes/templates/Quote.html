@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -146,7 +147,6 @@
       }
 
       .footer {
-        position: fixed;
         bottom: 0;
         right: 0;
         font-size: 12px;
@@ -228,18 +228,18 @@
           </tr>
         </thead>
         <tbody>
-          {% for item in opcion.items.all %}
+          {% for item in opcion.items %}
           <tr>
             <td>{{ item.description }}</td>
             <td>{{ item.units }}</td>
             <td>{{ item.amount }}</td>
-            <td>$ {{ item.unit_value }}</td>
-            <td>$ {{ item.total_value }}</td>
+            <td>{{ item.unit_value_formatted }}</td>
+            <td>{{ item.total_value_formatted }}</td>
           </tr>
           {% endfor %}
           <tr>
             <td colspan="4" class="total">TOTAL</td>
-            <td>$ {{ opcion.total_value }}</td>
+            <td>{{ opcion.total_value_formatted }}</td>
           </tr>
         </tbody>
       </table>
