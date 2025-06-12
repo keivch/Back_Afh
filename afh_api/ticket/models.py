@@ -18,6 +18,7 @@ class Ticket(models.Model):
     entry_date = models.DateTimeField()
     departure_date = models.DateTimeField(null=True, blank=True)
     state = models.IntegerField(choices=STATE_CHOICES, default=3)
+    responsible = models.CharField(max_length=200, default="AFH")
 
     def __str__(self):
         return self.place
