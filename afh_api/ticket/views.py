@@ -39,9 +39,10 @@ def addTicket(request):
         applicant_email = data.get('email')
         receiver = Users.objects.filter(role = 1).first()
         place = data.get('place')
+        responsible = data.get('responsible')
         entry_date = hora_colombia
 
-        if not tools_ids or not description or not applicant_email or not place:
+        if not tools_ids or not description or not applicant_email or not place or not responsible:
             return Response({'error':'Faltan datos'}, status=400)
         
         user = User.objects.filter(email = applicant_email).first()
@@ -53,7 +54,8 @@ def addTicket(request):
             receiver = receiver,
             place = place,
             entry_date = entry_date,
-            departure_date = None
+            departure_date = None,
+            responsible = responsible
         )
 
         for tool in tools:
@@ -72,7 +74,8 @@ def addTicket(request):
                     f"Hola {admin.user.first_name} {admin.user.last_name},\n\n"
                     f"Tienes una nueva solicitud de retiro de herramientas en el sistema\n\n"
                     f"Lugar de trabajo: {place}\n\n"
-                    f"fecha y hora de la solicitud {fecha_colombia.strftime('%d/%m/%Y %H:%M:%S')}\n\n"
+                    f"fecha y hora de la solicitud {fecha_colombia.strftime('%d/%m/%Y %H:%M:%S')},\n\n"
+                    f"responsable: {responsible}\n\n"
                     f"Atentamente,\n"
                     f"Equipo de Serenity"
                 )
@@ -170,7 +173,7 @@ def createPdfTicket(request, ticket_id):
             html = template.render({
             'titulo': "Solicitud de Herramienta",
             'solicitante': f"{ticket.applicant.user.first_name} {ticket.applicant.user.last_name}",
-            'receptor': f"{ticket.receiver.user.first_name} {ticket.receiver.user.last_name}",
+            'receptor': f"{ticket.responsible}",
             'fecha_solicitud': fecha_colombia.strftime("%d/%m/%Y %H:%M:%S"),
             'descripcion': ticket.description,
             'lugar': ticket.place,
@@ -183,7 +186,7 @@ def createPdfTicket(request, ticket_id):
             html = template.render({
             'titulo': "Entrega de Herramienta",
             'solicitante': f"{ticket.applicant.user.first_name} {ticket.applicant.user.last_name}",
-            'receptor': f"{ticket.receiver.user.first_name} {ticket.receiver.user.last_name}",
+            'receptor': f"{ticket.responsible}",
             'fecha_solicitud': fecha_colombia.strftime("%d/%m/%Y %H:%M:%S"),
             'fecha_entrega': fecha_salida.strftime("%d/%m/%Y %H:%M:%S"),
             'descripcion': ticket.description,
