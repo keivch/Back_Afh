@@ -1,8 +1,11 @@
 from .models import Option
+from item.models import Item
+from item.service import create_item
 
-def create_option(name, items):
+def create_option(name, items_ids):
     try:
         newOption = Option.objects.create(name=name, total_value=0)
+        items = Item.objects.filter(id__in=items_ids)
         total_value = 0
         for item in items:
             newOption.items.add(item)
@@ -53,3 +56,17 @@ def get_option_by_id(id):
         return option
     except Exception as e:
         raise Exception(f"Error retrieving option by ID: {str(e)}")
+    
+def add_item_to_option(option_id, items):
+    try:
+        option = Option.objects.get(id=option_id)
+        total_value = option.total_value
+        for item in items:
+            new_item = create_item(item['description'], item['units'], item['amount'], item['unit_value'])  # Assuming items is a list of dicts with item data
+            option.items.add(new_item)
+            total_value += new_item.total_value
+        option.total_value = total_value
+        option.save()
+        return option
+    except Option.DoesNotExist:
+        raise Exception("Option not found")

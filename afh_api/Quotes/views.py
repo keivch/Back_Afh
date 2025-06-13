@@ -6,7 +6,7 @@ from .models import Quotes
 from .Serializer import QuotesSerializer
 from django.http import HttpResponse
 from Option.models import Option
-from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id, pdf_quote
+from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id, pdf_quote, change_state_quote,add_option_to_quote
 
 # Create your views here.
 class QuotesViewSet(viewsets.ModelViewSet):
@@ -91,3 +91,29 @@ def pdf_quote_view(request, id_quote):
         return response
     except Exception as e:
         return Response({'error': str(e)}, status=500)
+    
+@api_view(['PATCH'])
+def change_state_quote_view(request, quote_id):
+    data = request.data
+    try:
+        new_state = data.get('state')
+        if new_state is None:
+            return Response({'error': 'El estado es requerido'}, status=400)
+        change_state_quote(quote_id, new_state)
+        return Response({'message': 'Estado de la cotizacion actualizado exitosamente'}, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
+@api_view(['PATCH'])
+def add_option_to_quote_view(request, quote_id):
+    data = request.data
+    try:
+        items = data.get('items', [])
+        description = data.get('description',)
+        if not quote_id or not items:
+            return Response({'error': 'Todos los datos son requeridos'}, status=400)
+        add_option_to_quote(quote_id, items, description)
+        return Response({'message': 'Opciones agregadas a la cotizacion exitosamente'}, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+        
