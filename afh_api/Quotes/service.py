@@ -43,7 +43,6 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
         administration = Decimal(str(administration))
         iva = Decimal(str(iva))
 
-        print(f"Utility: {utility}, Unforeseen: {unforeseen}, Administration: {administration}, IVA: {iva}")
 
         utility_value = options.subtotal * utility
         unforeseen_value = options.subtotal * unforeseen

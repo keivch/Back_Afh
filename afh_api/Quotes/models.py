@@ -25,7 +25,8 @@ class Quotes(models.Model):
     iva_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='IVA Value', null=True, blank=True, default=0.0)
     utility_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Utility Value', null=True, blank=True, default=0.0)
     unforeseen_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Unforeseen Value', null=True, blank=True, default=0.0)
-    administration_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Administration Value', null=True, blank=True, default=0.0) 
+    administration_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Administration Value', null=True, blank=True, default=0.0)
+    method_of_payment = models.CharField(max_length=100, verbose_name='Method of Payment', null=True, blank=True, default='')
     
 
     def __str__(self):

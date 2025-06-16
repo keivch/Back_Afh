@@ -43,8 +43,12 @@ def update_quote_view(request, quote_id):
     try:
         description = data.get('description')
         customer_id = data.get('customer_id')
-        options_ids = data.get('options', [])
+        options_id = data.get('options')
         tasks = data.get('tasks', [])
+        iva = data.get('iva')
+        utility = data.get('utility')
+        unforeseen = data.get('unforeseen')
+        administration = data.get('administration')
         
         if not description:
             description = None
@@ -52,9 +56,18 @@ def update_quote_view(request, quote_id):
             customer_id = None
         if not options_ids:
             options_ids = None
+        if not tasks:
+            tasks = None
+        if iva is None:
+            iva = 0.19
+        if utility is None:
+            utility = None
+        if unforeseen is None:
+            unforeseen = None
+        if administration is None:
+            administration = None
         
-        options = Option.objects.filter(id__in=options_ids) if options_ids else None
-        update_quote(quote_id, customer_id, options, description, tasks)
+        update_quote(quote_id, customer_id, options_id, description, tasks, iva, utility, unforeseen, administration)
         return Response({'message': 'Cotizacion actualizada exitosamente'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
