@@ -68,7 +68,7 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
     except Exception as e:
         raise Exception(f"Error creating quote: {str(e)}")
     
-def update_quote(id, customer_id=None, options=None, description=None, tasks=None, iva=None, utility=None, unforeseen=None, administration=None):
+def update_quote(id, customer_id=None, options=None, description=None, tasks=None, iva=None, utility=None, unforeseen=None, administration=None, method_of_payment=None):
     try:
         quote = Quotes.objects.get(id=id)
         if customer_id is not None:
@@ -94,6 +94,8 @@ def update_quote(id, customer_id=None, options=None, description=None, tasks=Non
         if administration is not None:
             quote.administration = administration
             quote.administration_value = quote.options.subtotal * administration
+        if method_of_payment is not None:
+            quote.method_of_payment = method_of_payment
         quote.revision += 1
         quote.save()
         return quote
