@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Cotización {{ code }}</title>
-        <style>
+    <style>
       body {
         font-family: Arial, sans-serif;
         font-size: 12px;
@@ -44,7 +44,7 @@
       .header {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
         margin-bottom: 30px;
       }
 
@@ -59,7 +59,9 @@
         margin-bottom: 20px;
       }
 
-      h1, h2, h3 {
+      h1,
+      h2,
+      h3 {
         margin: 0;
       }
 
@@ -76,7 +78,8 @@
         background-color: rgba(255, 255, 255, 0.9);
       }
 
-      th, td {
+      th,
+      td {
         border: 1px solid #000;
         padding: 6px;
         text-align: left;
@@ -223,7 +226,7 @@
             <th>UND</th>
             <th>CANT</th>
             <th>VALOR UNITARIO</th>
-            <th>VALOR TOTAL</th>
+            <th>VALOR SUB-TOTAL</th>
           </tr>
         </thead>
         <tbody>
@@ -242,16 +245,17 @@
         </tbody>
       </table>
     </div>
-    <div class="valores">
-    <ol>
-      <li>Sub Total {{opcion.subtotal}}</li>
-      <li>Utilidad: {{utility}}</li>
-      <li>imprevistos: {{unforeseen}}</li>
-      <li>administracion: {{administration}}</li>
-      <li>IVA: {{iva}}</li>
-      <li>Total: {{opcion.total_value_formatted}}</li>
-    </ol>
-    </div>
+    {% endfor %}
+   <div class="valores">
+  <ul>
+    <li><strong>Sub-Total: </strong> {{opcion.subtotal}}</li>
+    <li><strong>Utilidad: </strong> {{utility}}</li>
+    <li><strong>imprevistos: </strong>{{unforeseen}}</li>
+    <li><strong>administracion: </strong> {{administration}}</li>
+    <li><strong>IVA: </strong>{{iva}}</li>
+    <li><strong>Total: </strong>{{opcion.total_value_formatted}}</li>
+  </ul>
+</div>
 
     <div class="condiciones">
       <h3>CONDICIONES COMERCIALES</h3>
