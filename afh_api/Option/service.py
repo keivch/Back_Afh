@@ -6,11 +6,11 @@ def create_option(name, items_ids):
     try:
         newOption = Option.objects.create(name=name, total_value=0)
         items = Item.objects.filter(id__in=items_ids)
-        total_value = 0
+        sub_total = 0
         for item in items:
             newOption.items.add(item)
-            total_value += item.total_value
-        newOption.total_value = total_value
+            sub_total += item.total_value
+        newOption.subtotal = sub_total
         newOption.save()
         return newOption
     except Exception as e:
@@ -27,7 +27,7 @@ def update_option(id, name=None, items=None):
             for item in items:
                 option.items.add(item)
                 total_value += item.total_value
-            option.total_value = total_value
+            option.subtotal = total_value
         option.save()
         return option
     except Exception as e:

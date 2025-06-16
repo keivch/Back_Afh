@@ -19,13 +19,21 @@ def add_quote(request):
     try:
         description = data.get('description')
         customer_id = data.get('customer_id')
-        options_ids = data.get('options', [])
+        options_id = data.get('options')
         tasks = data.get('tasks', [])
-        options = Option.objects.filter(id__in=options_ids)
-        if not description or not customer_id or not options:
+        iva = data.get('iva')
+        utility = data.get('utility')
+        unforeseen = data.get('unforeseen')
+        administration = data.get('administration')
+
+        if not description or customer_id is None or options_id is None or not tasks or utility is None or unforeseen is None or administration is None:
             return Response({'error': 'All fields are required'}, status=400)
-        create_quote(customer_id, options, description, tasks)
-        return Response({'message': 'Cotizacion creada exitosamente'}, status=201)
+
+        if not iva:
+            iva = 0.19
+
+        create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration)
+        return Response({'message': 'Cotización creada exitosamente'}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
     

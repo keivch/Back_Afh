@@ -14,6 +14,7 @@ from item.service import update_item
 from Option.models import Option
 from Option.service import create_option
 from .Serializer import QuotesSerializer
+from decimal import Decimal
 
 YEAR = datetime.now().year
 # Zona horaria de Colombia
@@ -22,7 +23,7 @@ ZONA_COLOMBIA = pytz.timezone('America/Bogota')
 HORA_COLOMBIA = datetime.now(ZONA_COLOMBIA)
 
 
-def create_quote(customer_id, options, description, tasks):
+def create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration):
     try:
         number = Quotes.objects.count() + 1
         code = f"{number}-{YEAR}"
@@ -34,22 +35,46 @@ def create_quote(customer_id, options, description, tasks):
             state = 1,  # PROCESO
             tasks = tasks
         )
-        for option in options:
-            new_quote.options.add(option)
+
+        options = Option.objects.get(id=options_id)
+
+        utility = Decimal(str(utility))
+        unforeseen = Decimal(str(unforeseen))
+        administration = Decimal(str(administration))
+        iva = Decimal(str(iva))
+
+        print(f"Utility: {utility}, Unforeseen: {unforeseen}, Administration: {administration}, IVA: {iva}")
+
+        utility_value = options.subtotal * utility
+        unforeseen_value = options.subtotal * unforeseen
+        administration_value = options.subtotal * administration
+        iva_value = administration_value * iva
+
+        new_quote.iva_value = iva_value
+        new_quote.utility_value = utility_value
+        new_quote.unforeseen_value = unforeseen_value
+        new_quote.administration_value = administration_value
+
+        options.total_value = options.subtotal + iva_value + utility_value + unforeseen_value + administration_value
+        options.save()
+
+        new_quote.options = options
+        new_quote.iva = iva
+        new_quote.utility = utility
+        new_quote.unforeseen = unforeseen
+        new_quote.administration = administration
         new_quote.save()
         return new_quote
     except Exception as e:
         raise Exception(f"Error creating quote: {str(e)}")
     
-def update_quote(id, customer_id=None, options=None, description=None, tasks=None):
+def update_quote(id, customer_id=None, options=None, description=None, tasks=None, iva=None, utility=None, unforeseen=None, administration=None):
     try:
         quote = Quotes.objects.get(id=id)
         if customer_id is not None:
             quote.customer = Customer.objects.get(id=customer_id)
         if options is not None:
-            quote.options.clear()
-            for option in options:
-                quote.options.add(option)
+            quote.options = options
         if description is not None:
             for opt in quote.options.all():
                 opt.name = description
@@ -57,6 +82,19 @@ def update_quote(id, customer_id=None, options=None, description=None, tasks=Non
             quote.description = description
         if tasks is not None:
             quote.tasks = tasks
+        if iva is not None:
+            quote.iva = iva
+            quote.iva_value = quote.administration_value * iva
+        if utility is not None:
+            quote.utility = utility
+            quote.utility_value = quote.options.subtotal * utility
+        if unforeseen is not None:
+            quote.unforeseen = unforeseen
+            quote.unforeseen_value = quote.options.subtotal * unforeseen
+        if administration is not None:
+            quote.administration = administration
+            quote.administration_value = quote.options.subtotal * administration
+        quote.revision += 1
         quote.save()
         return quote
     except Exception as e:

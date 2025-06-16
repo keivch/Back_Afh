@@ -22,6 +22,10 @@ class Quotes(models.Model):
     administration = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Administration', null=True, blank=True, default=0.0)
     revision = models.IntegerField(verbose_name='Revision', null=True, blank=True, default=1)
     construction = models.CharField(max_length=100, verbose_name='Construction', null=True, blank=True, default='')
+    iva_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='IVA Value', null=True, blank=True, default=0.0)
+    utility_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Utility Value', null=True, blank=True, default=0.0)
+    unforeseen_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Unforeseen Value', null=True, blank=True, default=0.0)
+    administration_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Administration Value', null=True, blank=True, default=0.0) 
     
 
     def __str__(self):
