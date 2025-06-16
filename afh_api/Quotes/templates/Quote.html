@@ -176,7 +176,7 @@
           </td>
         </tr>
         <tr>
-          <td class="version">Versión-01</td>
+          <td class="version">RV-{{revision}}</td>
           <td class="datos-inferior">
             <strong>Fecha de Revisión:</strong> {{fecha}} <br />
           </td>
@@ -185,7 +185,7 @@
     </div>
 
     <div class="header">
-      <div class="titulo">COTIZACIÓN N.º {{ code }}</div>
+      <div class="titulo">COTIZACIÓN N.º {{ code }} - {{revision}}</div>
     </div>
 
     <div>
@@ -214,7 +214,6 @@
       </ol>
     </div>
 
-    {% for opcion in opciones %}
     <div class="opcion">
       <h3>{{ opcion.name }}</h3>
       <table>
@@ -236,7 +235,6 @@
             <td>{{ item.unit_value_formatted }}</td>
             <td>{{ item.total_value_formatted }}</td>
           </tr>
-          {% endfor %}
           <tr>
             <td colspan="4" class="total">TOTAL</td>
             <td>{{ opcion.total_value_formatted }}</td>
@@ -244,7 +242,16 @@
         </tbody>
       </table>
     </div>
-    {% endfor %}
+    <div class="valores">
+    <ol>
+      <li>Sub Total {{opcion.subtotal}}</li>
+      <li>Utilidad: {{utility}}</li>
+      <li>imprevistos: {{unforeseen}}</li>
+      <li>administracion: {{administration}}</li>
+      <li>IVA: {{iva}}</li>
+      <li>Total: {{opcion.total_value_formatted}}</li>
+    </ol>
+    </div>
 
     <div class="condiciones">
       <h3>CONDICIONES COMERCIALES</h3>
@@ -274,7 +281,7 @@
       </ul>
 
       <h3>FORMA DE PAGO</h3>
-      <p>50% anticipo y 50% contra entrega.</p>
+      <p>{{method_of_payment}}</p>
 
       <h3>PLAZO DE ENTREGA</h3>
       <p>36 días hábiles.</p>

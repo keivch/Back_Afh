@@ -25,14 +25,15 @@ def add_quote(request):
         utility = data.get('utility')
         unforeseen = data.get('unforeseen')
         administration = data.get('administration')
+        method_of_payment = data.get('method_of_payment')
 
-        if not description or customer_id is None or options_id is None or not tasks or utility is None or unforeseen is None or administration is None:
+        if not description or customer_id is None or options_id is None or not tasks or utility is None or unforeseen is None or administration is None or method_of_payment is None:
             return Response({'error': 'All fields are required'}, status=400)
 
         if not iva:
             iva = 0.19
 
-        create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration)
+        create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment)
         return Response({'message': 'Cotización creada exitosamente'}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
@@ -49,6 +50,7 @@ def update_quote_view(request, quote_id):
         utility = data.get('utility')
         unforeseen = data.get('unforeseen')
         administration = data.get('administration')
+
         
         if not description:
             description = None

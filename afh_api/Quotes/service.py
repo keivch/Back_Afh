@@ -23,7 +23,7 @@ ZONA_COLOMBIA = pytz.timezone('America/Bogota')
 HORA_COLOMBIA = datetime.now(ZONA_COLOMBIA)
 
 
-def create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration):
+def create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment):
     try:
         number = Quotes.objects.count() + 1
         code = f"{number}-{YEAR}"
@@ -33,7 +33,8 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
             description = description,
             issue_date = HORA_COLOMBIA,
             state = 1,  # PROCESO
-            tasks = tasks
+            tasks = tasks,
+            method_of_payment = method_of_payment
         )
 
         options = Option.objects.get(id=options_id)
@@ -134,9 +135,15 @@ def pdf_quote(id_quote):
             "contacto_cliente": data['customer']['email'],
             "descripcion": data['description'],
             "tasks": data['tasks'],
-            "opciones": data['options'],
+            "opcion": data['options'],
             "fecha": quote.issue_date.strftime("%d/%m/%Y"),
-            "logo_url": 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+            "logo_url": 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png',
+            "iva": data['iva_value'],
+            "utility": data['utility_value'],
+            "unforeseen": data['unforeseen_value'],
+            "administration": data['administration_value'],
+            'method_of_payment': data['method_of_payment'],
+            "revision": data['revision'],
         })
 
         buffer = BytesIO()
