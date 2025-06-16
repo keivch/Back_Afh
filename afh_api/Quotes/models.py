@@ -14,9 +14,16 @@ class Quotes(models.Model):
     description = models.TextField(verbose_name='Description', null=True, blank=True)
     issue_date = models.DateField(verbose_name='Issue Date', null=False, blank=False)
     state = models.IntegerField(choices=STATE_CHOICES, verbose_name='State', null=False, blank=False)
-    options = models.ManyToManyField(Option, verbose_name='Options', blank=True)
+    options = models.ForeignKey(Option, verbose_name='Options', blank=True, on_delete=models.CASCADE, null=True)
     tasks = models.JSONField(verbose_name='Tasks', null=True, blank=True, default=list)
+    iva = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='IVA', null=True, blank=True, default=0.19)
+    utility = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Utility', null=True, blank=True, default=0.0)
+    unforeseen = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Unforeseen', null=True, blank=True, default=0.0)
+    administration = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Administration', null=True, blank=True, default=0.0)
+    revision = models.IntegerField(verbose_name='Revision', null=True, blank=True, default=1)
+    construction = models.CharField(max_length=100, verbose_name='Construction', null=True, blank=True, default='')
     
+
     def __str__(self):
         return str(self.tasks)
 
