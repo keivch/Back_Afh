@@ -7,7 +7,7 @@ from Option.Serializer import OptionSerializer
 
 class QuotesSerializer(serializers.ModelSerializer):
     customer = CustomerSerializer()
-    options = OptionSerializer(many=True, read_only=True)
+    options = OptionSerializer()
     class Meta:
         model = Quotes
         fields = '__all__'
