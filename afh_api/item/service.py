@@ -1,4 +1,6 @@
 from .models import Item
+from Option.models import Option
+from Quotes.models import Quotes
 
 
 def create_item(description, units, amount, unit_value):
@@ -28,6 +30,18 @@ def update_item(id, description=None, units=None, amount=None, unit_value=None):
             item.unit_value = unit_value
             item.total_value = amount * unit_value if units is not None else item.total_value
         item.save()
+        if Option.objects.filter(items__contains=item).exists():
+            options = Option.objects.get(items__contains=item)
+            options.subtotal = sum(i.total_value for i in options.items.all())
+            options.save()
+        if Quotes.objects.filter(options = options).exists():
+            quote = Quotes.objects.get(options=options)
+            quote.administration_value = options.subtotal * quote.administration
+            quote.utility_value = options.subtotal * quote.utility
+            quote.unforeseen_value = options.subtotal * quote.unforeseen
+            quote.iva_value = quote.administration_value * quote.iva
+            quote.options.total_value = options.subtotal + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
+            quote.options.save()
         return item
     except Exception as e:
         raise Exception(f"Error updating item: {str(e)}")
