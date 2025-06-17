@@ -31,7 +31,7 @@ def update_item(id, description=None, units=None, amount=None, unit_value=None):
             item.total_value = amount * unit_value if units is not None else item.total_value
         item.save()
         if Option.objects.filter(items__contains=item).exists():
-            options = Option.objects.get(items__contains=item)
+            options = Option.objects.filter(items__contains=item).first()
             options.subtotal = sum(i.total_value for i in options.items.all())
             options.save()
         if Quotes.objects.filter(options = options).exists():
