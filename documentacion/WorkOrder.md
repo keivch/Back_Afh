@@ -184,3 +184,58 @@ Errores posibles
 }
 500 Internal Server Error: Si ocurre un error inesperado.
 
+
+## 1. Descargar PDF de Cotización
+
+**Endpoint:** `GET http://127.0.0.1:8000/workorder/pdf/<id_workorder>/`  
+**Descripción:** Genera y devuelve un archivo PDF descargable con la información de la cotización asociada a una orden de trabajo.
+
+### Parámetros de Ruta
+- `id_workorder` (int): ID de la orden de trabajo. Obligatorio.
+
+### Respuesta Exitosa (HTTP 200)
+- Devuelve un archivo PDF (`Content-Disposition: attachment`) con el nombre: `Orden-<código de cotización>.pdf`.
+
+### Respuesta de Error (HTTP 400/500)
+```json
+// Si falta el ID de la orden de trabajo
+{
+  "error": "Id de la cotizacion es requerido"
+}
+
+// Si ocurre un error inesperado
+{
+  "error": "<mensaje de error>"
+}
+```
+
+---
+
+## 2. Finalizar Orden de Trabajo
+
+**Endpoint:** `PATCH http://127.0.0.1:8000/workorder/finish/<int:id>/`  
+**Descripción:** Marca una orden de trabajo como finalizada.
+
+### Parámetros de Ruta
+- `id` (int): ID de la orden de trabajo. Obligatorio.
+
+### Respuesta Exitosa (HTTP 200)
+```json
+{
+  "message": "Orden de trabajo finalizada exitosamente"
+}
+```
+
+### Respuesta de Error (HTTP 400/500)
+```json
+// Si falta el ID
+{
+  "error": "Id de la orden de trabajo es requerido"
+}
+
+// Si ocurre un error inesperado
+{
+  "error": "<mensaje de error>"
+}
+```
+
