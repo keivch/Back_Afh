@@ -1,58 +1,121 @@
-API de Clientes
+
+# 📄 API - Clientes
+
+Esta documentación describe los endpoints disponibles para crear y actualizar información de clientes.
+
 Base URL: http://127.0.0.1:8000/customer/
 
+---
 
+## 🧾 Crear Cliente
 
-🔹 1. Crear Cliente
-Método: POST
+**URL:** `http://127.0.0.1:8000/customer/addcustomer/`  
+**Método:** `POST`  
+**Descripción:** Crea un nuevo cliente en el sistema.
 
-URL: /addcustomer/
+### 🧑‍💻 Body (JSON)
 
-
-Body:
-
-
+```json
 {
   "name": "Juan Pérez",
   "email": "juan@example.com",
-  "phone": "3123456789"
+  "phone": "3214567890",
+  "post": "Gerente"
 }
-Respuestas:
+```
 
-✅ 201 Created
+### ✅ Campos requeridos
 
-{ "message": "Cliente creado exitosamente" }
-❌ 400 Bad Request – Campos faltantes
+| Campo   | Tipo   | Descripción                  |
+|---------|--------|------------------------------|
+| name    | string | Nombre completo del cliente  |
+| email   | string | Correo electrónico           |
+| phone   | string | Número de teléfono           |
+| post    | string | Cargo del cliente            |
 
+### 📤 Respuesta Exitosa (201)
 
-{ "error": "All fields are required" }
-🔹 2. Actualizar Cliente
-Método: PUT
-
-URL: /updatecustomer/<int:customer_id>
-
-
-
-Body (solo lo que se vaya a editar, no toda la info):
-
-json
-
+```json
 {
-  "name": "Carlos Torres",
-  "email": "carlos@example.com",
-  "phone": "3009876543"
+  "message": "Cliente creado exitosamente"
 }
-Respuestas:
+```
 
-✅ 200 OK
+### ❌ Respuestas de Error
 
-json
+- **400** - Alguno de los campos requeridos no fue enviado
 
-{ "message": "Cliente actualizado exitosamente" }
-❌ 500 Internal Server Error
+```json
+{
+  "error": "All fields are required"
+}
+```
 
+- **500** - Error interno del servidor
 
-{ "error": "Mensaje del error" }
+```json
+{
+  "error": "Descripción del error"
+}
+```
+
+---
+
+## ✏️ Actualizar Cliente
+
+**URL:** `/updatecustomer/<int:customer_id>`  
+**Método:** `PUT`  
+**Descripción:** Actualiza la información de un cliente existente.
+
+### 🧑‍💻 Body (JSON)
+
+```json
+{
+  "name": "Juan Pérez",
+  "email": "juan_nuevo@example.com",
+  "phone": "3214567899",
+  "post": "Director"
+}
+```
+
+> ⚠️ Todos los campos son opcionales. Solo se actualizarán los que se envíen.
+
+### ✅ Campos
+
+| Campo   | Tipo   | Descripción                   |
+|---------|--------|-------------------------------|
+| name    | string | Nombre completo del cliente   |
+| email   | string | Correo electrónico            |
+| phone   | string | Número de teléfono            |
+| post    | string | Cargo del cliente             |
+
+### 📤 Respuesta Exitosa (200)
+
+```json
+{
+  "message": "Cliente actualizado exitosamente"
+}
+```
+
+### ❌ Respuestas de Error
+
+- **500** - Error interno del servidor
+
+```json
+{
+  "error": "Descripción del error"
+}
+```
+
+---
+
+## 📌 Notas
+
+- El `customer_id` debe ser un ID válido existente en la base de datos.
+- Se recomienda validar los datos en el frontend antes de enviarlos.
+
+---
+
 🔹 3. Eliminar Cliente
 Método: DELETE
 
@@ -77,15 +140,14 @@ Respuestas:
 
 ✅ 200 OK
 
-json
-Copiar
-Editar
+
 [
   {
     "id": 1,
     "name": "Juan Pérez",
     "email": "juan@example.com",
-    "phone": "3123456789"
+    "phone": "3123456789",
+    "post": "Director"
   },
   ...
 ]
@@ -104,7 +166,8 @@ json
   "id": 1,
   "name": "Juan Pérez",
   "email": "juan@example.com",
-  "phone": "3123456789"
+  "phone": "3123456789",
+  "post": "Director"
 }
 ❌ 404 Not Found
 

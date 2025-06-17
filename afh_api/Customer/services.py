@@ -1,14 +1,14 @@
 from .models import Customer
 
-def create_customer(name, email, phone):
+def create_customer(name, email, phone, post):
     """
     Create a new customer with the given name, email, and phone number.
     """
-    customer = Customer(name=name, email=email, phone=phone)
+    customer = Customer(name=name, email=email, phone=phone, post=post)
     customer.save()
     return customer
 
-def update_customer(id, name=None, email=None, phone=None):
+def update_customer(id, name=None, email=None, phone=None, post=None):
     """
     Update an existing customer with the given ID.
     If a field is None, it will not be updated.
@@ -21,6 +21,8 @@ def update_customer(id, name=None, email=None, phone=None):
             customer.email = email
         if phone is not None:
             customer.phone = phone
+        if post is not None:
+            customer.post = post
         customer.save()
         return customer
     except Customer.DoesNotExist:

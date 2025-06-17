@@ -19,13 +19,22 @@ def add_quote(request):
     try:
         description = data.get('description')
         customer_id = data.get('customer_id')
-        options_ids = data.get('options', [])
+        options_id = data.get('options')
         tasks = data.get('tasks', [])
-        options = Option.objects.filter(id__in=options_ids)
-        if not description or not customer_id or not options:
+        iva = data.get('iva')
+        utility = data.get('utility')
+        unforeseen = data.get('unforeseen')
+        administration = data.get('administration')
+        method_of_payment = data.get('method_of_payment')
+
+        if not description or customer_id is None or options_id is None or not tasks or utility is None or unforeseen is None or administration is None or method_of_payment is None:
             return Response({'error': 'All fields are required'}, status=400)
-        create_quote(customer_id, options, description, tasks)
-        return Response({'message': 'Cotizacion creada exitosamente'}, status=201)
+
+        if not iva:
+            iva = 0.19
+
+        create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment)
+        return Response({'message': 'Cotización creada exitosamente'}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
     
@@ -35,18 +44,32 @@ def update_quote_view(request, quote_id):
     try:
         description = data.get('description')
         customer_id = data.get('customer_id')
-        options_ids = data.get('options', [])
         tasks = data.get('tasks', [])
+        iva = data.get('iva')
+        utility = data.get('utility')
+        unforeseen = data.get('unforeseen')
+        administration = data.get('administration')
+        method_of_payment = data.get('method_of_payment')
+
         
         if not description:
             description = None
         if not customer_id:
             customer_id = None
-        if not options_ids:
-            options_ids = None
+        if not tasks:
+            tasks = None
+        if iva is None:
+            iva = 0.19
+        if utility is None:
+            utility = None
+        if unforeseen is None:
+            unforeseen = None
+        if administration is None:
+            administration = None
+        if not method_of_payment:
+            method_of_payment = None
         
-        options = Option.objects.filter(id__in=options_ids) if options_ids else None
-        update_quote(quote_id, customer_id, options, description, tasks)
+        update_quote(quote_id, customer_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment)
         return Response({'message': 'Cotizacion actualizada exitosamente'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
