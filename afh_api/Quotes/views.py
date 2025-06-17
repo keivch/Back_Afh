@@ -44,7 +44,6 @@ def update_quote_view(request, quote_id):
     try:
         description = data.get('description')
         customer_id = data.get('customer_id')
-        options_id = data.get('options')
         tasks = data.get('tasks', [])
         iva = data.get('iva')
         utility = data.get('utility')
@@ -57,8 +56,6 @@ def update_quote_view(request, quote_id):
             description = None
         if not customer_id:
             customer_id = None
-        if not options_ids:
-            options_ids = None
         if not tasks:
             tasks = None
         if iva is None:
@@ -72,7 +69,7 @@ def update_quote_view(request, quote_id):
         if not method_of_payment:
             method_of_payment = None
         
-        update_quote(quote_id, customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment)
+        update_quote(quote_id, customer_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment)
         return Response({'message': 'Cotizacion actualizada exitosamente'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)

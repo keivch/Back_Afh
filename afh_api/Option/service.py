@@ -1,6 +1,7 @@
 from .models import Option
 from item.models import Item
 from item.service import create_item
+from Quotes.models import Quotes
 
 def create_option(name, items_ids):
     try:
@@ -60,12 +61,21 @@ def get_option_by_id(id):
 def add_item_to_option(option_id, items):
     try:
         option = Option.objects.get(id=option_id)
-        total_value = option.total_value
+        sub_total = option.subtotal
         for item in items:
-            new_item = create_item(item['description'], item['units'], item['amount'], item['unit_value'])  # Assuming items is a list of dicts with item data
+            new_item = create_item(item['description'], item['units'], item['amount'], item['unit_value'])  
             option.items.add(new_item)
-            total_value += new_item.total_value
-        option.total_value = total_value
+            sub_total += new_item.total_value
+        option.subtotal = sub_total
+        if Quotes.objects.get(options=option):
+            quote = Quotes.objects.get(options=option)
+            quote.iva_value = sub_total * quote.iva
+            quote.utility_value = sub_total * quote.utility
+            quote.unforeseen_value = sub_total * quote.unforeseen
+            quote.administration_value = sub_total * quote.administration
+            total_value = sub_total + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
+            option.total_value = total_value
+            quote.save()
         option.save()
         return option
     except Option.DoesNotExist:

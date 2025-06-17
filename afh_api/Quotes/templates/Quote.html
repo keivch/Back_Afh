@@ -238,6 +238,7 @@
             <td>{{ item.unit_value_formatted }}</td>
             <td>{{ item.total_value_formatted }}</td>
           </tr>
+          {% endfor %}
           <tr>
             <td colspan="4" class="total">TOTAL</td>
             <td>{{ opcion.total_value_formatted }}</td>
@@ -245,17 +246,16 @@
         </tbody>
       </table>
     </div>
-    {% endfor %}
-   <div class="valores">
-  <ul>
-    <li><strong>Sub-Total: </strong> {{opcion.subtotal}}</li>
-    <li><strong>Utilidad: </strong> {{utility}}</li>
-    <li><strong>imprevistos: </strong>{{unforeseen}}</li>
-    <li><strong>administracion: </strong> {{administration}}</li>
-    <li><strong>IVA: </strong>{{iva}}</li>
-    <li><strong>Total: </strong>{{opcion.total_value_formatted}}</li>
-  </ul>
-</div>
+    <div class="valores">
+      <ul>
+        <li><strong>Sub-Total: </strong> {{opcion.subtotal}}</li>
+        <li><strong>Utilidad: </strong> {{utility}}</li>
+        <li><strong>imprevistos: </strong>{{unforeseen}}</li>
+        <li><strong>administracion: </strong> {{administration}}</li>
+        <li><strong>IVA: </strong>{{iva}}</li>
+        <li><strong>Total: </strong>{{opcion.total_value_formatted}}</li>
+      </ul>
+    </div>
 
     <div class="condiciones">
       <h3>CONDICIONES COMERCIALES</h3>

@@ -68,32 +68,33 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
     except Exception as e:
         raise Exception(f"Error creating quote: {str(e)}")
     
-def update_quote(id, customer_id=None, options=None, description=None, tasks=None, iva=None, utility=None, unforeseen=None, administration=None, method_of_payment=None):
+def update_quote(id, customer_id=None, description=None, tasks=None, iva=None, utility=None, unforeseen=None, administration=None, method_of_payment=None):
     try:
         quote = Quotes.objects.get(id=id)
         if customer_id is not None:
             quote.customer = Customer.objects.get(id=customer_id)
-        if options is not None:
-            quote.options = options
         if description is not None:
-            for opt in quote.options.all():
-                opt.name = description
-                opt.save()
+            quote.options.name = description
+            quote.options.save()
             quote.description = description
         if tasks is not None:
             quote.tasks = tasks
         if iva is not None:
-            quote.iva = iva
-            quote.iva_value = quote.administration_value * iva
+            iva_decimal = Decimal(str(iva))
+            quote.iva = iva_decimal
+            quote.iva_value = quote.administration_value * iva_decimal
         if utility is not None:
-            quote.utility = utility
-            quote.utility_value = quote.options.subtotal * utility
+            utility_decimal = Decimal(str(utility))
+            quote.utility = utility_decimal
+            quote.utility_value = quote.options.subtotal * utility_decimal
         if unforeseen is not None:
-            quote.unforeseen = unforeseen
-            quote.unforeseen_value = quote.options.subtotal * unforeseen
+            unforeseen_decimal = Decimal(str(unforeseen))
+            quote.unforeseen = unforeseen_decimal
+            quote.unforeseen_value = quote.options.subtotal * unforeseen_decimal
         if administration is not None:
-            quote.administration = administration
-            quote.administration_value = quote.options.subtotal * administration
+            administration_decimal = Decimal(str(administration))
+            quote.administration = administration_decimal
+            quote.administration_value = quote.options.subtotal * administration_decimal
         if method_of_payment is not None:
             quote.method_of_payment = method_of_payment
         quote.revision += 1
