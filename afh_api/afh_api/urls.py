@@ -28,5 +28,7 @@ urlpatterns = [
     path('option/', include('Option.urls')), #endpoints de las opciones
     path('quote/', include('Quotes.urls')), #endpoints de las cotizaciones
     path('workorder/', include('WorkOrder.urls')), #endpoints de las ordenes de trabajo
+    path('deliverycertificate/', include('Delivery_certificate.Urls')), #endpoints de los certificados de entrega
+    path('exhibit/', include('exhibit.Urls')), #endpoints de los exhibits
 ]
 

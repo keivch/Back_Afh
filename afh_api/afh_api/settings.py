@@ -61,10 +61,9 @@ INSTALLED_APPS = [
     'WorkOrder',
     'Customer',
     'Option',
-    'item'
-    
-
-
+    'item',
+    'Delivery_certificate',
+    'exhibit',
 ]
 
 MIDDLEWARE = [
