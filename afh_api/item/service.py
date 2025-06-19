@@ -29,27 +29,25 @@ def update_item(id, description=None, units=None, amount=None, unit_value=None):
             item.amount = amount
             item.save()
         if unit_value is not None or amount is not None:
-            print("Updating item values")
             item.unit_value = unit_value
             item.total_value = item.amount * unit_value 
         item.save()
         options = Option.objects.filter(items__in=[item]).first()
         if  options:
-            print("Updating option values for the item")
             subtotal = 0
             for item in options.items.all():
                 subtotal += item.total_value
             options.subtotal = subtotal
             options.save()
         if Quotes.objects.filter(options = options).exists():
-            print("Updating quote values for the item")
             quote = Quotes.objects.get(options=options)
             quote.administration_value = options.subtotal * quote.administration
             quote.utility_value = options.subtotal * quote.utility
             quote.unforeseen_value = options.subtotal * quote.unforeseen
-            quote.iva_value = quote.administration_value * quote.iva
             quote.options.total_value = options.subtotal + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
             quote.options.save()
+            quote.iva_value = quote.administration_value * quote.iva
+            quote.save()
         return item
     except Exception as e:
         raise Exception(f"Error updating item: {str(e)}")
