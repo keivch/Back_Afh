@@ -82,20 +82,29 @@ def create_pdf(id):
         data = WorkOrderSerializer(work).data
         template = get_template('workorder.html')
         html = template.render({
-            "code": data['Quotes']['code'],
-            "customer": data['Quotes']['customer']['name'],
-            "contacto_cliente": data['Quotes']['customer']['email'],
-            "descripcion": data['Quotes']['description'],
-            "tasks": data['Quotes']['tasks'],
-            "opcion": data['Quotes']['options'],
+            "code": data['quote']['code'],
+            "customer": data['quote']['customer']['name'],
+            "contacto_cliente": data['quote']['customer']['email'],
+            "descripcion": data['quote']['description'],
+            "tasks": data['quote']['tasks'],
+            "opcion": data['quote']['options'],
             "fecha": work.start_date.strftime("%d/%m/%Y"),
             "logo_url": 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png',
-            "iva": data['Quotes']['iva_value'],
-            "utility": data['Quotes']['utility_value'],
-            "unforeseen": data['Quotes']['unforeseen_value'],
-            "administration": data['Quotes']['administration_value'],
-            'method_of_payment': data['Quotes']['method_of_payment'],
-            "revision": data['Quotes']['revision']
+            "iva": data['quote']['iva_value'],
+            "utility": data['quote']['utility_value'],
+            "unforeseen": data['quote']['unforeseen_value'],
+            "administration": data['quote']['administration_value'],
+            'method_of_payment': data['quote']['method_of_payment'],
+            "revision": data['quote']['revision'],
+            "start_date": work.start_date.strftime("%d/%m/%Y"),
+            "end_date": work.end_date.strftime("%d/%m/%Y") if work.end_date else "N/A",
+            "description": work.description,
+            "workplace": work.workplace,
+            "number_technicians": work.number_technicians,
+            "number_officers": work.number_officers,
+            "number_auxiliaries": work.number_auxiliaries,
+            "activity": work.activity,
+            "permissions": work.permissions if work.permissions else {}
 
         })
 

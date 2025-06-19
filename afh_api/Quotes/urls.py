@@ -15,5 +15,4 @@ urlpatterns = [
     path('delete/<int:quote_id>', views.delete_quote_view, name="delete-quote"),
     path('pdf/<int:id_quote>', views.pdf_quote_view, name='pdf-quote'),
     path('changestate/<int:quote_id>', views.change_state_quote_view, name='change-state-quote'),
-    path('addoptiontoquote/<int:quote_id>', views.add_option_to_quote_view, name='add-option-to-quote'),
 ]

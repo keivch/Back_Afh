@@ -6,7 +6,7 @@ from .models import Quotes
 from .Serializer import QuotesSerializer
 from django.http import HttpResponse
 from Option.models import Option
-from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id, pdf_quote, change_state_quote,add_option_to_quote
+from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id, pdf_quote, change_state_quote
 
 # Create your views here.
 class QuotesViewSet(viewsets.ModelViewSet):
@@ -26,14 +26,15 @@ def add_quote(request):
         unforeseen = data.get('unforeseen')
         administration = data.get('administration')
         method_of_payment = data.get('method_of_payment')
+        construction = data.get('construction')
 
-        if not description or customer_id is None or options_id is None or not tasks or utility is None or unforeseen is None or administration is None or method_of_payment is None:
+        if not description or customer_id is None or options_id is None or not tasks:
             return Response({'error': 'All fields are required'}, status=400)
 
         if not iva:
             iva = 0.19
 
-        create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment)
+        create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment, construction)
         return Response({'message': 'Cotización creada exitosamente'}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)

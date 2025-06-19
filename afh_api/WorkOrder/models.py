@@ -12,7 +12,7 @@ class WorkOrder(models.Model):
         (1, 'Emergencia'),
         (2, 'Programado')
     ]
-    Quotes = models.ForeignKey(Quotes, on_delete=models.CASCADE, verbose_name='Quote', null=False, blank=False)
+    quote = models.ForeignKey(Quotes, on_delete=models.CASCADE, verbose_name='Quote', null=False, blank=False)
     start_date = models.DateField(verbose_name='Start Date', null=False, blank=False)
     end_date = models.DateField(verbose_name='End Date', null=True, blank=True)
     description = models.TextField(verbose_name='Description', null=True, blank=True)
@@ -25,4 +25,4 @@ class WorkOrder(models.Model):
 
 
     def __str__(self):
-        return f"Work Order for Quote {self.Quotes.code} - Start: {self.start_date} End: {self.end_date if self.end_date else 'N/A'}"
+        return f"Work Order for Quote {self.quote.code} - Start: {self.start_date} End: {self.end_date if self.end_date else 'N/A'}"

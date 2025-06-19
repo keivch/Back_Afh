@@ -37,7 +37,8 @@ class QuotesSerializer(serializers.ModelSerializer):
             'utility_value',
             'unforeseen_value',
             'administration_value',
-            'method_of_payment'
+            'method_of_payment',
+            'construction'
         ]
 
     def get_iva_value(self, obj):

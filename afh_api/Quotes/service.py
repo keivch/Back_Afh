@@ -39,12 +39,12 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
 
         options = Option.objects.get(id=options_id)
 
-        if construction is not None:   
+
+        if construction is not None:
             utility = Decimal(str(utility))
             unforeseen = Decimal(str(unforeseen))
             administration = Decimal(str(administration))
-            iva = Decimal(str(iva))
-
+            iva = Decimal(str(iva))   
 
             utility_value = options.subtotal * utility
             unforeseen_value = options.subtotal * unforeseen
@@ -64,12 +64,14 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
             new_quote.utility = utility
             new_quote.unforeseen = unforeseen
             new_quote.administration = administration
+            new_quote.construction = construction
             new_quote.save()
         else:
             new_quote.options = options
-            new_quote.iva_value = options.subtotal * new_quote.iva
+            new_quote.iva_value = options.subtotal * Decimal(str(new_quote.iva))
             new_quote.options.total_value = options.subtotal + new_quote.iva_value
             new_quote.options.save()
+        new_quote.save()
         return new_quote
     except Exception as e:
         raise Exception(f"Error creating quote: {str(e)}")
@@ -153,6 +155,7 @@ def pdf_quote(id_quote):
             "administration": data['administration_value'],
             'method_of_payment': data['method_of_payment'],
             "revision": data['revision'],
+            'construction': data['construction'],
         })
 
         buffer = BytesIO()

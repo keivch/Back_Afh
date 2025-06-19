@@ -246,12 +246,15 @@
         </tbody>
       </table>
     </div>
+
     <div class="valores">
       <ul>
         <li><strong>Sub-Total: </strong> {{opcion.subtotal}}</li>
+        {% if construction %}
         <li><strong>Utilidad: </strong> {{utility}}</li>
-        <li><strong>imprevistos: </strong>{{unforeseen}}</li>
-        <li><strong>administracion: </strong> {{administration}}</li>
+        <li><strong>Imprevistos: </strong>{{unforeseen}}</li>
+        <li><strong>Administración: </strong> {{administration}}</li>
+        {% endif %}
         <li><strong>IVA: </strong>{{iva}}</li>
         <li><strong>Total: </strong>{{opcion.total_value_formatted}}</li>
       </ul>

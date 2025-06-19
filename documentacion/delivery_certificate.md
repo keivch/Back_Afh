@@ -18,7 +18,9 @@ Documentación de los endpoints para gestionar certificados de entrega en el sis
   "work_order_id": 12,
   "observations": "Todo fue entregado según lo acordado.",
   "recommendations": "Evitar el contacto con agua.",
-  "exhibit_ids": [1, 2]
+  "exhibit_ids": [1, 2],
+  " development": "ola",
+  " description": "olax2"
 }
 ✅ Campos Requeridos
 Campo	Tipo	Requerido	Descripción

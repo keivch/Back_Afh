@@ -16,7 +16,7 @@ Documentación de los endpoints para gestionar "exhibits" en el sistema.
 | Campo  | Tipo     | Requerido | Descripción                     |
 |--------|----------|-----------|---------------------------------|
 | tittle | string   | ✅ Sí      | Título del exhibit              |
-| image  | file     | ❌ No      | Imagen asociada al exhibit      |
+| image  | list     |si         | Imagen asociada al exhibit      |
 
 ### Respuesta Exitosa (201)
 
@@ -56,7 +56,7 @@ Documentación de los endpoints para gestionar "exhibits" en el sistema.
 | Campo  | Tipo   | Requerido | Descripción                        |
 |--------|--------|-----------|------------------------------------|
 | title  | string | ❌ No      | Nuevo título del exhibit           |
-| image  | file   | ❌ No      | Nueva imagen del exhibit           |
+| image  | list  | ❌ No      | Nueva imagen del exhibit           |
 
 > ⚠️ Se debe enviar al menos uno de los dos campos (`title` o `image`).
 
@@ -108,7 +108,7 @@ Documentación de los endpoints para gestionar "exhibits" en el sistema.
   {
     "id": 1,
     "title": "Ejemplo",
-    "image": "http://ruta.imagen/archivo.jpg"
+    "image": ["http://ruta.imagen/archivo.jpg"]
   },
   ...
 ]
@@ -135,7 +135,7 @@ Documentación de los endpoints para gestionar "exhibits" en el sistema.
 {
   "id": 1,
   "title": "Ejemplo",
-  "image": "http://ruta.imagen/archivo.jpg"
+  "image":  ["http://ruta.imagen/archivo.jpg"]
 }
 ```
 
