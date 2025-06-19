@@ -69,12 +69,17 @@ def add_item_to_option(option_id, items):
         option.subtotal = sub_total
         if Quotes.objects.get(options=option):
             quote = Quotes.objects.get(options=option)
-            quote.iva_value = sub_total * quote.iva
-            quote.utility_value = sub_total * quote.utility
-            quote.unforeseen_value = sub_total * quote.unforeseen
-            quote.administration_value = sub_total * quote.administration
-            total_value = sub_total + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
-            option.total_value = total_value
+            if quote.construction is not None:                
+                quote.iva_value = sub_total * quote.iva
+                quote.utility_value = sub_total * quote.utility
+                quote.unforeseen_value = sub_total * quote.unforeseen
+                quote.administration_value = sub_total * quote.administration
+                total_value = sub_total + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
+                option.total_value = total_value
+            else:
+                quote.iva_value = sub_total * quote.iva
+                total_value = sub_total + quote.iva_value
+                option.total_value = total_value
             quote.save()
         option.save()
         return option

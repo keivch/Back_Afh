@@ -2,14 +2,16 @@ from .models import Delivery_certificate
 from WorkOrder.models import WorkOrder
 from exhibit.models import Exhibit
 
-def create_delivery_certificarte(work_order_id, osbervations, recommendations, exhibit_ids):
+def create_delivery_certificarte(work_order_id, osbervations, recommendations, exhibit_ids, description, development):
     try:
         work = WorkOrder.objects.get(id=work_order_id)
         exhibits = Exhibit.objects.filter(id__in=exhibit_ids)
         delivery_certificate = Delivery_certificate.objects.create(
             work_order=work,
             observations=osbervations,
-            recommendations=recommendations
+            recommendations=recommendations,
+            description=description,
+            development=development
         )
 
         for exhibit in exhibits:
@@ -21,13 +23,17 @@ def create_delivery_certificarte(work_order_id, osbervations, recommendations, e
         print(f"Error creating delivery certificate: {str(e)}")
         return None
     
-def update_delivery_certificate(id, observations = None, recommendations = None):
+def update_delivery_certificate(id, observations = None, recommendations = None, description = None, development = None):
     try:
         delivery_certificate = Delivery_certificate.objects.get(id=id)
         if observations is not None:
             delivery_certificate.observations = observations
         if recommendations is not None:
             delivery_certificate.recommendations = recommendations
+        if description is not None:
+            delivery_certificate.description = description
+        if development is not None:
+            delivery_certificate.development = development
         delivery_certificate.save()
         return delivery_certificate
     except Exception as e:

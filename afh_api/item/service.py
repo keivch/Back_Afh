@@ -20,7 +20,6 @@ def create_item(description, units, amount, unit_value):
 def update_item(id, description=None, units=None, amount=None, unit_value=None):
     try:
         item = Item.objects.get(id=id)
-        print(amount)
         if description is not None:
             item.description = description
         if units is not None:
@@ -41,13 +40,19 @@ def update_item(id, description=None, units=None, amount=None, unit_value=None):
             options.save()
         if Quotes.objects.filter(options = options).exists():
             quote = Quotes.objects.get(options=options)
-            quote.administration_value = options.subtotal * quote.administration
-            quote.utility_value = options.subtotal * quote.utility
-            quote.unforeseen_value = options.subtotal * quote.unforeseen
-            quote.options.total_value = options.subtotal + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
-            quote.options.save()
-            quote.iva_value = quote.administration_value * quote.iva
-            quote.save()
+            if quote.construction is not None:
+                quote.administration_value = options.subtotal * quote.administration
+                quote.utility_value = options.subtotal * quote.utility
+                quote.unforeseen_value = options.subtotal * quote.unforeseen
+                quote.options.total_value = options.subtotal + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
+                quote.options.save()
+                quote.iva_value = quote.administration_value * quote.iva
+                quote.save()
+            else:
+                quote.iva_value = options.subtotal * quote.iva
+                quote.options.total_value = options.subtotal + quote.iva_value
+                quote.options.save()
+                quote.save()
         return item
     except Exception as e:
         raise Exception(f"Error updating item: {str(e)}")

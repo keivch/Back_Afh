@@ -15,12 +15,17 @@ def upload_image(imagefield):
 
 def create_exhibit(tittle, imagefield=None):
     try:
+
+        urls = []
+        for image in imagefield:
+            urls.append(upload_image(image))
+
         
         image_url = upload_image(imagefield)
         
         exhibit = Exhibit.objects.create(
             tittle=tittle,
-            image=image_url
+            image=urls
         )
         return exhibit
     except Exception as e:
@@ -33,7 +38,10 @@ def update_exhibit(id, tittle=None, imagefield=None):
         if tittle is not None:
             exhibit.tittle = tittle
         if imagefield is not None:
-            exhibit.image = upload_image(imagefield)
+            urls = []
+            for image in imagefield:
+                urls.append(upload_image(image))
+            exhibit.image = urls
         exhibit.save()
         return exhibit
     except Exception as e:

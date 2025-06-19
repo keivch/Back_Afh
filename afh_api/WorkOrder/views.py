@@ -5,13 +5,81 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from .Serializer import WorkOrderSerializer
 from .models import WorkOrder
-from .service import get_work_orders, get_work_order_by_id,create_pdf, finish_work
+from .service import get_work_orders, get_work_order_by_id,create_pdf, create_work_order, update_work_order
 
 
 # Create your views here.
 class WorkOrderViewSet(viewsets.ModelViewSet):
     serializer_class = WorkOrderSerializer
     queryset = WorkOrder.objects.all()
+
+@api_view(['POST'])
+def create_work_order_view(request):
+    try:
+        data = request.data
+        quote_id = data.get('quote_id')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        description = data.get('description')
+        workplace = data.get('workplace')
+        number_technicians = data.get('number_technicians')
+        number_officers = data.get('number_officers')
+        number_auxiliaries = data.get('number_auxiliaries')
+        activity = data.get('activity')
+        permissions = data.get('permissions')
+
+        if not quote_id or not start_date or not workplace or not number_technicians or not activity or not permissions or not description or not number_officers or not number_auxiliaries:
+            return Response({'error': 'All fields are required'}, status=400)
+        
+        work_order = create_work_order(
+            quote_id=quote_id,
+            start_date=start_date,
+            end_date=end_date,
+            description=description,
+            workplace=workplace,
+            number_technicians=number_technicians,
+            number_officers=number_officers,
+            number_auxiliaries=number_auxiliaries,
+            activity=activity,
+            permissions=permissions
+        )
+
+        return Response({'message': 'Orden de trabajo creada exitosamente', 'id': work_order.id}, status=201)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
+
+@api_view(['PATCH'])
+def update_work_order_view(request, id):
+    try:
+        data = request.data
+        quote_id = data.get('quote_id')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        description = data.get('description')
+        workplace = data.get('workplace')
+        number_technicians = data.get('number_technicians')
+        number_officers = data.get('number_officers')
+        number_auxiliaries = data.get('number_auxiliaries')
+        activity = data.get('activity')
+        permissions = data.get('permissions')
+        
+        updated_work_order = update_work_order(
+            quote_id=quote_id,
+            start_date=start_date,
+            end_date=end_date,
+            description=description,
+            workplace=workplace,
+            number_technicians=number_technicians,
+            number_officers=number_officers,
+            number_auxiliaries=number_auxiliaries,
+            activity=activity,
+            permissions=permissions
+        )
+
+        return Response({'message': 'Orden de trabajo actualizada exitosamente', 'id': updated_work_order.id}, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
 
 @api_view(['GET'])
 def get_work_orders_view(request):
@@ -49,15 +117,6 @@ def pdf_quote_view(request, id_workorder):
     except Exception as e:
         return Response({'error': str(e)}, status=500)
     
-@api_view(['PATCH'])
-def finish_work_view(request, id):
-    try:
-        if not id:
-            return Response({'error': 'Id de la orden de trabajo es requerido'}, status=400)
-        finish_work(id)
-        return Response({'message': 'Orden de trabajo finalizada exitosamente'}, status=200)
-    except Exception as e:
-        return Response({'error': str(e)}, status=500)
         
     
 

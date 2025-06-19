@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import viewsets
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, JSONParser
 from .models import Exhibit
 from .Serializer import ExhibitSerializer
 from .Service import create_exhibit, update_exhibit, get_exhibits, get_exhibit_by_id
@@ -13,11 +14,12 @@ class ExhibitViewSet(viewsets.ModelViewSet):
     queryset = Exhibit.objects.all()
 
 @api_view(['POST'])
+@parser_classes([MultiPartParser, JSONParser])
 def add_exhibit_view(request):
     try:
         data = request.data
         tittle = data.get('tittle')
-        image = request.FILES.get('image')
+        image = request.FILES.getlist('image')
 
         if not tittle:
             return Response({'error': 'El título es requerido'}, status=400)
@@ -30,11 +32,12 @@ def add_exhibit_view(request):
     
 
 @api_view(['PATCH'])
+@parser_classes([MultiPartParser, JSONParser])
 def update_exhibit_view(request, id):
     try:
         data = request.data
         tittle = data.get('title')
-        image = request.FILES.get('image')
+        image = request.FILES.getlist('image')
         if not tittle and not image:
             return Response({'error': 'Debe proporcionar al menos un título o una imagen'}, status=400)
         updated_exhibit = update_exhibit(id, tittle, image)

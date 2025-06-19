@@ -9,6 +9,8 @@ class Delivery_certificate(models.Model):
     date = models.DateField(auto_now_add=True)
     observations = models.CharField(max_length=255, blank=True, null=True)
     recommendations = models.CharField(max_length=255, blank=True, null=True)
+    description = models.CharField(max_length=900, blank=True, null=True)
+    development = models.CharField(max_length=900, blank=True, null=True)
     exhibit = models.ManyToManyField(Exhibit, blank=True, related_name='delivery_certificates')
     
 

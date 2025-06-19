@@ -126,17 +126,3 @@ def change_state_quote_view(request, quote_id):
         return Response({'message': 'Estado de la cotizacion actualizado exitosamente'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
-    
-@api_view(['PATCH'])
-def add_option_to_quote_view(request, quote_id):
-    data = request.data
-    try:
-        items = data.get('items', [])
-        description = data.get('description',)
-        if not quote_id or not items:
-            return Response({'error': 'Todos los datos son requeridos'}, status=400)
-        add_option_to_quote(quote_id, items, description)
-        return Response({'message': 'Opciones agregadas a la cotizacion exitosamente'}, status=200)
-    except Exception as e:
-        return Response({'error': str(e)}, status=500)
-        
