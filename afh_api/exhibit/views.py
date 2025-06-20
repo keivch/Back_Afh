@@ -19,12 +19,12 @@ def add_exhibit_view(request):
     try:
         data = request.data
         tittle = data.get('tittle')
-        image = request.FILES.getlist('image')
+        images = request.FILES.getlist('images')
 
         if not tittle:
             return Response({'error': 'El título es requerido'}, status=400)
         
-        create_exhibit(tittle, image)
+        create_exhibit(tittle, images)
 
         return Response({'message': 'Exhibit created successfully'}, status=201)
     except Exception as e:

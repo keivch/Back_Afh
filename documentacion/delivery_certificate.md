@@ -250,6 +250,17 @@ Descripción: Asocia un exhibit existente a un certificado de entrega.
 500 – Error interno del servidor
 
 
+➕ Obtener pdf
+URL: GET http://127.0.0.1:8000/deliverycertificate/pdf/<id>/
+Descripción:  se descarga automaticamente el pdf
+
+📤 Respuesta Exitosa (200)
+
+❌ Errores
+
+500 – Error interno del servidor
+
+
 
 
 

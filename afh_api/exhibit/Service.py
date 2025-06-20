@@ -21,11 +21,9 @@ def create_exhibit(tittle, imagefield=None):
             urls.append(upload_image(image))
 
         
-        image_url = upload_image(imagefield)
-        
         exhibit = Exhibit.objects.create(
             tittle=tittle,
-            image=urls
+            images=urls
         )
         return exhibit
     except Exception as e:
@@ -41,7 +39,7 @@ def update_exhibit(id, tittle=None, imagefield=None):
             urls = []
             for image in imagefield:
                 urls.append(upload_image(image))
-            exhibit.image = urls
+            exhibit.images = urls
         exhibit.save()
         return exhibit
     except Exception as e:

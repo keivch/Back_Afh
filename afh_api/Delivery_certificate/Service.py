@@ -79,7 +79,7 @@ def create_pdf(id):
         template = get_template('delivery_certificate.html')
         html = template.render({
             'work_order': delivery.work_order,
-            'date': delivery.date,
+            'date': delivery.date.strftime("%d/%m/%Y"),
             'description': delivery.description,
             'development': delivery.development,
             'observations': delivery.observations,

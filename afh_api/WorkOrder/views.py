@@ -29,7 +29,7 @@ def create_work_order_view(request):
         permissions = data.get('permissions')
         number_supervisors = data.get('number_supervisors')
 
-        if not quote_id or not start_date or not workplace or not number_technicians or not activity or not permissions or not description or not number_officers or not number_auxiliaries or not number_supervisors:
+        if not quote_id or not start_date or not workplace or not permissions or not activity or number_auxiliaries < 0 or number_technicians < 0 or number_officers < 0 or number_supervisors < 0:
             return Response({'error': 'All fields are required'}, status=400)
         
         work_order = create_work_order(quote_id, start_date, end_date, description, workplace, number_technicians, number_officers, number_auxiliaries, activity, permissions, number_supervisors)

@@ -244,7 +244,7 @@
           </td>
         </tr>
         <tr>
-          <td class="version">{{ work_order.quote.revision }}</td>
+          <td class="version">RV-{{ work_order.quote.revision }}</td>
           <td class="datos-inferior">
             <strong>Orden de Trabajo:</strong> {{ work_order.quote.code }}<br />
           </td>
@@ -262,7 +262,7 @@
       Señores:<br />
       {{ work_order.quote.customer }}<br />
       {{ work_order.quote.customer_contact }}<br /><br />
-      Por medio del presente documento certificamos la entrega de los trabajos realizados según la orden de trabajo N.º {{ work_order.code }}.
+      Por medio del presente documento certificamos la entrega de los trabajos realizados según la orden de trabajo N.º {{ work_order.quote.code }}.
     </div>
 
     <div class="datos-certificado">
@@ -305,8 +305,8 @@
         <div class="exhibit-title">{{ exhibit.tittle }}</div>
         {% if exhibit.images %}
         <div class="exhibit-images">
-          {% for image_key, image_url in exhibit.images.items %}
-          <img src="{{ image_url }}" alt="{{ exhibit.tittle }} - {{ image_key }}" class="exhibit-image" />
+          {% for image_url in exhibit.images %}
+          <img src="{{ image_url }}" alt="{{ exhibit.tittle }}" class="exhibit-image" />
           {% endfor %}
         </div>
         {% endif %}
