@@ -51,6 +51,7 @@ def update_quote_view(request, quote_id):
         unforeseen = data.get('unforeseen')
         administration = data.get('administration')
         method_of_payment = data.get('method_of_payment')
+        construction = data.get('construction')
 
         
         if not description:
@@ -70,7 +71,7 @@ def update_quote_view(request, quote_id):
         if not method_of_payment:
             method_of_payment = None
         
-        update_quote(quote_id, customer_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment)
+        update_quote(quote_id, customer_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment, construction)
         return Response({'message': 'Cotizacion actualizada exitosamente'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)

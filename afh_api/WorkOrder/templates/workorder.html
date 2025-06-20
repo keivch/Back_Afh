@@ -327,6 +327,12 @@
             <span class="info-value">{{ number_auxiliaries }} persona(s)</span>
           </div>
           {% endif %}
+          {% if number_supervisors %}
+          <div class="info-item">
+            <span class="info-label">Supervisores:</span>
+            <span class="info-value">{{ number_supervisors }} persona(s)</span>
+          </div>
+          {% endif %}
           {% if number_technicians or number_officers or number_auxiliaries %}
           <div class="info-item" style="border-top: 1px solid #ddd; padding-top: 8px; margin-top: 8px;">
             <span class="info-label">Total Personal:</span>
@@ -334,6 +340,7 @@
               {% if number_technicians %}{{ number_technicians }} Técnico(s){% endif %}
               {% if number_officers %}{{ number_officers }} Oficial(es){% endif %}
               {% if number_auxiliaries %}{{ number_auxiliaries }} Auxiliar(es){% endif %}
+              {% if number_supervisors %}{{ number_supervisors }} Supervisor(es){% endif %}
             </span>
           </div>
           {% endif %}

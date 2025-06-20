@@ -106,6 +106,7 @@ def create_pdf(id):
             "number_technicians": work.number_technicians,
             "number_officers": work.number_officers,
             "number_auxiliaries": work.number_auxiliaries,
+            "number_supervisors": work.number_supervisors,
             "activity": work.activity,
             "permissions": work.permissions if work.permissions else {}
 

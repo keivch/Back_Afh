@@ -76,7 +76,7 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
     except Exception as e:
         raise Exception(f"Error creating quote: {str(e)}")
     
-def update_quote(id, customer_id=None, description=None, tasks=None, iva=None, utility=None, unforeseen=None, administration=None, method_of_payment=None):
+def update_quote(id, customer_id=None, description=None, tasks=None, iva=None, utility=None, unforeseen=None, administration=None, method_of_payment=None, construction=None):
     try:
         quote = Quotes.objects.get(id=id)
         if customer_id is not None:
@@ -87,25 +87,35 @@ def update_quote(id, customer_id=None, description=None, tasks=None, iva=None, u
             quote.description = description
         if tasks is not None:
             quote.tasks = tasks
+        if construction is not None:
+            quote.construction = construction
         if iva is not None:
             iva_decimal = Decimal(str(iva))
             quote.iva = iva_decimal
             quote.iva_value = quote.administration_value * iva_decimal
+            quote.save()
         if utility is not None:
             utility_decimal = Decimal(str(utility))
             quote.utility = utility_decimal
             quote.utility_value = quote.options.subtotal * utility_decimal
+            quote.save()
+            quote.iva_value = quote.utility_value * quote.iva
+            quote.save()
         if unforeseen is not None:
             unforeseen_decimal = Decimal(str(unforeseen))
             quote.unforeseen = unforeseen_decimal
             quote.unforeseen_value = quote.options.subtotal * unforeseen_decimal
+            quote.save()
         if administration is not None:
             administration_decimal = Decimal(str(administration))
             quote.administration = administration_decimal
             quote.administration_value = quote.options.subtotal * administration_decimal
+            quote.save()
         if method_of_payment is not None:
             quote.method_of_payment = method_of_payment
         quote.revision += 1
+        quote.options.total_value = quote.options.subtotal + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
+        quote.options.save()
         quote.save()
         return quote
     except Exception as e:
