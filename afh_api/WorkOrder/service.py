@@ -12,7 +12,7 @@ ZONA_COLOMBIA = pytz.timezone('America/Bogota')
 # Hora actual en Colombia
 HORA_COLOMBIA = datetime.now(ZONA_COLOMBIA)
 
-def create_work_order(quote_id, start_date, end_date, description, workplace, number_technicians, number_officers, number_auxiliaries, activity, permissions):
+def create_work_order(quote_id, start_date, end_date, description, workplace, number_technicians, number_officers, number_auxiliaries, activity, permissions, number_supervisors):
     try:
         quote = Quotes.objects.get(id=quote_id)
 
@@ -26,14 +26,15 @@ def create_work_order(quote_id, start_date, end_date, description, workplace, nu
             number_officers = number_officers,
             number_auxiliaries = number_auxiliaries,
             activity = activity,
-            permissions = permissions
+            permissions = permissions,
+            number_supervisors = number_supervisors
         )
         new_work_order.save()
         return new_work_order
     except Exception as e:
         raise Exception(f"Error creating work order: {str(e)}")
     
-def update_work_order(id, quote_id = None,  start_date = None, end_date = None, description = None, workplace = None, number_technicians = None, number_officers = None, number_auxiliaries = None, activity = None, permissions = None):
+def update_work_order(id, quote_id = None,  start_date = None, end_date = None, description = None, workplace = None, number_technicians = None, number_officers = None, number_auxiliaries = None, activity = None, permissions = None, number_supervisors = None):
     try:
         work_order = WorkOrder.objects.get(id=id)
         if quote_id is not None:
@@ -56,6 +57,8 @@ def update_work_order(id, quote_id = None,  start_date = None, end_date = None, 
             work_order.activity = activity
         if permissions is not None:
             work_order.permissions = permissions
+        if number_supervisors is not None:
+            work_order.number_supervisors = number_supervisors
         work_order.save()
         return work_order
     except Exception as e:

@@ -22,6 +22,7 @@ class WorkOrder(models.Model):
     number_auxiliaries = models.IntegerField(verbose_name='Number of Auxiliaries', null=True, blank=True)
     activity = models.IntegerField(choices=STATE_CHOICES2, verbose_name='Activity Type', null=True, blank=True) 
     permissions=models.JSONField(verbose_name='Activity Permissions', null=True, blank=True)
+    number_supervisors = models.IntegerField(verbose_name='Number of Supervisors', null=True, blank=True)
 
 
     def __str__(self):

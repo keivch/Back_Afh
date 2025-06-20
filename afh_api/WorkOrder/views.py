@@ -27,11 +27,12 @@ def create_work_order_view(request):
         number_auxiliaries = data.get('number_auxiliaries')
         activity = data.get('activity')
         permissions = data.get('permissions')
+        number_supervisors = data.get('number_supervisors')
 
-        if not quote_id or not start_date or not workplace or not number_technicians or not activity or not permissions or not description or not number_officers or not number_auxiliaries:
+        if not quote_id or not start_date or not workplace or not number_technicians or not activity or not permissions or not description or not number_officers or not number_auxiliaries or not number_supervisors:
             return Response({'error': 'All fields are required'}, status=400)
         
-        work_order = create_work_order(quote_id, start_date, end_date, description, workplace, number_technicians, number_officers, number_auxiliaries, activity, permissions)
+        work_order = create_work_order(quote_id, start_date, end_date, description, workplace, number_technicians, number_officers, number_auxiliaries, activity, permissions, number_supervisors)
         return Response({'message': 'Orden de trabajo creada exitosamente', 'id': work_order.id}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
@@ -51,8 +52,10 @@ def update_work_order_view(request, id):
         number_auxiliaries = data.get('number_auxiliaries')
         activity = data.get('activity')
         permissions = data.get('permissions')
+        number_supervisors = data.get('number_supervisors')
         
         updated_work_order = update_work_order(
+            id=id,
             quote_id=quote_id,
             start_date=start_date,
             end_date=end_date,
@@ -62,7 +65,8 @@ def update_work_order_view(request, id):
             number_officers=number_officers,
             number_auxiliaries=number_auxiliaries,
             activity=activity,
-            permissions=permissions
+            permissions=permissions,
+            number_supervisors=number_supervisors
         )
 
         return Response({'message': 'Orden de trabajo actualizada exitosamente', 'id': updated_work_order.id}, status=200)
