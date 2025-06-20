@@ -1,6 +1,9 @@
 from .models import Delivery_certificate
 from WorkOrder.models import WorkOrder
 from exhibit.models import Exhibit
+import weasyprint
+from io import BytesIO
+from django.template.loader import get_template
 
 def create_delivery_certificarte(work_order_id, osbervations, recommendations, exhibit_ids, description, development):
     try:
@@ -69,4 +72,28 @@ def add_exhibit_to_delivery_certificate(delivery_certificate_id, exhibit_id):
     except Exception as e:
         print(f"Error adding exhibit to delivery certificate: {str(e)}")
         return None
+    
+def create_pdf(id):
+    try:
+        delivery = get_delivery_certificate_by_id(id)
+        template = get_template('delivery_certificate.html')
+        html = template.render({
+            'work_order': delivery.work_order,
+            'date': delivery.date,
+            'description': delivery.description,
+            'development': delivery.development,
+            'observations': delivery.observations,
+            'recommendations': delivery.recommendations,
+            'exhibits': delivery.exhibit.all(),
+            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+            })
+        
+        buffer = BytesIO()
+        weasyprint.HTML(string=html).write_pdf(buffer)
+        buffer.seek(0)
+        return buffer
+    except Exception as e:
+        print(f"Error creating PDF: {str(e)}")
+        return None
+
 

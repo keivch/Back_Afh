@@ -12,4 +12,5 @@ urlpatterns = [
     path('get/', views.get_delivery_certificates_view, name='get-delivery-certificates'),
     path('get/<int:id>/', views.get_delivery_certificate_by_id_view, name='get-delivery-certificate-by-id'),
     path('add-exhibit/<int:delivery_certificate_id>/<int:exhibit_id>/', views.add_exhibit_to_delivery_certificate_view, name='add-exhibit-to-delivery-certificate'),
+    path('pdf/<int:id>/', views.get_pdf_view, name='create-pdf-delivery-certificate'),
 ]
