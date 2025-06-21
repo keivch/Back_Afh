@@ -32,7 +32,7 @@ def create_work_order_view(request):
         if not quote_id or not start_date or not workplace or not permissions or not activity or int(number_auxiliaries) < 0 or int(number_technicians) < 0 or int(number_officers) < 0 or int(number_supervisors) < 0:
             return Response({'error': 'All fields are required'}, status=400)
         
-        work_order = create_work_order(quote_id, start_date, end_date, description, workplace, number_technicians, number_officers, number_auxiliaries, activity, permissions, number_supervisors)
+        work_order = create_work_order(quote_id, start_date, end_date, description, workplace, int(number_technicians), int(number_officers), int(number_auxiliaries), activity, int(permissions), int(number_supervisors))
         return Response({'message': 'Orden de trabajo creada exitosamente', 'id': work_order.id}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
