@@ -24,9 +24,9 @@ def add_exhibit_view(request):
         if not tittle:
             return Response({'error': 'El título es requerido'}, status=400)
         
-        create_exhibit(tittle, images)
+        exhibit = create_exhibit(tittle, images)
 
-        return Response({'message': 'Exhibit created successfully'}, status=201)
+        return Response({'message': 'Exhibit created successfully', 'exhibit_id': exhibit.id}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
     
@@ -42,7 +42,7 @@ def update_exhibit_view(request, id):
             return Response({'error': 'Debe proporcionar al menos un título o una imagen'}, status=400)
         updated_exhibit = update_exhibit(id, tittle, image)
         if updated_exhibit:
-            return Response({'message': 'Exhibit updated successfully'}, status=200)
+            return Response({'message': 'Exhibit updated successfully',  'exhibit_id': update_exhibit.id}, status=200)
         else:
             return Response({'error': 'Exhibit not found'}, status=404)
     except Exception as e:
