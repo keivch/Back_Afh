@@ -64,3 +64,12 @@ def get_exhibit_by_id(id):
     except Exception as e:
         print(f"Error retrieving exhibit: {str(e)}")
         return None
+    
+def delete_exhibit(id):
+    try:
+        esxhibit = Exhibit.objects.get(id=id)
+        esxhibit.delete()
+        return True
+    except Exception as e:
+        print(f"Error deleting exhibit: {str(e)}")
+        return False

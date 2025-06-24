@@ -68,3 +68,14 @@ def get_exhibit_by_id_view(request, id):
             return Response({'error': 'Exhibit not found'}, status=404)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
+    
+@api_view(['DELETE'])
+def delete_exhibit_view(request, id):
+    try:
+        exhibit = Exhibit.objects.get(id=id)
+        exhibit.delete()
+        return Response({'message': 'Exhibit deleted successfully'}, status=204)
+    except Exhibit.DoesNotExist:
+        return Response({'error': 'Exhibit not found'}, status=404)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
