@@ -42,36 +42,28 @@ def add_quote(request):
 @api_view(['PUT'])
 def update_quote_view(request, quote_id):
     data = request.data
+    print(data)
     try:
         description = data.get('description')
         customer_id = data.get('customer_id')
         tasks = data.get('tasks', [])
-        iva = data.get('iva')
         utility = data.get('utility')
         unforeseen = data.get('unforeseen')
         administration = data.get('administration')
         method_of_payment = data.get('method_of_payment')
         construction = data.get('construction')
-
+        print(administration)
         
-        if not description:
-            description = None
-        if not customer_id:
-            customer_id = None
-        if not tasks:
-            tasks = None
-        if iva is None:
-            iva = 0.19
-        if utility is None:
-            utility = None
-        if unforeseen is None:
-            unforeseen = None
-        if administration is None:
-            administration = None
-        if not method_of_payment:
-            method_of_payment = None
-        
-        update_quote(quote_id, customer_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment, construction)
+        update_quote(
+        id=quote_id,
+        customer_id=customer_id,
+        description=description,
+        tasks=tasks,
+        utility=utility,
+        unforeseen=unforeseen,
+        administration=administration,
+        method_of_payment=method_of_payment,
+        construction=construction)
         return Response({'message': 'Cotizacion actualizada exitosamente'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
