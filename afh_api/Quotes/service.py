@@ -46,14 +46,6 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
             administration = Decimal(str(administration))
             iva = Decimal(str(iva))   
 
-            utility_value = options.subtotal * utility
-            unforeseen_value = options.subtotal * unforeseen
-            administration_value = options.subtotal * administration
-
-            new_quote.utility_value = utility_value
-            new_quote.unforeseen_value = unforeseen_value
-            new_quote.administration_value = administration_value
-
             new_quote.options = options
             new_quote.iva = iva
             new_quote.utility = utility
@@ -61,7 +53,7 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
             new_quote.administration = administration
             new_quote.construction = construction
             new_quote.save()
-            options.total_value = options.subtotal + utility_value + unforeseen_value + administration_value + new_quote.iva_value 
+            options.total_value = options.subtotal + new_quote.utility_value + new_quote.unforeseen_value + new_quote.administration_value + new_quote.iva_value 
             options.save()
         else:
             new_quote.options = options
@@ -94,18 +86,15 @@ def update_quote(id, customer_id=None, description=None, tasks=None, utility=Non
         if utility is not None:
             utility_decimal = Decimal(str(utility))
             quote.utility = utility_decimal
-            quote.utility_value = quote.options.subtotal * utility_decimal
-            # iva_value se calcula automáticamente con el property
+
             
         if unforeseen is not None:
             unforeseen_decimal = Decimal(str(unforeseen))
             quote.unforeseen = unforeseen_decimal
-            quote.unforeseen_value = quote.options.subtotal * unforeseen_decimal
             
         if administration is not None:
             administration_decimal = Decimal(str(administration))
             quote.administration = administration_decimal
-            quote.administration_value = quote.options.subtotal * administration_decimal
             
         if method_of_payment is not None:
             quote.method_of_payment = method_of_payment
