@@ -49,15 +49,10 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
             utility_value = options.subtotal * utility
             unforeseen_value = options.subtotal * unforeseen
             administration_value = options.subtotal * administration
-            iva_value = administration_value * iva
 
-            new_quote.iva_value = iva_value
             new_quote.utility_value = utility_value
             new_quote.unforeseen_value = unforeseen_value
             new_quote.administration_value = administration_value
-
-            options.total_value = options.subtotal + iva_value + utility_value + unforeseen_value + administration_value
-            options.save()
 
             new_quote.options = options
             new_quote.iva = iva
@@ -66,6 +61,8 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
             new_quote.administration = administration
             new_quote.construction = construction
             new_quote.save()
+            options.total_value = options.subtotal + utility_value + unforeseen_value + administration_value + new_quote.iva_value 
+            options.save()
         else:
             new_quote.options = options
             new_quote.iva_value = options.subtotal * Decimal(str(new_quote.iva))
@@ -76,84 +73,50 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
     except Exception as e:
         raise Exception(f"Error creating quote: {str(e)}")
     
-def update_quote(id, customer_id=None, description=None, tasks=None, iva=None, utility=None, unforeseen=None, administration=None, method_of_payment=None, construction=None):
+def update_quote(id, customer_id=None, description=None, tasks=None, utility=None, unforeseen=None, administration=None, method_of_payment=None, construction=None):
     try:
-        print(f"Función update_quote ejecutándose con ID: {id}")
         quote = Quotes.objects.get(id=id)
         
-        # Guardar el valor actual del IVA para preservarlo
-        current_iva_value = quote.iva_value
-        print(f"Valor actual del IVA: {current_iva_value}")
-        
         if customer_id is not None:
-            print("Actualizando customer_id")
             quote.customer = Customer.objects.get(id=customer_id)
             
         if description is not None:
-            print("Actualizando description")
             quote.options.name = description
             quote.options.save()
             quote.description = description
             
         if tasks is not None:
-            print("Actualizando tasks")
             quote.tasks = tasks
             
         if construction is not None:
-            print("Actualizando construction")
             quote.construction = construction
             
         if utility is not None:
-            print(f"Actualizando utility: {utility}")
             utility_decimal = Decimal(str(utility))
             quote.utility = utility_decimal
             quote.utility_value = quote.options.subtotal * utility_decimal
-            # Solo recalcular IVA cuando cambia la utilidad
-            quote.iva_value = quote.utility_value * quote.iva
-            print(f"Nuevo valor del IVA calculado: {quote.iva_value}")
-        else:
-            # Si no se cambió la utilidad, preservar el valor del IVA original
-            print("No se cambió utility, preservando IVA original")
-            quote.iva_value = current_iva_value
-            quote.save()
+            # iva_value se calcula automáticamente con el property
+            
         if unforeseen is not None:
-            print(f"Actualizando unforeseen: {unforeseen}")
             unforeseen_decimal = Decimal(str(unforeseen))
             quote.unforeseen = unforeseen_decimal
             quote.unforeseen_value = quote.options.subtotal * unforeseen_decimal
             
         if administration is not None:
-            print(f"Actualizando administration: {administration}")
             administration_decimal = Decimal(str(administration))
-            print(f"Administration decimal: {administration_decimal}")
             quote.administration = administration_decimal
             quote.administration_value = quote.options.subtotal * administration_decimal
-            print(f"Administration value calculado: {quote.administration_value}")
             
         if method_of_payment is not None:
-            print("Actualizando method_of_payment")
             quote.method_of_payment = method_of_payment
             
-        print("Incrementando revision")
         quote.revision += 1
-        
-        print("Calculando total_value")
         quote.options.total_value = quote.options.subtotal + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
-        print(f"Nuevo total_value: {quote.options.total_value}")
-        
-        print(f"Antes de guardar options - IVA: {quote.iva_value}")
         quote.options.save()
-        print(f"Después de guardar options - IVA: {quote.iva_value}")
         quote.save()
-        print(f"Después de guardar quote - IVA: {quote.iva_value}")
-        
-        # Verificar el valor inmediatamente después del guardado
-        quote.refresh_from_db()
-        print(f"Después de refresh_from_db - IVA: {quote.iva_value}")
         
         return quote
     except Exception as e:
-        print(f"Error en update_quote: {str(e)}")
         raise Exception(f"Error updating quote: {str(e)}")
 
 def delete_quote(id):

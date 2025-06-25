@@ -46,10 +46,8 @@ def update_item(id, description=None, units=None, amount=None, unit_value=None):
                 quote.unforeseen_value = options.subtotal * quote.unforeseen
                 quote.options.total_value = options.subtotal + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
                 quote.options.save()
-                quote.iva_value = quote.administration_value * quote.iva
                 quote.save()
             else:
-                quote.iva_value = options.subtotal * quote.iva
                 quote.options.total_value = options.subtotal + quote.iva_value
                 quote.options.save()
                 quote.save()
