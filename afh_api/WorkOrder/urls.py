@@ -11,4 +11,5 @@ urlpatterns = [
     path('pdf/<int:id_workorder>/', views.pdf_quote_view, name='pdf-quote-view'),
     path('create/', views.create_work_order_view, name='create-work-order'),
     path('update/<int:id>/', views.update_work_order_view, name='update-work-order'),
+    path('getworkorderwhitoutcertificate/', views.get_work_order_whitout_certificate_view, name='get-work-order-whitout-certificate'),
 ]

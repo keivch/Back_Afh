@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 from Customer.models import Customer
 from Option.models import Option
@@ -29,6 +30,8 @@ class Quotes(models.Model):
         """Calcula automáticamente el IVA como utility_value * iva"""
         if self.utility_value and self.iva:
             return self.utility_value * self.iva
+        if self.utility == 0.0 and self.options:
+            return self.options.subtotal * Decimal(self.iva)
         return 0
     
     @property
@@ -51,6 +54,16 @@ class Quotes(models.Model):
         if self.options and self.administration:
             return self.options.subtotal * self.administration
         return 0
+    
+    @property
+    def total_value(self):
+        """Calcula automáticamente el valor total como options.subtotal + iva_value + utility_value + unforeseen_value + administration_value"""
+        if self.options and self.utility  != 0.0:
+            subtotal = self.options.subtotal
+            return subtotal + self.iva_value + self.utility_value + self.unforeseen_value + self.administration_value
+        else:
+            return self.options.subtotal + self.iva_value
+            
     
     def __str__(self):
         return f"{self.code} - {self.customer.name}"

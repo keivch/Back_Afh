@@ -6,7 +6,7 @@ from .models import Quotes
 from .Serializer import QuotesSerializer
 from django.http import HttpResponse
 from Option.models import Option
-from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id, pdf_quote, change_state_quote
+from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id, pdf_quote, change_state_quote, get_quotes_whitouth_order
 
 # Create your views here.
 class QuotesViewSet(viewsets.ModelViewSet):
@@ -52,7 +52,6 @@ def update_quote_view(request, quote_id):
         administration = data.get('administration')
         method_of_payment = data.get('method_of_payment')
         construction = data.get('construction')
-        print(administration)
         
         update_quote(
         id=quote_id,
@@ -119,4 +118,13 @@ def change_state_quote_view(request, quote_id):
         change_state_quote(quote_id, new_state)
         return Response({'message': 'Estado de la cotizacion actualizado exitosamente'}, status=200)
     except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
+@api_view(['GET'])
+def get_quote_whitout_order_view(request):
+    try:
+        quotes = get_quotes_whitouth_order()
+        serializer = QuotesSerializer(quotes, many=True)
+        return Response(serializer.data)
+    except Exception as e:  
         return Response({'error': str(e)}, status=500)

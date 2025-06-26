@@ -5,7 +5,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from .Serializer import WorkOrderSerializer
 from .models import WorkOrder
-from .service import get_work_orders, get_work_order_by_id,create_pdf, create_work_order, update_work_order
+from .service import get_work_orders, get_work_order_by_id,create_pdf, create_work_order, update_work_order, get_work_order_whitout_certificate
 
 
 # Create your views here.
@@ -106,6 +106,16 @@ def pdf_quote_view(request, id_workorder):
         response = HttpResponse(buffer, content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="Orden-{work.quote.code}.pdf"'
         return response
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
+
+@api_view(['GET'])
+def get_work_order_whitout_certificate_view(request):
+    try:
+        work_orders = get_work_order_whitout_certificate()
+        serializer = WorkOrderSerializer(work_orders, many=True)
+        return Response(serializer.data)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
     

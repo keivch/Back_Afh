@@ -27,6 +27,9 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
     try:
         number = Quotes.objects.count() + 1
         code = f"{number}-{YEAR}"
+
+        options = Option.objects.get(id=options_id)
+
         new_quote = Quotes.objects.create(
             code = code,
             customer = Customer.objects.get(id=customer_id),
@@ -34,32 +37,20 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
             issue_date = HORA_COLOMBIA,
             state = 1,  # PROCESO
             tasks = tasks,
-            method_of_payment = method_of_payment
+            method_of_payment = method_of_payment,
+            options = options,
         )
-
-        options = Option.objects.get(id=options_id)
-
 
         if construction is not None:
             utility = Decimal(str(utility))
             unforeseen = Decimal(str(unforeseen))
             administration = Decimal(str(administration))
             iva = Decimal(str(iva))   
-
-            new_quote.options = options
             new_quote.iva = iva
             new_quote.utility = utility
             new_quote.unforeseen = unforeseen
             new_quote.administration = administration
             new_quote.construction = construction
-            new_quote.save()
-            options.total_value = options.subtotal + new_quote.utility_value + new_quote.unforeseen_value + new_quote.administration_value + new_quote.iva_value 
-            options.save()
-        else:
-            new_quote.options = options
-            new_quote.iva_value = options.subtotal * Decimal(str(new_quote.iva))
-            new_quote.options.total_value = options.subtotal + new_quote.iva_value
-            new_quote.options.save()
         new_quote.save()
         return new_quote
     except Exception as e:
@@ -174,6 +165,14 @@ def change_state_quote(id_quote, state):
         raise Exception("Quote not found")
     except Exception as e:
         raise Exception(f"Error changing quote state: {str(e)}")
+    
+
+def get_quotes_whitouth_order():
+    try:
+        quotes = Quotes.objects.filter(state=2).exclude(id__in=WorkOrder.objects.values_list('quote_id', flat=True))
+        return quotes
+    except Exception as e:
+        raise Exception(f"Error retrieving quotes without work orders: {str(e)}")
     
     
 

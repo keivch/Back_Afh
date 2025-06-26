@@ -5,13 +5,11 @@ from Quotes.models import Quotes
 
 def create_item(description, units, amount, unit_value):
     try:
-        total_value = amount * unit_value
         item = Item.objects.create(
             description=description,
             units=units,
             amount=amount,
             unit_value=unit_value,
-            total_value=total_value
         )
         return item
     except Exception as e:
@@ -24,20 +22,11 @@ def update_item(id, description=None, units=None, amount=None, unit_value=None):
             item.description = description
         if units is not None:
             item.units = units
+        if unit_value is not None:
+            item.unit_value = unit_value
         if amount is not None:
             item.amount = amount
-            item.save()
-        if unit_value is not None or amount is not None:
-            item.unit_value = unit_value
-            item.total_value = item.amount * unit_value 
         item.save()
-        options = Option.objects.filter(items__in=[item]).first()
-        if  options:
-            subtotal = 0
-            for item in options.items.all():
-                subtotal += item.total_value
-            options.subtotal = subtotal
-            options.save()
         return item
     except Exception as e:
         raise Exception(f"Error updating item: {str(e)}")

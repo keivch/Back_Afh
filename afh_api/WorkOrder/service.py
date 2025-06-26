@@ -6,6 +6,7 @@ import weasyprint
 from io import BytesIO
 from .Serializer import WorkOrderSerializer
 from Quotes.models import Quotes
+from Delivery_certificate.models import Delivery_certificate
 
 # Zona horaria de Colombia
 ZONA_COLOMBIA = pytz.timezone('America/Bogota')
@@ -127,3 +128,10 @@ def finish_work(id):
         return True
     except WorkOrder.DoesNotExist:
         raise Exception("Work order not found")
+    
+def get_work_order_whitout_certificate():
+    try:
+        works = WorkOrder.objects.filter().exclude(id__in = Delivery_certificate.objects.values_list('work_order_id', flat=True))
+        return works
+    except Exception as e:
+        raise Exception(f"Error retrieving work orders without delivery certificate: {str(e)}")
