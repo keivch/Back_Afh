@@ -23,10 +23,13 @@ ZONA_COLOMBIA = pytz.timezone('America/Bogota')
 HORA_COLOMBIA = datetime.now(ZONA_COLOMBIA)
 
 
-def create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment):
+def create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment, construction=None):
     try:
         number = Quotes.objects.count() + 1
         code = f"{number}-{YEAR}"
+
+        options = Option.objects.get(id=options_id)
+
         new_quote = Quotes.objects.create(
             code = code,
             customer = Customer.objects.get(id=customer_id),
@@ -34,71 +37,64 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
             issue_date = HORA_COLOMBIA,
             state = 1,  # PROCESO
             tasks = tasks,
-            method_of_payment = method_of_payment
+            method_of_payment = method_of_payment,
+            options = options,
         )
 
-        options = Option.objects.get(id=options_id)
-
-        utility = Decimal(str(utility))
-        unforeseen = Decimal(str(unforeseen))
-        administration = Decimal(str(administration))
-        iva = Decimal(str(iva))
-
-
-        utility_value = options.subtotal * utility
-        unforeseen_value = options.subtotal * unforeseen
-        administration_value = options.subtotal * administration
-        iva_value = administration_value * iva
-
-        new_quote.iva_value = iva_value
-        new_quote.utility_value = utility_value
-        new_quote.unforeseen_value = unforeseen_value
-        new_quote.administration_value = administration_value
-
-        options.total_value = options.subtotal + iva_value + utility_value + unforeseen_value + administration_value
-        options.save()
-
-        new_quote.options = options
-        new_quote.iva = iva
-        new_quote.utility = utility
-        new_quote.unforeseen = unforeseen
-        new_quote.administration = administration
+        if construction is not None:
+            utility = Decimal(str(utility))
+            unforeseen = Decimal(str(unforeseen))
+            administration = Decimal(str(administration))
+            iva = Decimal(str(iva))   
+            new_quote.iva = iva
+            new_quote.utility = utility
+            new_quote.unforeseen = unforeseen
+            new_quote.administration = administration
+            new_quote.construction = construction
         new_quote.save()
         return new_quote
     except Exception as e:
         raise Exception(f"Error creating quote: {str(e)}")
     
-def update_quote(id, customer_id=None, description=None, tasks=None, iva=None, utility=None, unforeseen=None, administration=None, method_of_payment=None):
+def update_quote(id, customer_id=None, description=None, tasks=None, utility=None, unforeseen=None, administration=None, method_of_payment=None, construction=None):
     try:
         quote = Quotes.objects.get(id=id)
+        
         if customer_id is not None:
             quote.customer = Customer.objects.get(id=customer_id)
+            
         if description is not None:
             quote.options.name = description
             quote.options.save()
             quote.description = description
+            
         if tasks is not None:
             quote.tasks = tasks
-        if iva is not None:
-            iva_decimal = Decimal(str(iva))
-            quote.iva = iva_decimal
-            quote.iva_value = quote.administration_value * iva_decimal
+            
+        if construction is not None:
+            quote.construction = construction
+            
         if utility is not None:
             utility_decimal = Decimal(str(utility))
             quote.utility = utility_decimal
-            quote.utility_value = quote.options.subtotal * utility_decimal
+
+            
         if unforeseen is not None:
             unforeseen_decimal = Decimal(str(unforeseen))
             quote.unforeseen = unforeseen_decimal
-            quote.unforeseen_value = quote.options.subtotal * unforeseen_decimal
+            
         if administration is not None:
             administration_decimal = Decimal(str(administration))
             quote.administration = administration_decimal
-            quote.administration_value = quote.options.subtotal * administration_decimal
+            
         if method_of_payment is not None:
             quote.method_of_payment = method_of_payment
+            
         quote.revision += 1
+        quote.options.total_value = quote.options.subtotal + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
+        quote.options.save()
         quote.save()
+        
         return quote
     except Exception as e:
         raise Exception(f"Error updating quote: {str(e)}")
@@ -147,6 +143,8 @@ def pdf_quote(id_quote):
             "administration": data['administration_value'],
             'method_of_payment': data['method_of_payment'],
             "revision": data['revision'],
+            'construction': data['construction'],
+            'total_value': data['total_value']
         })
 
         buffer = BytesIO()
@@ -163,27 +161,6 @@ def change_state_quote(id_quote, state):
             raise ValueError("Invalid state")
         quote.state = state
         quote.save()
-        if state == 2:
-            WorkOrder.objects.create(
-                Quotes=quote,
-                start_date=HORA_COLOMBIA,
-                end_date=None  # End date can be set later
-            )
-        
-            # Send email notification
-            admins = Users.objects.filter(role = 1).all()
-            for amdin in admins:
-                subject = f"Nueva orden de trabajo generada"
-                message = (
-                    f"Se ha generado una nueva orden de trabajo para la cotización {quote.code}.\n\n"
-                    f"Cliente: {quote.customer.name}\n\n"
-                    f"Descripción: {quote.description}\n\n"
-                    f"Fecha de emisión: {quote.issue_date.strftime('%d/%m/%Y')}\n\n"
-                    f"Atentamente,\n"
-                    f"Equipo de Serenity"
-                )
-                recipient = [amdin.user.email]
-                send_mail(subject, message, settings.EMAIL_HOST_USER, recipient)
         return quote
     except Quotes.DoesNotExist:
         raise Exception("Quote not found")
@@ -191,15 +168,13 @@ def change_state_quote(id_quote, state):
         raise Exception(f"Error changing quote state: {str(e)}")
     
 
-def add_option_to_quote(quote_id, items, description):
+def get_quotes_whitouth_order():
     try:
-        quote = Quotes.objects.get(id=quote_id)      
-        new_option = create_option(description, items) 
-        quote.options.add(new_option)
-        quote.save()
-        return quote
-    except Quotes.DoesNotExist:
-        raise Exception("Quote not found")
+        quotes = Quotes.objects.filter(state=2).exclude(id__in=WorkOrder.objects.values_list('quote_id', flat=True))
+        return quotes
+    except Exception as e:
+        raise Exception(f"Error retrieving quotes without work orders: {str(e)}")
+    
     
 
 

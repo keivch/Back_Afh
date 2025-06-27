@@ -16,6 +16,7 @@ class QuotesSerializer(serializers.ModelSerializer):
     utility_value = serializers.SerializerMethodField()
     unforeseen_value = serializers.SerializerMethodField()
     administration_value = serializers.SerializerMethodField()
+    total_value = serializers.SerializerMethodField()
     class Meta:
         model = Quotes
         fields = [
@@ -37,7 +38,9 @@ class QuotesSerializer(serializers.ModelSerializer):
             'utility_value',
             'unforeseen_value',
             'administration_value',
-            'method_of_payment'
+            'method_of_payment',
+            'construction',
+            'total_value'
         ]
 
     def get_iva_value(self, obj):
@@ -60,3 +63,8 @@ class QuotesSerializer(serializers.ModelSerializer):
             return "${:,.0f}".format(obj.administration_value).replace(",", ".")
         except:
             return str(obj.administration_value)
+    def get_total_value(self, obj):
+        try:
+            return "${:,.0f}".format(obj.total_value).replace(",", ".")
+        except:
+            return str(obj.total_value)

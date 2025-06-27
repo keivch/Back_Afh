@@ -21,11 +21,11 @@ Base URL: http://127.0.0.1:8000/quote/
   "tasks": [
     "ostia tio joder", "flipas chaval"
   ],
-  "iva": 0.19,
   "utility": 0.10,
   "unforeseen": 0.05,
   "administration": 0.03,
-  "method_of_payment": "ojito tilin"
+  "method_of_payment": "ojito tilin",
+  "construction": "jaramillo mora"
 }
 ```
 
@@ -36,11 +36,11 @@ Base URL: http://127.0.0.1:8000/quote/
 | description       | string   | Descripción general de la cotización                  |
 | customer_id       | integer  | ID del cliente asociado                               |
 | options           | integer  | ID de la opción seleccionada                          |
-| tasks             | array    | Lista de tareas a realizar  |
-| iva               | float    | Porcentaje de IVA (default: 0.19 si no se envía)      |
-| utility           | float    | Porcentaje de utilidad                                |
-| unforeseen        | float    | Porcentaje de imprevistos                             |
-| administration    | float    | Porcentaje de administración                          |
+| tasks             | array    | Lista de tareas a realizar  |     |
+| utility           | float    | Porcentaje de utilidad       (se envia si y solo si es para constructora)                        
+| unforeseen        | float    | Porcentaje de imprevistos    (se envia si y solo si es para constructora)                               
+| administration    | float    | Porcentaje de administración  (se envia si y solo si es para constructora)
+  construction      | string   | nombre constructora ((se envia si y solo si es para constructora))                
 | method_of_payment | string   | Método de pago 
 ### 📤 Respuesta Exitosa (201)
 

@@ -6,7 +6,7 @@ from .models import Quotes
 from .Serializer import QuotesSerializer
 from django.http import HttpResponse
 from Option.models import Option
-from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id, pdf_quote, change_state_quote,add_option_to_quote
+from .service import create_quote, update_quote, delete_quote, get_quotes, get_quote_by_id, pdf_quote, change_state_quote, get_quotes_whitouth_order
 
 # Create your views here.
 class QuotesViewSet(viewsets.ModelViewSet):
@@ -26,14 +26,15 @@ def add_quote(request):
         unforeseen = data.get('unforeseen')
         administration = data.get('administration')
         method_of_payment = data.get('method_of_payment')
+        construction = data.get('construction')
 
-        if not description or customer_id is None or options_id is None or not tasks or utility is None or unforeseen is None or administration is None or method_of_payment is None:
+        if not description or customer_id is None or options_id is None or not tasks:
             return Response({'error': 'All fields are required'}, status=400)
 
         if not iva:
             iva = 0.19
 
-        create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment)
+        create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment, construction)
         return Response({'message': 'Cotización creada exitosamente'}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
@@ -41,35 +42,27 @@ def add_quote(request):
 @api_view(['PUT'])
 def update_quote_view(request, quote_id):
     data = request.data
+    print(data)
     try:
         description = data.get('description')
         customer_id = data.get('customer_id')
         tasks = data.get('tasks', [])
-        iva = data.get('iva')
         utility = data.get('utility')
         unforeseen = data.get('unforeseen')
         administration = data.get('administration')
         method_of_payment = data.get('method_of_payment')
-
+        construction = data.get('construction')
         
-        if not description:
-            description = None
-        if not customer_id:
-            customer_id = None
-        if not tasks:
-            tasks = None
-        if iva is None:
-            iva = 0.19
-        if utility is None:
-            utility = None
-        if unforeseen is None:
-            unforeseen = None
-        if administration is None:
-            administration = None
-        if not method_of_payment:
-            method_of_payment = None
-        
-        update_quote(quote_id, customer_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment)
+        update_quote(
+        id=quote_id,
+        customer_id=customer_id,
+        description=description,
+        tasks=tasks,
+        utility=utility,
+        unforeseen=unforeseen,
+        administration=administration,
+        method_of_payment=method_of_payment,
+        construction=construction)
         return Response({'message': 'Cotizacion actualizada exitosamente'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
@@ -127,16 +120,11 @@ def change_state_quote_view(request, quote_id):
     except Exception as e:
         return Response({'error': str(e)}, status=500)
     
-@api_view(['PATCH'])
-def add_option_to_quote_view(request, quote_id):
-    data = request.data
+@api_view(['GET'])
+def get_quote_whitout_order_view(request):
     try:
-        items = data.get('items', [])
-        description = data.get('description',)
-        if not quote_id or not items:
-            return Response({'error': 'Todos los datos son requeridos'}, status=400)
-        add_option_to_quote(quote_id, items, description)
-        return Response({'message': 'Opciones agregadas a la cotizacion exitosamente'}, status=200)
-    except Exception as e:
+        quotes = get_quotes_whitouth_order()
+        serializer = QuotesSerializer(quotes, many=True)
+        return Response(serializer.data)
+    except Exception as e:  
         return Response({'error': str(e)}, status=500)
-        
