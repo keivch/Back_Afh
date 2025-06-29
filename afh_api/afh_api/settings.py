@@ -57,10 +57,14 @@ INSTALLED_APPS = [
     'tool',
     'ticket', 
     'passwordresetcode', 
-    'corsheaders'
-    
-
-
+    'corsheaders',
+    'Quotes',
+    'WorkOrder',
+    'Customer',
+    'Option',
+    'item',
+    'Delivery_certificate',
+    'exhibit',
 ]
 
 MIDDLEWARE = [

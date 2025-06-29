@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -8,6 +7,7 @@ import cloudinary
 import cloudinary.uploader
 from rest_framework.response import Response
 from cloudinary.exceptions import Error
+from .Services import createCodeTool, updateCodeTool
 
 # Create your views here.
 class ToolViewSet(viewsets.ModelViewSet):
@@ -32,13 +32,7 @@ def addTool(request):
                 {'error': 'Formato de imagen no válido. Solo se permiten JPEG, PNG, GIF o WEBP.'},
                 status=400
             )
-        initials = "".join([word[0].upper() for word in name.split()])
-        toolNames = Tool.objects.filter(name__iexact=name).count()                          
-        if toolNames < 1:
-            code = initials + "-1"
-        else:
-            number = toolNames + 1
-            code = f"{initials}-{number}"
+        code = createCodeTool(name)
 
         imageFile.seek(0)
 
@@ -70,14 +64,7 @@ def updateTool(request):
         tool = Tool.objects.filter(id=id).first()
 
         if name:
-            code = ""
-            initials = "".join([word[0].upper() for word in name.split()])
-            toolNames = Tool.objects.filter(name__iexact=name).count()
-            if toolNames < 1:
-                code = initials + "-1"
-            else:
-                number = toolNames + 1
-                code = f"{initials}-{number}"
+            code = updateCodeTool(name)
             tool.name = name
             tool.code = code
             tool.save()

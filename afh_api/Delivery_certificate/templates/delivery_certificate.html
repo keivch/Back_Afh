@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Certificado de Entrega {{ work_order.quote.code }}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+        color: #000;
+        margin: 20px;
+        position: relative;
+        padding-bottom: 100px; /* Espacio para el footer */
+      }
+
+      /* Imagen de fondo con opacidad */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        height: 300px;
+        background-image: url("https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        opacity: 0.08;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .header,
+      .datos-certificado,
+      .desarrollo,
+      .observaciones,
+      .exhibits,
+      .firma {
+        position: relative;
+        z-index: 1;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      .logo {
+        height: 70px;
+      }
+
+      .titulo {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        margin-bottom: 15px;
+      }
+
+      .datos-certificado,
+      .desarrollo,
+      .observaciones,
+      .exhibits,
+      .firma {
+        margin-top: 30px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+      }
+
+      .firma {
+        margin-top: 50px;
+      }
+
+      .tabla-certificado {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid black;
+      }
+
+      .tabla-certificado td {
+        border: 1px solid black;
+        padding: 8px;
+        vertical-align: middle;
+      }
+
+      .logo {
+        text-align: center;
+        width: 20%;
+      }
+
+      .logo img {
+        width: 80px;
+        margin-bottom: 5px;
+      }
+
+      .estado-vigente {
+        color: green;
+        font-weight: bold;
+      }
+
+      .titulo {
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .version {
+        text-align: center;
+      }
+
+      .datos-superior,
+      .datos-inferior {
+        width: 30%;
+        font-size: 14px;
+      }
+
+      .table-certificado {
+        margin-bottom: 20px;
+      }
+
+      .descripcion-trabajo {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin: 15px 0;
+      }
+
+      .exhibit-item {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fafafa;
+      }
+
+      .exhibit-title {
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        margin-bottom: 2px;
+      }
+
+      .exhibit-images {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .exhibit-image {
+        max-width: 150px;
+        max-height: 150px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .no-exhibits {
+        color: #666;
+        font-style: italic;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .firmas-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 50px;
+      }
+
+      .firma-box {
+        width: 45%;
+        text-align: center;
+        border-top: 1px solid #000;
+        padding-top: 10px;
+      }
+
+      .footer {
+        bottom: 0;
+        right: 0;
+        font-size: 12px;
+        color: #000;
+        background-color: rgba(255, 255, 255, 0.8); /* Opacidad sutil */
+        padding: 8px 12px;
+        text-align: right;
+        z-index: 999;
+        border: none;
+        box-shadow: none;
+        opacity: 0.6; /* Opacidad del footer */
+      }
+
+      .info-table {
+        margin-bottom: 20px;
+      }
+
+      .info-table td {
+        padding: 8px 12px;
+      }
+
+      .info-label {
+        font-weight: bold;
+        width: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="table-certificado">
+      <table class="tabla-certificado">
+        <tr>
+          <td rowspan="2" class="logo">
+            <img src="{{ logo_url }}" alt="Logo de la empresa" />
+            <div class="estado-vigente">DOCUMENTO VIGENTE</div>
+          </td>
+          <td class="titulo" colspan="1">CERTIFICADO DE ENTREGA</td>
+          <td class="datos-superior">
+            <strong>Código:</strong> F-OT-{{ work_order.quote.code }}<br />
+            <strong>Fecha de Entrega:</strong> {{ date }}
+          </td>
+        </tr>
+        <tr>
+          <td class="version">RV-{{ work_order.quote.revision }}</td>
+          <td class="datos-inferior">
+            <strong>Orden de Trabajo:</strong> {{ work_order.quote.code }}<br />
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="header">
+      <div class="titulo">CERTIFICADO DE ENTREGA - ORDEN DE TRABAJO N.º {{ work_order.quote.code }}</div>
+    </div>
+
+    <div>
+      Palmira, {{ date }}
+      <br /><br />
+      Señores:<br />
+      {{ work_order.quote.customer }}<br />
+      {{ work_order.quote.customer_contact }}<br /><br />
+      Por medio del presente documento certificamos la entrega de los trabajos realizados según la orden de trabajo N.º {{ work_order.quote.code }}.
+    </div>
+
+    <div class="datos-certificado">
+      <h3>INFORMACIÓN GENERAL</h3>
+      <table class="info-table">
+        <tr>
+          <td class="info-label">Orden de Trabajo:</td>
+          <td>{{ work_order.quote.code }}</td>
+        </tr>
+        <tr>
+          <td class="info-label">Cliente:</td>
+          <td>{{ work_order.quote.customer }}</td>
+        </tr>
+        <tr>
+          <td class="info-label">Fecha de Entrega:</td>
+          <td>{{ date }}</td>
+        </tr>
+      </table>
+    </div>
+
+    {% if description %}
+    <div class="descripcion-trabajo">
+      <h3>DESCRIPCIÓN DEL TRABAJO</h3>
+      <p>{{ description }}</p>
+    </div>
+    {% endif %}
+
+    {% if development %}
+    <div class="desarrollo">
+      <h3>DESARROLLO DE LOS TRABAJOS</h3>
+      <p>{{ development }}</p>
+    </div>
+    {% endif %}
+
+    {% if exhibits %}
+    <div class="exhibits">
+      <h3>EVIDENCIAS Y ANEXOS</h3>
+      {% for exhibit in exhibits %}
+      <div class="exhibit-item">
+        <div class="exhibit-title">{{ exhibit.tittle }}</div>
+        {% if exhibit.images %}
+        <div class="exhibit-images">
+          {% for image_url in exhibit.images %}
+          <img src="{{ image_url }}" alt="{{ exhibit.tittle }}" class="exhibit-image" />
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="exhibits">
+      <h3>EVIDENCIAS Y ANEXOS</h3>
+      <div class="no-exhibits">No se adjuntaron evidencias para esta entrega.</div>
+    </div>
+    {% endif %}
+
+    {% if observations %}
+    <div class="observaciones">
+      <h3>OBSERVACIONES</h3>
+      <p>{{ observations }}</p>
+    </div>
+    {% endif %}
+
+    {% if recommendations %}
+    <div class="observaciones">
+      <h3>RECOMENDACIONES</h3>
+      <p>{{ recommendations }}</p>
+    </div>
+    {% endif %}
+
+    <div class="firmas-container">
+      <div class="firma-box">
+        <p><strong>ENTREGADO POR:</strong></p>
+        <br /><br />
+        <strong>ANDRES FELIPE HERNANDEZ</strong><br />
+        Gerente General<br />
+        A.F.H Metalmecánico S.A.S
+      </div>
+      
+      <div class="firma-box">
+        <p><strong>RECIBIDO POR:</strong></p>
+        <br /><br />
+        <strong>_________________________</strong><br />
+        Nombre y Firma<br />
+        {{ work_order.quote.customer }}
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>
+        Carrera 13A # 40 - 37 B/Primero de Mayo, Palmira - Colombia<br />
+        Cel (+57) 311 616 7972 | Fijo (602) 287 2362<br />
+        afh@afhmetalmecanico.com<br />
+        www.afhmetalmecanico.com
+      </p>
+    </footer>
+  </body>
+</html>
