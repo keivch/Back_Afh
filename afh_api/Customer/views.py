@@ -1,7 +1,8 @@
 from .services import create_customer, update_customer, delete_customer, get_customers, get_customer_by_id
 from rest_framework.response import Response
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from .Serializer import CustomerSerializer
 from .models import Customer
 
@@ -12,6 +13,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_customer(request):
     data = request.data
     try:
@@ -29,6 +31,7 @@ def add_customer(request):
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_customer_view(request, customer_id):
     data = request.data
     try:

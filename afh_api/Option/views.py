@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from .Serializer import OptionSerializer
 from .models import Option
 from .service import create_option, update_option, delete_option, get_options, get_option_by_id, add_item_to_option
@@ -13,6 +14,7 @@ class OptionViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_option(request):
     data = request.data
     try:
@@ -28,6 +30,7 @@ def add_option(request):
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_option_view(request, option_id):
     data = request.data
     try:
@@ -73,6 +76,7 @@ def get_option_by_id_view(request, option_id):
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def add_item_to_option_view(request, option_id):
     data = request.data
     try:

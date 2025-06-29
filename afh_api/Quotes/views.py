@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from .models import Quotes
 from .Serializer import QuotesSerializer
 from django.http import HttpResponse
@@ -14,6 +15,7 @@ class QuotesViewSet(viewsets.ModelViewSet):
     queryset = Quotes.objects.all()
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_quote(request):
     data = request.data
     try:
@@ -40,6 +42,7 @@ def add_quote(request):
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_quote_view(request, quote_id):
     data = request.data
     print(data)
@@ -109,6 +112,7 @@ def pdf_quote_view(request, id_quote):
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def change_state_quote_view(request, quote_id):
     data = request.data
     try:
