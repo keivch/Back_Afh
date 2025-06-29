@@ -14,6 +14,7 @@ class DeliveryCertificateViewSet(viewsets.ModelViewSet):
     queryset = Delivery_certificate.objects.all()
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_delivery_certificate_view(request):
     try:
         data = request.data
@@ -33,6 +34,7 @@ def create_delivery_certificate_view(request):
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def update_delivery_certificate_view(request, id):
     try:
         data = request.data
@@ -72,6 +74,7 @@ def get_delivery_certificate_by_id_view(request, id):
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def add_exhibit_to_delivery_certificate_view(request, delivery_certificate_id, exhibit_id):
     try:
         delivery_certificate = add_exhibit_to_delivery_certificate(delivery_certificate_id, exhibit_id)

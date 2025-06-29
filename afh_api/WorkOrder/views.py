@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from .Serializer import WorkOrderSerializer
 from .models import WorkOrder
 from .service import get_work_orders, get_work_order_by_id,create_pdf, create_work_order, update_work_order, get_work_order_whitout_certificate
@@ -14,6 +15,7 @@ class WorkOrderViewSet(viewsets.ModelViewSet):
     queryset = WorkOrder.objects.all()
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_work_order_view(request):
     try:
         data = request.data
@@ -39,6 +41,7 @@ def create_work_order_view(request):
     
 
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def update_work_order_view(request, id):
     try:
         data = request.data

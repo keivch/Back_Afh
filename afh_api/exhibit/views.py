@@ -15,6 +15,7 @@ class ExhibitViewSet(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 @parser_classes([MultiPartParser, JSONParser])
+@permission_classes([IsAuthenticated])
 def add_exhibit_view(request):
     try:
         data = request.data
@@ -32,6 +33,7 @@ def add_exhibit_view(request):
     
 
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, JSONParser])
 def update_exhibit_view(request, id):
     try:
