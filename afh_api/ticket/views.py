@@ -30,8 +30,9 @@ def addTicket(request):
         description = data.get('description')
         applicant_email = data.get('email')
         place = data.get('place')
+        responsible = data.get('responsible')
         
-        newTicket = createTicket(applicant_email, tools, description, place)
+        newTicket = createTicket(applicant_email, tools, description, place, responsible)
 
         fecha_colombia = newTicket.entry_date.astimezone(zona_colombia)
 
