@@ -15,7 +15,7 @@ ZONA_COLOMBIA = pytz.timezone('America/Bogota')
     # Hora actual en Colombia
 HORA_COLOMBIA = datetime.now(ZONA_COLOMBIA)
 
-def createTicket(applicant_email, tools, description, place):
+def createTicket(applicant_email, tools, description, place, responsible):
     user = User.objects.filter(email = applicant_email).first()
     applicant = Users.objects.filter(user = user).first()
     receiver = Users.objects.filter(role = 1).first()
@@ -29,7 +29,8 @@ def createTicket(applicant_email, tools, description, place):
         receiver = receiver,
         place = place,
         entry_date = entry_date,
-        departure_date = None
+        departure_date = None,
+        responsible = responsible
         )
 
     for tool in tools:
@@ -105,7 +106,8 @@ def pdfCreator(ticket, type):
             'descripcion': ticket.description,
             'lugar': ticket.place,
             'herramientas': ticket.tools.all(),
-            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png',
+            'responsible': ticket.responsible
 
     })
         if ticket.state == 4:
@@ -119,7 +121,8 @@ def pdfCreator(ticket, type):
             'descripcion': ticket.description,
             'lugar': ticket.place,
             'herramientas': ticket.tools.all(),
-            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png',
+            'responsible': ticket.responsible
         })
          # Crear el PDF
         buffer = BytesIO()
