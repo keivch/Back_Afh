@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cotización {{ code }}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+        color: #000;
+        margin: 20px;
+        position: relative;
+        padding-bottom: 100px; /* Espacio para el footer */
+      }
+
+      /* Imagen de fondo con opacidad */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        height: 300px;
+        background-image: url("https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        opacity: 0.08;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .header,
+      .datos-cotizacion,
+      .opcion,
+      .condiciones,
+      .firma {
+        position: relative;
+        z-index: 1;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      .logo {
+        height: 70px;
+      }
+
+      .titulo {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+      }
+
+      .datos-cotizacion,
+      .condiciones,
+      .firma {
+        margin-top: 30px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 6px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      .total {
+        font-weight: bold;
+        text-align: right;
+      }
+
+      ol.tareas {
+        margin-top: 10px;
+        padding-left: 20px;
+      }
+
+      .firma {
+        margin-top: 50px;
+      }
+
+      .tabla-cotizacion {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid black;
+      }
+
+      .tabla-cotizacion td {
+        border: 1px solid black;
+        padding: 8px;
+        vertical-align: middle;
+      }
+
+      .logo {
+        text-align: center;
+        width: 20%;
+      }
+
+      .logo img {
+        width: 80px;
+        margin-bottom: 5px;
+      }
+
+      .estado-vigente {
+        color: green;
+        font-weight: bold;
+      }
+
+      .titulo {
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .version {
+        text-align: center;
+      }
+
+      .datos-superior,
+      .datos-inferior {
+        width: 30%;
+        font-size: 14px;
+      }
+
+      .table-cotizacion {
+        margin-bottom: 20px;
+      }
+
+      .footer {
+        bottom: 0;
+        right: 0;
+        font-size: 12px;
+        color: #000;
+        background-color: rgba(255, 255, 255, 0.8); /* Opacidad sutil */
+        padding: 8px 12px;
+        text-align: right;
+        z-index: 999;
+        border: none;
+        box-shadow: none;
+        opacity: 0.6; /* Opacidad del footer */
+      }
+
+      .valores {
+        margin-top: 0; /* Elimina el margen superior */
+        text-align: right; /* Alinea el contenido a la derecha */
+      }
+      
+      .valores-grid {
+        display: inline-block; /* Para que se ajuste al contenido */
+        text-align: left; /* Mantiene el texto alineado a la izquierda dentro del bloque */
+      }
+      
+      .valores-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 2px 0; /* Espaciado mínimo entre líneas */
+        min-width: 200px; /* Ancho mínimo para mantener consistencia */
+      }
+      
+      .valores-label {
+        font-weight: bold;
+        margin-right: 20px; /* Espacio entre columnas */
+      }
+      
+      .valores-amount {
+        text-align: right;
+        flex-shrink: 0; /* Evita que se encoja */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="table-cotizacion">
+      <table class="tabla-cotizacion">
+        <tr>
+          <td rowspan="2" class="logo">
+            <img src="{{ logo_url }}" alt="Logo de la empresa" />
+            <div class="estado-vigente">DOCUMENTO VIGENTE</div>
+          </td>
+          <td class="titulo" colspan="1">COTIZACIONES</td>
+          <td class="datos-superior">
+            <strong>Código:</strong> F-GC-05<br />
+            <strong>Fecha de Creación:</strong> {{ fecha}}
+          </td>
+        </tr>
+        <tr>
+          <td class="version">RV-{{revision}}</td>
+          <td class="datos-inferior">
+            <strong>Fecha de Revisión:</strong> {{fecha}} <br />
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="header">
+      <div class="titulo">COTIZACIÓN N.º {{ code }} - {{revision}}</div>
+    </div>
+
+    <div>
+      Palmira, {{ fecha }}
+      <br /><br />
+      Señores:<br />
+      {{ customer }}<br />
+      {{ contacto_cliente }}<br /><br />
+      Agradeciéndole de antemano su amable invitación para cotizarle el
+      siguiente trabajo:<br />
+      <strong>"{{ descripcion }}"</strong>
+    </div>
+
+    <div class="datos-cotizacion">
+      <h3>ALCANCE DE LA OFERTA</h3>
+      <p>
+        A.F.H Metalmecánico S.A.S, ofrece el suministro de personal con
+        experiencia, para desarrollar trabajo, dirección técnica y supervisión,
+        concerniente a: {{ descripcion }}.
+      </p>
+
+      <ol class="tareas">
+        {% for task in tasks %}
+        <li>{{ task }}</li>
+        {% endfor %}
+      </ol>
+    </div>
+
+    <div class="opcion">
+      <h3>{{ opcion.name }}</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>DESCRIPCIÓN</th>
+            <th>UND</th>
+            <th>CANT</th>
+            <th>VALOR UNITARIO</th>
+            <th>VALOR TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in opcion.items %}
+          <tr>
+            <td>{{ item.description }}</td>
+            <td>{{ item.units }}</td>
+            <td>{{ item.amount }}</td>
+            <td>{{ item.unit_value_formatted }}</td>
+            <td>{{ item.total_value_formatted }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="valores">
+      <div class="valores-grid">
+        <div class="valores-row">
+          <span class="valores-label">Sub-Total:</span>
+          <span class="valores-amount">{{opcion.subtotal}}</span>
+        </div>
+        {% if construction %}
+        <div class="valores-row">
+          <span class="valores-label">Utilidad:</span>
+          <span class="valores-amount">{{utility}}</span>
+        </div>
+        <div class="valores-row">
+          <span class="valores-label">Imprevistos:</span>
+          <span class="valores-amount">{{unforeseen}}</span>
+        </div>
+        <div class="valores-row">
+          <span class="valores-label">Administración:</span>
+          <span class="valores-amount">{{administration}}</span>
+        </div>
+        {% endif %}
+        <div class="valores-row">
+          <span class="valores-label">IVA:</span>
+          <span class="valores-amount">{{iva}}</span>
+        </div>
+        <div class="valores-row">
+          <span class="valores-label">Total:</span>
+          <span class="valores-amount">{{total_value}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="condiciones">
+      <h3>CONDICIONES COMERCIALES</h3>
+      <ul>
+        <li>
+          El valor estimado de los trabajos a realizar está desglosado en los
+          cuadros anteriores.
+        </li>
+        <li>
+          El valor final se ajustará según obra ejecutada y precios unitarios
+          propuestos.
+        </li>
+      </ul>
+
+      <h3>CORRE POR CUENTA DEL CONTRATISTA</h3>
+      <ul>
+        <li>Elementos de protección personal</li>
+        <li>Herramientas manuales y eléctricas</li>
+        <li>Personal capacitado</li>
+        <li>Materiales y consumibles</li>
+      </ul>
+
+      <h3>CORRE POR CUENTA DEL CONTRATANTE</h3>
+      <ul>
+        <li>Disposición del sitio de trabajo</li>
+        <li>Suministro de energía 110V / 220V</li>
+      </ul>
+
+      <h3>FORMA DE PAGO</h3>
+      <p>{{method_of_payment}}</p>
+
+      <h3>PLAZO DE ENTREGA</h3>
+      <p>36 días hábiles.</p>
+
+      <h3>VALIDEZ DE LA PROPUESTA</h3>
+      <p>30 días desde su emisión.</p>
+    </div>
+
+    <div class="firma">
+      <p>Atentamente,</p>
+      <br /><br />
+      <strong>ANDRES FELIPE HERNANDEZ</strong><br />
+      Gerente General
+    </div>
+
+    <footer class="footer">
+      <p>
+        Carrera 13A # 40 - 37 B/Primero de Mayo, Palmira - Colombia<br />
+        Cel (+57) 311 616 7972 | Fijo (602) 287 2362<br />
+        afh@afhmetalmecanico.com<br />
+        www.afhmetalmecanico.com
+      </p>
+    </footer>
+  </body>
+</html>
