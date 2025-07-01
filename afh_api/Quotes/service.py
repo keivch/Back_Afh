@@ -25,7 +25,7 @@ HORA_COLOMBIA = datetime.now(ZONA_COLOMBIA)
 
 def create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment, construction=None):
     try:
-        number = Quotes.objects.count() + 1
+        number = Quotes.objects.filter(issue_date__year=YEAR).count() + 1
         code = f"{number}-{YEAR}"
 
         options = Option.objects.get(id=options_id)
