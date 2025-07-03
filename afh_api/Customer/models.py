@@ -6,6 +6,7 @@ class Customer(models.Model):
     email = models.EmailField(max_length=254, verbose_name='Email', null=True, blank=True)
     phone = models.CharField(max_length=15, verbose_name='Phone', null=True, blank=True)
     post = models.CharField(max_length=100, verbose_name='Post', null=True, blank=True)
+    representative = models.CharField(max_length=200, verbose_name="representative", default=" ")
 
     def __str__(self):
         return self.name
