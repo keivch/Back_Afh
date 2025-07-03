@@ -27,6 +27,7 @@ def add_option(request):
         option = create_option(description, items_ids)
         return Response({'message': 'Option creada exitosamente', 'option_id': option.id}, status=201)
     except Exception as e:
+        print(str(e))
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PUT'])
