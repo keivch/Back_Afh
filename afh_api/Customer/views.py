@@ -19,7 +19,6 @@ def add_customer(request):
         email = data.get('email')
         phone = data.get('phone')
         post = data.get('post')
-        representative = data.get('representative')
 
         if not name or not email or not phone or not post:
             return Response({'error': 'All fields are required'}, status=400)
@@ -37,7 +36,6 @@ def update_customer_view(request, customer_id):
         email = data.get('email')
         phone = data.get('phone')
         post = data.get('post')
-        representative = data.get('representative')
 
         if not name:
             name = None
@@ -47,7 +45,7 @@ def update_customer_view(request, customer_id):
             phone = None
         if not post:
             post = None
-        update_customer(customer_id, name, email, phone, post,representative)
+        update_customer(customer_id, name, email, phone, post)
         return Response({'message': 'Cliente actualizado exitosamente'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
