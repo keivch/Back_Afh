@@ -21,10 +21,10 @@ def add_customer(request):
         post = data.get('post')
         representative = data.get('representative')
 
-        if not name or not email or not phone or not post:
+        if not name or not email or not phone or not post or not representative:
             return Response({'error': 'All fields are required'}, status=400)
         
-        create_customer(name, email, phone, post)
+        create_customer(name, email, phone, post, representative)
         return Response({'message': 'Cliente creado exitosamente'}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
