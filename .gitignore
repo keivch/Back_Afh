@@ -3,3 +3,4 @@ venv
 .env
 __pycache__/
 *.py[cod]
+msys2-x86_64-20250622.exe
