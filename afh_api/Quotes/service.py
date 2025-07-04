@@ -23,7 +23,7 @@ ZONA_COLOMBIA = pytz.timezone('America/Bogota')
 HORA_COLOMBIA = datetime.now(ZONA_COLOMBIA)
 
 
-def create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment, construction=None):
+def create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment, delivery_time, contracting_materials, contractor_materials, construction=None):
     try:
         number = Quotes.objects.filter(issue_date__year=YEAR).count() + 1
         code = f"{number}-{YEAR}"
@@ -41,6 +41,15 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
             options = options,
         )
 
+        if delivery_time:
+            new_quote.delivery_time = delivery_time
+        
+        if contracting_materials:
+            new_quote.contracting_materials = contracting_materials
+        
+        if contractor_materials:
+            new_quote.contractor_materials = contractor_materials
+
         if construction is not None:
             utility = Decimal(str(utility))
             unforeseen = Decimal(str(unforeseen))
@@ -56,7 +65,7 @@ def create_quote(customer_id, options_id, description, tasks, iva, utility, unfo
     except Exception as e:
         raise Exception(f"Error creating quote: {str(e)}")
     
-def update_quote(id, customer_id=None, description=None, tasks=None, utility=None, unforeseen=None, administration=None, method_of_payment=None, construction=None):
+def update_quote(id, customer_id=None, description=None, tasks=None, utility=None, unforeseen=None, administration=None, method_of_payment=None, construction=None, contractor_materials = None, delivery_time = None, contracting_materials = None):
     try:
         quote = Quotes.objects.get(id=id)
         
@@ -89,6 +98,15 @@ def update_quote(id, customer_id=None, description=None, tasks=None, utility=Non
             
         if method_of_payment is not None:
             quote.method_of_payment = method_of_payment
+
+        if contractor_materials is not None:
+            quote.contractor_materials = contractor_materials
+        
+        if delivery_time is not None:
+            quote.delivery_time = delivery_time
+        
+        if contracting_materials is not None:
+            quote.contracting_materials = contracting_materials
             
         quote.revision += 1
         quote.options.total_value = quote.options.subtotal + quote.iva_value + quote.utility_value + quote.unforeseen_value + quote.administration_value
@@ -130,8 +148,9 @@ def pdf_quote(id_quote):
         template = get_template('Quote.html')
         html = template.render({
             "code": data['code'],
-            "customer": data['customer']['name'],
-            "contacto_cliente": data['customer']['email'],
+            "customer": quote.customer.name,
+            "contacto_cliente": quote.customer.email,
+            'representative': quote.customer.representative,
             "descripcion": data['description'],
             "tasks": data['tasks'],
             "opcion": data['options'],
@@ -144,7 +163,10 @@ def pdf_quote(id_quote):
             'method_of_payment': data['method_of_payment'],
             "revision": data['revision'],
             'construction': data['construction'],
-            'total_value': data['total_value']
+            'total_value': data['total_value'],
+            'contracting_materials':quote.contracting_materials,
+            'delivery_time': quote.delivery_time,
+            'contractor_materials':quote.contractor_materials
         })
 
         buffer = BytesIO()
