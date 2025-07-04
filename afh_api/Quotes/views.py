@@ -27,6 +27,9 @@ def add_quote(request):
         administration = data.get('administration')
         method_of_payment = data.get('method_of_payment')
         construction = data.get('construction')
+        contracting_materials = data.get('contracting_materials')
+        delivery_time = data.get('delivery_time')
+        contractor_materials = data.get('contractor_materials')
 
         if not description or customer_id is None or options_id is None or not tasks:
             return Response({'error': 'All fields are required'}, status=400)
@@ -34,7 +37,11 @@ def add_quote(request):
         if not iva:
             iva = 0.19
 
-        create_quote(customer_id, options_id, description, tasks, iva, utility, unforeseen, administration, method_of_payment, construction)
+        create_quote(customer_id=customer_id, options_id=options_id, description=description, 
+                     tasks=tasks,iva=iva, utility=utility, unforeseen=unforeseen, 
+                     administration=administration, method_of_payment=method_of_payment, 
+                     delivery_time=delivery_time, contracting_materials=contracting_materials, 
+                     contractor_materials=contractor_materials, construction=construction )
         return Response({'message': 'Cotización creada exitosamente'}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
@@ -52,6 +59,9 @@ def update_quote_view(request, quote_id):
         administration = data.get('administration')
         method_of_payment = data.get('method_of_payment')
         construction = data.get('construction')
+        contracting_materials = data.get('contracting_materials')
+        delivery_time = data.get('delivery_time')
+        contractor_materials = data.get('contractor_materials')
         
         update_quote(
         id=quote_id,
@@ -62,7 +72,7 @@ def update_quote_view(request, quote_id):
         unforeseen=unforeseen,
         administration=administration,
         method_of_payment=method_of_payment,
-        construction=construction)
+        construction=construction, contracting_materials=contracting_materials, contractor_materials=contractor_materials, delivery_time=delivery_time)
         return Response({'message': 'Cotizacion actualizada exitosamente'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
