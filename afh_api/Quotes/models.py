@@ -26,7 +26,7 @@ class Quotes(models.Model):
     method_of_payment = models.CharField(max_length=100, verbose_name='Method of Payment', null=True, blank=True, default='')
     contractor_materials = models.JSONField(verbose_name="contractor_materials", null=True, blank=True)
     contracting_materials = models.JSONField(verbose_name="contracting_materials", null=True, blank=True)
-    delivery_time = models.CharField(verbose_name="delivery_time", null=True, blank=True, default="36 días hábiles")
+    delivery_time = models.CharField(max_length=200,verbose_name="delivery_time", null=True, blank=True, default="36 días hábiles")
 
     @property
     def iva_value(self):
