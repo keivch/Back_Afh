@@ -163,7 +163,10 @@ def pdf_quote(id_quote):
             'method_of_payment': data['method_of_payment'],
             "revision": data['revision'],
             'construction': data['construction'],
-            'total_value': data['total_value']
+            'total_value': data['total_value'],
+            'contracting_materials':quote.contracting_materials,
+            'delivery_time': quote.delivery_time,
+            'contractor_materials':quote.contractor_materials
         })
 
         buffer = BytesIO()

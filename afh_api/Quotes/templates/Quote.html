@@ -335,19 +335,26 @@
       <li>Herramientas manuales y eléctricas</li>
       <li>Personal capacitado</li>
       <li>Materiales y consumibles</li>
+    {% for item in contractor_materials %}
+        <li>{{ item }}</li>
+    {% endfor %}
     </ul>
+    
 
     <h3>CORRE POR CUENTA DEL CONTRATANTE</h3>
     <ul>
       <li>Disposición del sitio de trabajo</li>
       <li>Suministro de energía 110V / 220V</li>
+      {% for item in contracting_materials %}
+        <li>{{ item }}</li>
+    {% endfor %}
     </ul>
 
     <h3>FORMA DE PAGO</h3>
     <p>{{method_of_payment}}</p>
 
     <h3>PLAZO DE ENTREGA</h3>
-    <p>36 días hábiles.</p>
+    <p>{{delivery_time}}</p>
 
     <h3>VALIDEZ DE LA PROPUESTA</h3>
     <p>30 días desde su emisión.</p>
