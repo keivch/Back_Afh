@@ -130,8 +130,9 @@ def pdf_quote(id_quote):
         template = get_template('Quote.html')
         html = template.render({
             "code": data['code'],
-            "customer": data['customer']['name'],
-            "contacto_cliente": data['customer']['email'],
+            "customer": quote.customer.name,
+            "contacto_cliente": quote.customer.email,
+            'representative': quote.customer.representative,
             "descripcion": data['description'],
             "tasks": data['tasks'],
             "opcion": data['options'],
