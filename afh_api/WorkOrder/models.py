@@ -15,7 +15,7 @@ class WorkOrder(models.Model):
     quote = models.ForeignKey(Quotes, on_delete=models.CASCADE, verbose_name='Quote', null=False, blank=False)
     start_date = models.DateField(verbose_name='Start Date', null=False, blank=False)
     end_date = models.DateField(verbose_name='End Date', null=True, blank=True)
-    description = models.TextField(verbose_name='Description', null=True, blank=True)
+    description = models.TextField(verbose_name='descriptions', null=True, blank=True)
     workplace = models.IntegerField(choices=STATE_CHOICES, verbose_name='Workplace Type', null=True, blank=True)
     number_technicians = models.IntegerField(verbose_name='Number of Technicians', null=True, blank=True)
     number_officers = models.IntegerField(verbose_name='Number of Officers', null=True, blank=True)

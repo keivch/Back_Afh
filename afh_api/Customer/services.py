@@ -4,7 +4,7 @@ def create_customer(name, email, phone, post,  representative):
     """
     Create a new customer with the given name, email, and phone number.
     """
-    customer = Customer(name=name, email=email, phone=phone, post=post, representative =  representative)
+    customer = Customer(name=name, email=email, phone=phone, post=post, representative=representative)
     customer.save()
     return customer
 
