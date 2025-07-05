@@ -7,10 +7,10 @@ from exhibit.models import Exhibit
 class Delivery_certificate(models.Model):
     work_order = models.ForeignKey(WorkOrder, on_delete=models.CASCADE, related_name='delivery_certificates')
     date = models.DateField(auto_now_add=True)
-    observations = models.CharField(max_length=255, blank=True, null=True)
-    recommendations = models.CharField(max_length=255, blank=True, null=True)
-    description = models.CharField(max_length=900, blank=True, null=True)
-    development = models.CharField(max_length=900, blank=True, null=True)
+    observations = models.TextField(verbose_name='observations', null=True, blank=True)
+    recommendations = models.TextField(verbose_name='recommendations', null=True, blank=True)
+    description = models.TextField(verbose_name='description', null=True, blank=True)
+    development = models.TextField(verbose_name='development', null=True, blank=True)
     exhibit = models.ManyToManyField(Exhibit, blank=True, related_name='delivery_certificates')
     
 
