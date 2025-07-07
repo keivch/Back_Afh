@@ -1,6 +1,7 @@
 from .models import Egress, Income
 import cloudinary
 import cloudinary.uploader
+from decimal import Decimal
 
 def upload_image(imagefield):
     if not imagefield:
@@ -12,24 +13,30 @@ def upload_image(imagefield):
     result = cloudinary.uploader.upload(imagefield, folder="afhimages/")
     return result['secure_url']
 
-def create_egress(responsible, amount, date, reason, payment_method, observations, voucher, origin_account):
+def create_egress(responsible, amount, date, reason, payment_method,  origin_account,  observations = None, voucher = None):
     try:
-
-        url = upload_image(voucher)
-
+        amount = Decimal(amount)
+        
         new_egress = Egress.objects.create(
             responsible = responsible,
             amount = amount,
             date = date,
             reason = reason,
             payment_method = payment_method, 
-            observations = observations,
-            voucher = url,
             origin_account = origin_account
         )
+
+        if voucher:
+            url = upload_image(voucher)
+            new_egress.voucher = url
+        if observations:
+            new_egress.observations = observations
+        new_egress.save()
+        
         return new_egress
     except Exception as e:
-        return "Error creando el egreso: ", str(e)
+        print("Error al crear el egreso:", str(e))
+        raise e
     
 
 def update_egress(id, responsible = None, date = None , reason = None, payment_method = None, observations = None, origin_account = None, voucher = None):
@@ -54,11 +61,12 @@ def update_egress(id, responsible = None, date = None , reason = None, payment_m
         
         egress.save()
     except Exception as e:
-        return "Errror actualizando el egreso: ", str(e)
+        print("Error el egreso:", str(e))
+        raise e
     
 def create_income(responsible, amount, date, reason, payment_method, observations, voucher, destination_account):
     try:
-        url = upload_image(voucher)
+        amount = Decimal(amount)
 
         new_income = Income.objects.create(
             responsible = responsible,
@@ -66,14 +74,20 @@ def create_income(responsible, amount, date, reason, payment_method, observation
             date = date,
             reason = reason,
             payment_method = payment_method,
-            observations = observations,
-            voucher = url,
             destination_account = destination_account
         )
 
+        if voucher:
+            url = upload_image(voucher)
+            new_income.voucher = url
+        if observations:
+            new_income.observations = observations
+        new_income.save()
+
         return new_income
     except Exception as e:
-        return "Error creando el ingreso: ", str(e)
+        print("Error el egreso:", str(e))
+        raise e
 
 def update_income(id, responsible = None, date = None, reason = None, payment_method = None, observations = None, voucher = None,destination_account = None):
     try:
@@ -98,7 +112,8 @@ def update_income(id, responsible = None, date = None, reason = None, payment_me
         
         income.save()
     except Exception as e:
-        return "Error actualizando el ingreso", str(e)
+        print("Error el egreso:", str(e))
+        raise e
     
 def get_incomes():
     try:
@@ -122,7 +137,7 @@ def get_egress():
         return str(e)
     
 def get_egress_by_id(id):
-    
+
     try:
         egress = Egress.objects.get(id=id)
         return egress

@@ -26,10 +26,10 @@ def create_egrees_view(request):
         if not responsible or not amount or not date or not reason or not payment_method or not origin_account:
             return Response({'Error': 'Todos los datos son requeridos'}, 400)
 
-        create_egress(responsible=responsible, amount= amount, date= date, reason= reason, payment_method=payment_method, observations=observations,
+        egress = create_egress(responsible=responsible, amount= amount, date= date, reason= reason, payment_method=payment_method, observations=observations,
                       voucher= voucher, origin_account=origin_account)
 
-        return Response({'message': 'Creado con exito'}, 201)
+        return Response({'message': 'Creado con exito', 'id': egress.id}, 201)
     except Exception as e:
         return Response({'Error': str(e)}, 500)
     
