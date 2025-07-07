@@ -64,7 +64,7 @@ def update_egress(id, responsible = None, date = None , reason = None, payment_m
         print("Error el egreso:", str(e))
         raise e
     
-def create_income(responsible, amount, date, reason, payment_method, observations, voucher, destination_account):
+def create_income(responsible, amount, date, reason,  destination_account, payment_method, observations = None, voucher = None):
     try:
         amount = Decimal(amount)
 
