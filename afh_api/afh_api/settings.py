@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'item',
     'Delivery_certificate',
     'exhibit',
+    'Financial_movement'
 ]
 
 MIDDLEWARE = [
