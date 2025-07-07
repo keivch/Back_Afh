@@ -30,7 +30,7 @@ urlpatterns = [
     path('workorder/', include('WorkOrder.urls')), #endpoints de las ordenes de trabajo
     path('deliverycertificate/', include('Delivery_certificate.Urls')), #endpoints de los certificados de entrega
     path('exhibit/', include('exhibit.Urls')), #endpoints de los exhibits
-    path('egress/', include('Egress.urls_egress')),#enpoints de los egress
-    path('income/', include('Income.urls_income'))
+    path('egress/', include('Financial_movement.urls_egress')),#enpoints de los egress
+    path('income/', include('Financial_movement.urls_income'))
 ]
 
