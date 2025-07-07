@@ -27,10 +27,10 @@ def create_income_view(request):
         if not responsible or not date or not reason or not payment_method or not destination_account or not amount:
             return Response({'Error': 'Todos lso campos son requeridos'}, 400)
         
-        create_income(responsible=responsible, amount=amount, date=date, reason=reason, payment_method=payment_method, observations=observations, voucher=voucher,
+        new_income = create_income(responsible=responsible, amount=amount, date=date, reason=reason, payment_method=payment_method, observations=observations, voucher=voucher,
                       destination_account=destination_account)
         
-        return Response({'message': 'Creado con exito'}, 201)
+        return Response({'message': 'Creado con exito', "id": new_income.id }, 201)
     except Exception as e:
         return Response({'Error': str(e)})
 
