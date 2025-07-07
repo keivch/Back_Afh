@@ -3,7 +3,7 @@ from . import viewsIncome
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register('Tool', viewsIncome.IncomeViewSet, basename='CrudIncome')
+router.register('Income', viewsIncome.IncomeViewSet, basename='CrudIncome')
 
 urlpatterns = [
     path('', include(router.urls)),

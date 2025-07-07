@@ -3,7 +3,7 @@ from . import viewsEgress
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register('Tool', viewsEgress.EgressViewSet, basename='CrudEgress')
+router.register('Egress', viewsEgress.EgressViewSet, basename='CrudEgress')
 
 urlpatterns = [
     path('', include(router.urls)), 
