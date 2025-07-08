@@ -20,8 +20,8 @@ def create_income_view(request):
         date = data.get('date')
         reason = data.get('reason')
         payment_method = data.get('payment_method')
-        observations = request.FILES.get('observations')
-        voucher = data.get('voucher')
+        observations = data.get('observations')
+        voucher = request.FILES.get('voucher')
         destination_account = data.get('destination_account')
 
         if not responsible or not date or not reason or not payment_method or not destination_account or not amount:
@@ -42,8 +42,8 @@ def update_income_view(request, income_id):
         date = data.get('date')
         reason = data.get('reason')
         payment_method = data.get('payment_method')
-        observations = request.FILES.get('observations')
-        voucher = data.get('voucher')
+        observations = data.get('observations')
+        voucher = request.FILES.get('voucher')
         destination_account = data.get('destination_account')
 
         update_income(id=income_id, responsible=responsible, date=date, reason=reason, payment_method=payment_method,

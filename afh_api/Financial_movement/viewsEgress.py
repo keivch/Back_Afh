@@ -19,8 +19,8 @@ def create_egrees_view(request):
         date = data.get('date')
         reason = data.get('reason')
         payment_method = data.get('payment_method')
-        observations = request.FILES.get('observations')
-        voucher = data.get('voucher')
+        observations = data.get('observations')
+        voucher = request.FILES.get('voucher')
         origin_account = data.get('origin_account')
 
         if not responsible or not amount or not date or not reason or not payment_method or not origin_account:
@@ -41,8 +41,8 @@ def update_egress_view(request, egress_id):
         date = data.get('date')
         reason = data.get('reason')
         payment_method = data.get('payment_method')
-        observations = request.FILES.get('observations')
-        voucher = data.get('voucher')
+        observations = data.get('observations')
+        voucher = request.FILES.get('voucher')
         origin_account = data.get('origin_account')
 
         update_egress( id=egress_id ,responsible=responsible, date= date, reason= reason, payment_method=payment_method, observations=observations,
