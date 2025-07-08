@@ -31,6 +31,7 @@ urlpatterns = [
     path('deliverycertificate/', include('Delivery_certificate.Urls')), #endpoints de los certificados de entrega
     path('exhibit/', include('exhibit.Urls')), #endpoints de los exhibits
     path('egress/', include('Financial_movement.urls_egress')),#enpoints de los egress
-    path('income/', include('Financial_movement.urls_income'))
+    path('income/', include('Financial_movement.urls_income')),
+    path('balans/', include('Financial_movement.urls_balans'))
 ]
 

@@ -2,6 +2,11 @@ from .models import Egress, Income
 import cloudinary
 import cloudinary.uploader
 from decimal import Decimal
+from django.db.models import Sum
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+import calendar
+
 
 def upload_image(imagefield):
     if not imagefield:
@@ -143,3 +148,71 @@ def get_egress_by_id(id):
         return egress
     except Exception as e:
         return str(e)
+    
+
+def get_balance(start_date=None, end_date=None):
+    filters = {}
+    if start_date and end_date:
+        filters['date__range'] = (start_date, end_date)
+
+    total_incomes = Income.objects.filter(**filters).aggregate(total=Sum('amount'))['total'] or 0
+    total_egress = Egress.objects.filter(**filters).aggregate(total=Sum('amount'))['total'] or 0
+
+    return {
+        'ingresos': total_incomes,
+        'egresos': total_egress,
+        'balance': total_incomes - total_egress
+    }
+
+def get_by_method_of_paymenth(option):
+    if option == 1:
+        return Income.objects.values('payment_method').annotate(total=Sum('amount'), cantidad=Count('id'))
+    if option == 2:
+        return Egress.objects.values('origin_account').annotate(total=Sum('amount'), cantidad=Count('id'))
+    
+def get_monthly_balans(start, end):
+    try:
+        filters = {}
+        if start and end:
+            filters['date__range'] = (start, end)
+
+        # Agrupar ingresos por mes
+        ingresos_mensuales = (
+            Income.objects.filter(**filters)
+            .annotate(month=TruncMonth('date'))
+            .values('month')
+            .annotate(total=Sum('amount'))
+            .order_by('month')
+        )
+
+        # Agrupar egresos por mes
+        egresos_mensuales = (
+            Egress.objects.filter(**filters)
+            .annotate(month=TruncMonth('date'))
+            .values('month')
+            .annotate(total=Sum('amount'))
+            .order_by('month')
+        )
+
+        # Convertir a diccionarios para fácil acceso
+        ingresos_dict = {i['month'].strftime('%Y-%m'): i['total'] for i in ingresos_mensuales}
+        egresos_dict = {e['month'].strftime('%Y-%m'): e['total'] for e in egresos_mensuales}
+
+        # Unificar los meses
+        meses = sorted(set(ingresos_dict.keys()) | set(egresos_dict.keys()))
+
+        resultado = []
+        for mes in meses:
+            año, mes_num = mes.split('-')
+            nombre_mes = calendar.month_name[int(mes_num)]
+            ingresos = ingresos_dict.get(mes, 0)
+            egresos = egresos_dict.get(mes, 0)
+            resultado.append({
+                "mes": nombre_mes,
+                "ingresos": ingresos,
+                "egresos": egresos,
+                "balance": ingresos - egresos
+            })
+        return resultado
+    except Exception as e:
+        raise e
