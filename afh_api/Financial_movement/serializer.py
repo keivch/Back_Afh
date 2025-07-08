@@ -2,11 +2,40 @@ from rest_framework import serializers
 from .models import Egress, Income
 
 class EgressSerializer(serializers.ModelSerializer):
+    amount_formatted = serializers.SerializerMethodField()
     class Meta:
         model = Egress
-        fields = '__all__'
-
+        fields = [
+            'responsible',
+            'amount',
+            'date',
+            'reason',
+            'payment_method',
+            'observations',
+            'voucher',
+            'origin_account'
+        ]
+    def get_amount_formatted(self, obj):
+        try:
+            return "${:,.0f}".format(obj.amount).replace(",", ".")
+        except:
+            return str(obj.amount)
 class IncomeSerializer(serializers.ModelSerializer):
+    amount_formatted = serializers.SerializerMethodField()
     class Meta:
         model = Income
-        fields = '__all__'
+        fields =  [
+            'responsible',
+            'amount',
+            'date',
+            'reason',
+            'payment_method',
+            'observations',
+            'voucher',
+            'destination_account'
+        ]
+    def get_amount_formatted(self, obj):
+        try:
+            return "${:,.0f}".format(obj.amount).replace(",", ".")
+        except:
+            return str(obj.amount)
