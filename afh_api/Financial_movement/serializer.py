@@ -6,6 +6,7 @@ class EgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Egress
         fields = [
+            'id',
             'responsible',
             'amount',
             'date',
@@ -26,6 +27,7 @@ class IncomeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Income
         fields =  [
+            'id',
             'responsible',
             'amount',
             'date',
