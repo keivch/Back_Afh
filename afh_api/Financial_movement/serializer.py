@@ -13,7 +13,8 @@ class EgressSerializer(serializers.ModelSerializer):
             'payment_method',
             'observations',
             'voucher',
-            'origin_account'
+            'origin_account',
+            'amount_formatted'
         ]
     def get_amount_formatted(self, obj):
         try:
@@ -32,7 +33,8 @@ class IncomeSerializer(serializers.ModelSerializer):
             'payment_method',
             'observations',
             'voucher',
-            'destination_account'
+            'destination_account',
+            'amount_formatted'
         ]
     def get_amount_formatted(self, obj):
         try:
