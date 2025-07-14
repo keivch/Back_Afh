@@ -1,3 +1,4 @@
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -269,16 +270,16 @@
             <div class="summary-grid">
                 <div class="summary-item">
                     <div class="label">Total Ingresos</div>
-                    <div class="value income currency">${{ balance_data.ingresos|floatformat:0 }}</div>
+                    <div class="value income currency">${{ balance_data.ingresos|floatformat:0 |intcomma}}</div>
                 </div>
                 <div class="summary-item">
                     <div class="label">Total Egresos</div>
-                    <div class="value expense currency">${{ balance_data.egresos|floatformat:0 }}</div>
+                    <div class="value expense currency">${{ balance_data.egresos|floatformat:0 |intcomma }}</div>
                 </div>
                 <div class="summary-item">
                     <div class="label">Balance Neto</div>
                     <div class="value {% if balance_data.balance < 0 %}balance negative{% else %}balance{% endif %} currency">
-                        ${{ balance_data.balance|floatformat:0 }}
+                        ${{ balance_data.balance|floatformat:0 |intcomma}}
                     </div>
                 </div>
             </div>
@@ -298,11 +299,11 @@
                     <div class="stat-label">Meses Positivos</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">${{ stats.avg_monthly_income|floatformat:0 }}</div>
+                    <div class="stat-value">${{ stats.avg_monthly_income|floatformat:0 |intcomma}}</div>
                     <div class="stat-label">Promedio Ingresos</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">${{ stats.avg_monthly_expense|floatformat:0 }}</div>
+                    <div class="stat-value">${{ stats.avg_monthly_expense|floatformat:0 |intcomma}}</div>
                     <div class="stat-label">Promedio Egresos</div>
                 </div>
             </div>
@@ -327,7 +328,7 @@
                     <tr>
                         <td>{{ method.payment_method }}</td>
                         <td class="text-center">{{ method.cantidad }}</td>
-                        <td class="text-right currency income">${{ method.total|floatformat:0 }}</td>
+                        <td class="text-right currency income">${{ method.total|floatformat:0 |intcomma}}</td>
                         <td class="text-right">{{ method.porcentaje }}%</td>
                     </tr>
                     {% endfor %}
@@ -359,7 +360,7 @@
                     <tr>
                         <td>{{ account.origin_account }}</td>
                         <td class="text-center">{{ account.cantidad }}</td>
-                        <td class="text-right currency expense">${{ account.total|floatformat:0 }}</td>
+                        <td class="text-right currency expense">${{ account.total|floatformat:0 |intcomma}}</td>
                         <td class="text-right">{{ account.porcentaje }}%</td>
                     </tr>
                     {% endfor %}
@@ -390,10 +391,10 @@
                     {% for month in monthly_balance %}
                     <tr>
                         <td>{{ month.mes }}</td>
-                        <td class="text-right currency income">${{ month.ingresos|floatformat:0 }}</td>
-                        <td class="text-right currency expense">${{ month.egresos|floatformat:0 }}</td>
+                        <td class="text-right currency income">${{ month.ingresos|floatformat:0 |intcomma}}</td>
+                        <td class="text-right currency expense">${{ month.egresos|floatformat:0 |intcomma}}</td>
                         <td class="text-right currency {% if month.balance < 0 %}balance negative{% else %}balance{% endif %}">
-                            ${{ month.balance|floatformat:0 }}
+                            ${{ month.balance|floatformat:0 |intcomma}}
                         </td>
                     </tr>
                     {% endfor %}
@@ -413,8 +414,8 @@
                         {% endwith %}
                     </div>
                     <div class="chart-values">
-                        <div class="income">+${{ month.ingresos|floatformat:0 }}</div>
-                        <div class="expense">-${{ month.egresos|floatformat:0 }}</div>
+                        <div class="income">+${{ month.ingresos|floatformat:0 |intcomma}}</div>
+                        <div class="expense">-${{ month.egresos|floatformat:0 |intcomma}}</div>
                     </div>
                 </div>
                 {% endfor %}
@@ -433,12 +434,12 @@
             <div class="section-title">Análisis de Rendimiento</div>
             <div class="stats-grid">
                 <div class="stat-item">
-                    <div class="stat-value balance">${{ stats.best_month.balance|floatformat:0 }}</div>
+                    <div class="stat-value balance">${{ stats.best_month.balance|floatformat:0 |intcomma}}</div>
                     <div class="stat-label">Mejor Mes: {{ stats.best_month.mes }}</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-value {% if stats.worst_month.balance < 0 %}balance negative{% else %}balance{% endif %}">
-                        ${{ stats.worst_month.balance|floatformat:0 }}
+                        ${{ stats.worst_month.balance|floatformat:0 |intcomma}}
                     </div>
                     <div class="stat-label">Peor Mes: {{ stats.worst_month.mes }}</div>
                 </div>
