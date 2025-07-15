@@ -1,4 +1,5 @@
 from .models import Customer
+from Quotes.models import Quotes
 
 def create_customer(name, email, phone, post,  representative):
     """
@@ -37,6 +38,8 @@ def delete_customer(id):
     """
     try:
         customer = Customer.objects.get(id=id)
+        if Quotes.objects.filter(customer=customer).exists():
+            return False
         customer.delete()
         return True
     except Customer.DoesNotExist:

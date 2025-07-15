@@ -1,3 +1,17 @@
 settings.py
 venv
 .env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de configuración de herramientas
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+
+.venv/
