@@ -248,7 +248,7 @@
     <p>
       A.F.H Metalmecánico S.A.S, ofrece el suministro de personal con
       experiencia, para desarrollar trabajo, dirección técnica y supervisión,
-      concerniente a: {{ descripcion }}.
+      concerniente a: <strong> {{ descripcion }}. </strong>
     </p>
 
     <ol class="tareas">
@@ -331,10 +331,6 @@
 
     <h3>CORRE POR CUENTA DEL CONTRATISTA</h3>
     <ul>
-      <li>Elementos de protección personal</li>
-      <li>Herramientas manuales y eléctricas</li>
-      <li>Personal capacitado</li>
-      <li>Materiales y consumibles</li>
     {% for item in contractor_materials %}
         <li>{{ item }}</li>
     {% endfor %}
@@ -343,8 +339,6 @@
 
     <h3>CORRE POR CUENTA DEL CONTRATANTE</h3>
     <ul>
-      <li>Disposición del sitio de trabajo</li>
-      <li>Suministro de energía 110V / 220V</li>
       {% for item in contracting_materials %}
         <li>{{ item }}</li>
     {% endfor %}
