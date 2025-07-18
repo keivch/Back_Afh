@@ -5,6 +5,7 @@ venv
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+
 *$py.class
 
 # Archivos de configuración de herramientas
@@ -15,3 +16,6 @@ __pycache__/
 *.pyd
 
 .venv/
+
+msys2-x86_64-20250622.exe
+
