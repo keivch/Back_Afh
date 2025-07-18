@@ -12,6 +12,8 @@ class Delivery_certificate(models.Model):
     description = models.TextField(verbose_name='description', null=True, blank=True)
     development = models.TextField(verbose_name='development', null=True, blank=True)
     exhibit = models.ManyToManyField(Exhibit, blank=True, related_name='delivery_certificates')
+    in_charge = models.CharField(max_length=100, verbose_name='In Charge', null=False, blank=False, default='Andres Felipe Hernandez')
+    post = models.CharField(max_length=100, verbose_name='Post', null=False, blank=False, default='Gerente general')
     
 
     def __str__(self):

@@ -21,9 +21,9 @@ def create_work_order_view(request):
         data = request.data
         quote_id = data.get('quote_id')
         start_date = data.get('start_date')
-        end_date = data.get('end_date')
         description = data.get('description')
         workplace = data.get('workplace')
+        days_of_execution = data.get('days_of_execution')
         number_technicians = data.get('number_technicians')
         number_officers = data.get('number_officers')
         number_auxiliaries = data.get('number_auxiliaries')
@@ -31,10 +31,10 @@ def create_work_order_view(request):
         permissions = data.get('permissions')
         number_supervisors = data.get('number_supervisors')
 
-        if not quote_id or not start_date or not workplace or not permissions or not activity or int(number_auxiliaries) < 0 or int(number_technicians) < 0 or int(number_officers) < 0 or int(number_supervisors) < 0:
+        if not quote_id or not start_date or not workplace or not permissions or not activity or int(number_auxiliaries) < 0 or int(number_technicians) < 0 or int(number_officers) < 0 or int(number_supervisors) < 0 or not days_of_execution:
             return Response({'error': 'All fields are required'}, status=400)
         
-        work_order = create_work_order(quote_id, start_date, end_date, description, workplace, int(number_technicians), int(number_officers), int(number_auxiliaries), activity, permissions, int(number_supervisors))
+        work_order = create_work_order(quote_id, start_date, days_of_execution, description, workplace, int(number_technicians), int(number_officers), int(number_auxiliaries), activity, permissions, int(number_supervisors))
         return Response({'message': 'Orden de trabajo creada exitosamente', 'id': work_order.id}, status=201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
@@ -47,7 +47,6 @@ def update_work_order_view(request, id):
         data = request.data
         quote_id = data.get('quote_id')
         start_date = data.get('start_date')
-        end_date = data.get('end_date')
         description = data.get('description')
         workplace = data.get('workplace')
         number_technicians = data.get('number_technicians')
@@ -56,12 +55,12 @@ def update_work_order_view(request, id):
         activity = data.get('activity')
         permissions = data.get('permissions')
         number_supervisors = data.get('number_supervisors')
+        days_of_execution = data.get('days_of_execution')
         
         updated_work_order = update_work_order(
             id=id,
             quote_id=quote_id,
             start_date=start_date,
-            end_date=end_date,
             description=description,
             workplace=workplace,
             number_technicians=number_technicians,
@@ -69,7 +68,8 @@ def update_work_order_view(request, id):
             number_auxiliaries=number_auxiliaries,
             activity=activity,
             permissions=permissions,
-            number_supervisors=number_supervisors
+            number_supervisors=number_supervisors,
+            days_of_execution=days_of_execution
         )
 
         return Response({'message': 'Orden de trabajo actualizada exitosamente', 'id': updated_work_order.id}, status=200)
