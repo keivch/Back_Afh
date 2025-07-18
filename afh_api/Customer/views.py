@@ -59,6 +59,8 @@ def update_customer_view(request, customer_id):
 def delete_customer_view(request, customer_id):
     try:
         delete_customer(customer_id)
+        if delete_customer(customer_id) is False:
+            return Response({'error': 'El cliente esta asociado a una cotizacion, no se puede eliminar'}, status=400)
         return Response({'message': 'Cliente eliminado exitosamente'}, status=204)
     except Exception as e:
         return Response({'error': str(e)}, status=500)

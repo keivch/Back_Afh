@@ -65,6 +65,8 @@ INSTALLED_APPS = [
     'item',
     'Delivery_certificate',
     'exhibit',
+    'Financial_movement',
+    'django.contrib.humanize'
 ]
 
 MIDDLEWARE = [

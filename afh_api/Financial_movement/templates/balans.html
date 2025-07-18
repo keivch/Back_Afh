@@ -1,0 +1,457 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance Financiero - {{ company_name }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #333;
+            background-color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .header .company {
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .header .period {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        .summary-section {
+            margin-bottom: 25px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .summary-title {
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+
+        .summary-item {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+
+        .summary-item .label {
+            font-weight: bold;
+            color: #6c757d;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 9px;
+        }
+
+        .summary-item .value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .income { color: #28a745; }
+        .expense { color: #dc3545; }
+        .balance { color: #007bff; }
+        .balance.negative { color: #dc3545; }
+
+        .section {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            background-color: #fff;
+            font-size: 10px;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #2c3e50;
+            text-transform: uppercase;
+            font-size: 9px;
+        }
+
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+
+        .currency {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 9px;
+            border-top: 1px solid #dee2e6;
+            padding-top: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-item .stat-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-item .stat-label {
+            font-size: 9px;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .chart-container {
+            margin-top: 15px;
+        }
+
+        .chart-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 6px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .chart-label {
+            width: 80px;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .chart-bars {
+            flex: 1;
+            display: flex;
+            gap: 2px;
+            margin: 0 10px;
+            height: 16px;
+        }
+
+        .chart-bar {
+            border-radius: 2px;
+        }
+
+        .chart-bar.income {
+            background-color: #28a745;
+        }
+
+        .chart-bar.expense {
+            background-color: #dc3545;
+        }
+
+        .chart-values {
+            width: 150px;
+            font-size: 9px;
+            text-align: right;
+        }
+
+        @media print {
+            .container {
+                max-width: none;
+                padding: 15px;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+            }
+            
+            .summary-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="company">{{ company_name }}</div>
+            <h1>Balance Financiero</h1>
+            <div class="period">Período: {{ start_date }} - {{ end_date }}</div>
+        </div>
+
+        <!-- Resumen General -->
+        <div class="summary-section">
+            <div class="summary-title">Resumen General</div>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="label">Total Ingresos</div>
+                    <div class="value income currency">${{ balance_data.ingresos|floatformat:0 |intcomma}}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">Total Egresos</div>
+                    <div class="value expense currency">${{ balance_data.egresos|floatformat:0 |intcomma }}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">Balance Neto</div>
+                    <div class="value {% if balance_data.balance < 0 %}balance negative{% else %}balance{% endif %} currency">
+                        ${{ balance_data.balance|floatformat:0 |intcomma}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas Adicionales -->
+        {% if stats.total_months > 0 %}
+        <div class="section">
+            <div class="section-title">Estadísticas del Período</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">{{ stats.total_months }}</div>
+                    <div class="stat-label">Total Meses</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ stats.positive_months }}</div>
+                    <div class="stat-label">Meses Positivos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">${{ stats.avg_monthly_income|floatformat:0 |intcomma}}</div>
+                    <div class="stat-label">Promedio Ingresos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">${{ stats.avg_monthly_expense|floatformat:0 |intcomma}}</div>
+                    <div class="stat-label">Promedio Egresos</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Ingresos por Método de Pago -->
+        {% if has_income_methods %}
+        <div class="section">
+            <div class="section-title">Ingresos por Método de Pago</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Método de Pago</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-right">Total</th>
+                        <th class="text-right">Porcentaje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for method in income_methods %}
+                    <tr>
+                        <td>{{ method.payment_method }}</td>
+                        <td class="text-center">{{ method.cantidad }}</td>
+                        <td class="text-right currency income">${{ method.total|floatformat:0 |intcomma}}</td>
+                        <td class="text-right">{{ method.porcentaje }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="section">
+            <div class="section-title">Ingresos por Método de Pago</div>
+            <div class="no-data">No hay datos de ingresos por método de pago en este período</div>
+        </div>
+        {% endif %}
+
+        <!-- Egresos por Cuenta de Origen -->
+        {% if has_expense_accounts %}
+        <div class="section">
+            <div class="section-title">Egresos por Cuenta de Origen</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cuenta de Origen</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-right">Total</th>
+                        <th class="text-right">Porcentaje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for account in expense_accounts %}
+                    <tr>
+                        <td>{{ account.origin_account }}</td>
+                        <td class="text-center">{{ account.cantidad }}</td>
+                        <td class="text-right currency expense">${{ account.total|floatformat:0 |intcomma}}</td>
+                        <td class="text-right">{{ account.porcentaje }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="section">
+            <div class="section-title">Egresos por Cuenta de Origen</div>
+            <div class="no-data">No hay datos de egresos por cuenta de origen en este período</div>
+        </div>
+        {% endif %}
+
+        <!-- Balance Mensual -->
+        {% if has_monthly_data %}
+        <div class="section">
+            <div class="section-title">Balance Mensual</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mes</th>
+                        <th class="text-right">Ingresos</th>
+                        <th class="text-right">Egresos</th>
+                        <th class="text-right">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for month in monthly_balance %}
+                    <tr>
+                        <td>{{ month.mes }}</td>
+                        <td class="text-right currency income">${{ month.ingresos|floatformat:0 |intcomma}}</td>
+                        <td class="text-right currency expense">${{ month.egresos|floatformat:0 |intcomma}}</td>
+                        <td class="text-right currency {% if month.balance < 0 %}balance negative{% else %}balance{% endif %}">
+                            ${{ month.balance|floatformat:0 |intcomma}}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Gráfico Visual Simple -->
+            <div class="chart-container">
+                <div class="section-title">Visualización Mensual</div>
+                {% for month in monthly_balance %}
+                <div class="chart-row">
+                    <div class="chart-label">{{ month.mes|slice:":3" }}</div>
+                    <div class="chart-bars">
+                        {% with max_amount=stats.max_monthly_amount %}
+                        <div class="chart-bar income" style="width: {% widthratio month.ingresos max_amount 100 %}%;"></div>
+                        <div class="chart-bar expense" style="width: {% widthratio month.egresos max_amount 100 %}%;"></div>
+                        {% endwith %}
+                    </div>
+                    <div class="chart-values">
+                        <div class="income">+${{ month.ingresos|floatformat:0 |intcomma}}</div>
+                        <div class="expense">-${{ month.egresos|floatformat:0 |intcomma}}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="section">
+            <div class="section-title">Balance Mensual</div>
+            <div class="no-data">No hay datos de balance mensual en este período</div>
+        </div>
+        {% endif %}
+
+        <!-- Resumen de Mejores/Peores Meses -->
+        {% if stats.best_month and stats.worst_month %}
+        <div class="section">
+            <div class="section-title">Análisis de Rendimiento</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value balance">${{ stats.best_month.balance|floatformat:0 |intcomma}}</div>
+                    <div class="stat-label">Mejor Mes: {{ stats.best_month.mes }}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value {% if stats.worst_month.balance < 0 %}balance negative{% else %}balance{% endif %}">
+                        ${{ stats.worst_month.balance|floatformat:0 |intcomma}}
+                    </div>
+                    <div class="stat-label">Peor Mes: {{ stats.worst_month.mes }}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Reporte generado el {{ generation_date }}</p>
+            <p>Sistema de Gestión Financiera - {{ company_name }}</p>
+        </div>
+    </div>
+</body>
+</html>
