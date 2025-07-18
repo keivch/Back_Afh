@@ -24,10 +24,12 @@ def create_delivery_certificate_view(request):
         exhibit_ids = data.get('exhibit_ids', [])
         description = data.get('description')
         development = data.get('development')
+        in_charge = data.get('in_charge')
+        post = data.get('post')
         if not work_order_id or not observations or not recommendations:
             return Response({'error': 'Todos los datos son requeridos'}, status=400)
 
-        create_delivery_certificarte(work_order_id, observations, recommendations, exhibit_ids, description, development)
+        create_delivery_certificarte(work_order_id, observations, recommendations, exhibit_ids, description, development, in_charge, post)
 
         return Response({'message': 'Certificado de entrega creado exitosamente'}, status=201)
     except Exception as e:
@@ -42,11 +44,13 @@ def update_delivery_certificate_view(request, id):
         recommendations = data.get('recommendations')
         development = data.get('development')
         description = data.get('description')
+        in_charge = data.get('in_charge')
+        post = data.get('post')
 
         if not observations and not recommendations:
             return Response({'error': 'Debe proporcionar al menos una observación o recomendación'}, status=400)
         
-        update_delivery_certificate(id, observations, recommendations, development, description)
+        update_delivery_certificate(id, observations, recommendations, development, description, in_charge, post)
 
         return Response({'message': 'Certificado de entrega actualizado exitosamente'}, status=200)
     except Exception as e:
