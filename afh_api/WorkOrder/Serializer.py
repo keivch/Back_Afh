@@ -6,4 +6,18 @@ class WorkOrderSerializer(serializers.ModelSerializer):
     quote = QuotesSerializer()
     class Meta:
         model = WorkOrder
-        fields = '__all__'
+        fields = [
+            'id',
+            'quote',
+            'start_date',
+            'end_date',
+            'description',
+            'workplace',
+            'number_technicians',
+            'number_officers',
+            'number_auxiliaries',
+            'activity',
+            'permissions',
+            'number_supervisors',
+            'days_of_execution'
+        ]
