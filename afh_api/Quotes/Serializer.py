@@ -2,9 +2,6 @@ from rest_framework import serializers
 from .models import Quotes
 from Customer.Serializer import CustomerSerializer
 from Option.Serializer import OptionSerializer
-import locale
-
-locale.setlocale(locale.LC_ALL, 'es_CO.UTF-8')
 
 
 

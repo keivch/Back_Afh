@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from .models import Item
 from .Serializer import ItemSerializer
 from .service import create_item, update_item, delete_item, get_items, get_item_by_id
@@ -12,6 +13,7 @@ class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_item(request):
     data = request.data
     try:
@@ -27,6 +29,7 @@ def add_item(request):
         return Response({'error': str(e)}, status=500)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_item_view(request, item_id):
     data = request.data
     try:
