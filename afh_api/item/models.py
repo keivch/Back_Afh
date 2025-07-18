@@ -1,4 +1,5 @@
 from django.db import models
+from decimal import Decimal
 
 
 # Create your models here.
@@ -16,5 +17,5 @@ class Item(models.Model):
     @property
     def total_value(self):
         """Calcula automáticamente el valor total como amount * unit_value"""
-        return self.amount * self.unit_value
+        return Decimal(str(self.amount)) * self.unit_value
     
