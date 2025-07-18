@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from .models import Item
-import locale
 
-locale.setlocale(locale.LC_ALL, 'es_CO.UTF-8')  # Set locale to Colombian Spanish
 
 class ItemSerializer(serializers.ModelSerializer):
     unit_value_formatted = serializers.SerializerMethodField()

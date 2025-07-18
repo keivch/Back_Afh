@@ -16,6 +16,7 @@ class ToolViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def addTool(request):
     try:
         name = request.data.get('name')
@@ -51,6 +52,7 @@ def addTool(request):
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def updateTool(request):
     try:
         name = request.data.get('name')
@@ -114,6 +116,7 @@ def getToolById(request, tool_id):
         return Response({'error': str(e)}, status=500)
     
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def deleteTool(request, tool_id):
     try:
         tool = Tool.objects.filter(id = tool_id).first()

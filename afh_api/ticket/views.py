@@ -3,6 +3,7 @@ from .models import Ticket
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from tool.models import Tool
 import pytz
 from django.contrib.auth.models import User
@@ -19,6 +20,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def addTicket(request):
     data = request.data
     # Zona horaria de Colombia
@@ -62,6 +64,7 @@ def gtTicketById(request, ticket_id):
         return Response({'error': str(e)}, status=500)
     
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def changeState(request):
     data = request.data
 

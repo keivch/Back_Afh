@@ -5,7 +5,7 @@ import weasyprint
 from io import BytesIO
 from django.template.loader import get_template
 
-def create_delivery_certificarte(work_order_id, osbervations, recommendations, exhibit_ids, description, development):
+def create_delivery_certificarte(work_order_id, osbervations, recommendations, exhibit_ids, description, development, in_charge, post):
     try:
         work = WorkOrder.objects.get(id=work_order_id)
         exhibits = Exhibit.objects.filter(id__in=exhibit_ids)
@@ -14,7 +14,9 @@ def create_delivery_certificarte(work_order_id, osbervations, recommendations, e
             observations=osbervations,
             recommendations=recommendations,
             description=description,
-            development=development
+            development=development,
+            in_charge=in_charge,
+            post=post
         )
 
         for exhibit in exhibits:
@@ -26,7 +28,7 @@ def create_delivery_certificarte(work_order_id, osbervations, recommendations, e
         print(f"Error creating delivery certificate: {str(e)}")
         return None
     
-def update_delivery_certificate(id, observations = None, recommendations = None, description = None, development = None):
+def update_delivery_certificate(id, observations = None, recommendations = None, description = None, development = None, in_charge = None, post = None):
     try:
         delivery_certificate = Delivery_certificate.objects.get(id=id)
         if observations is not None:
@@ -37,6 +39,10 @@ def update_delivery_certificate(id, observations = None, recommendations = None,
             delivery_certificate.description = description
         if development is not None:
             delivery_certificate.development = development
+        if in_charge is not None:
+            delivery_certificate.in_charge = in_charge
+        if post is not None:
+            delivery_certificate.post = post
         delivery_certificate.save()
         return delivery_certificate
     except Exception as e:
@@ -85,7 +91,9 @@ def create_pdf(id):
             'observations': delivery.observations,
             'recommendations': delivery.recommendations,
             'exhibits': delivery.exhibit.all(),
-            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png',
+            'in_charge': delivery.in_charge,
+            'post': delivery.post
             })
         
         buffer = BytesIO()
