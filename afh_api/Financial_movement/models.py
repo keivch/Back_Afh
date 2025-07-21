@@ -7,8 +7,8 @@ class FinancialMovement(models.Model):
     date = models.DateField(verbose_name="fecha")
     reason = models.CharField(max_length=250, verbose_name="motivo", null=False, blank=False)
     payment_method = models.CharField(max_length=250, verbose_name="metodo de pago", null=False, blank=False)
-    observations = models.TextField(verbose_name="Observaciones", null=True, blank=True)
-    voucher = models.CharField(max_length=250, verbose_name="Comprobante", null=True, blank=True)
+    observations = models.TextField(verbose_name="Observaciones", blank=True)
+    voucher = models.CharField(max_length=250, verbose_name="Comprobante", blank=True)
 
     class Meta:
         abstract = True
