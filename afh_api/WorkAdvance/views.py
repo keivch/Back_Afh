@@ -51,7 +51,51 @@ def add_work_advance_view(request):
         return Response({'message:': 'WorkAdvance created succesfully', 'id': work_advance.id}, 201)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
+    
 
+@swagger_auto_schema(
+    method='patch',
+    operation_description="Actualiza un avance de trabajo existente.",
+    manual_parameters=[
+        openapi.Parameter(
+            'work_advance_id',
+            openapi.IN_PATH,
+            description="ID del avance de trabajo a actualizar",
+            type=openapi.TYPE_INTEGER,
+            required=True
+        )
+    ],
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=[],
+        properties={
+            'exhibits_ids': openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Items(type=openapi.TYPE_INTEGER),
+                description="Lista de IDs de exhibits relacionados"
+            ),
+            'description': openapi.Schema(
+                type=openapi.TYPE_STRING,
+                description="Descripción del avance"
+            ),
+            'date': openapi.Schema(
+                type=openapi.TYPE_STRING,
+                format='date',
+                description="Fecha del avance (YYYY-MM-DD)"
+            ),
+        }
+    ),
+    responses={
+        200: openapi.Response(
+            description="Avance actualizado exitosamente",
+            examples={"application/json": {"message": "update work advance succesfully"}}
+        ),
+        500: openapi.Response(
+            description="Error interno del servidor",
+            examples={"application/json": {"error": "detalle del error"}}
+        )
+    }
+)
 @api_view(['PATCH'])
 def update_work_advance_view(request, work_advance_id):
     data = request.data
