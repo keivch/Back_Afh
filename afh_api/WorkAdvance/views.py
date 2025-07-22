@@ -6,12 +6,37 @@ from rest_framework.response import Response
 from .service import add_work_advance, get_work_advance, get_work_advance_by_id, delete_work_advance, edit_work_advance
 from .models import WorkAdvance
 from .serializer import WorkAdvanceSerializer
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 # Create your views here.
 class WorkAdvanceViewSet(viewsets.ModelViewSet):
     serializer_class = WorkAdvanceSerializer
     queryset = WorkAdvance.objects.all()
 
+
+@swagger_auto_schema(
+    method='post',
+    operation_description="Crea un nuevo avance de trabajo.",
+    manual_parameters=[],
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['description'],
+        properties={
+            'exhibits_ids': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER)),
+            'description': openapi.Schema(type=openapi.TYPE_STRING),
+            'date': openapi.Schema(type=openapi.TYPE_STRING, format='date')
+        },
+    ),
+    responses={
+        201: openapi.Response(
+            description="WorkAdvance creado exitosamente",
+            examples={"application/json": {"message": "WorkAdvance created succesfully", "id": 1}}
+        ),
+        400: "Bad Request",
+        500: "Internal Server Error"
+    }
+)
 
 @api_view(['POST'])
 def add_work_advance_view(request):
@@ -51,7 +76,8 @@ def delete_work_order_view(request, work_advance_id):
 @api_view(['GET'])
 def get_work_advance_view(request):
     try:
-        serializer = WorkAdvanceSerializer(many=True, data=get_work_advance())
+        works = get_work_advance()
+        serializer = WorkAdvanceSerializer(works, many=True)
         return Response(serializer.data, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
