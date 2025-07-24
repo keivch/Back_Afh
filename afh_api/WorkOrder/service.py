@@ -7,6 +7,7 @@ from io import BytesIO
 from .Serializer import WorkOrderSerializer
 from Quotes.models import Quotes
 from Delivery_certificate.models import Delivery_certificate
+from WorkProgress.models import WorkProgress
 
 # Zona horaria de Colombia
 ZONA_COLOMBIA = pytz.timezone('America/Bogota')
@@ -31,6 +32,9 @@ def create_work_order(quote_id, start_date, days_of_execution, description, work
             days_of_execution = days_of_execution
         )
         new_work_order.save()
+        #creacion del progreso de trabajo
+        WorkProgress.objects.create(work_order = new_work_order)
+        
         return new_work_order
     except Exception as e:
         raise Exception(f"Error creating work order: {str(e)}")
