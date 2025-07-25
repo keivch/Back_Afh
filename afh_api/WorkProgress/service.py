@@ -1,5 +1,6 @@
 from .models import WorkProgress
 from WorkAdvance.models import WorkAdvance
+from Customer.models import Customer
 
 def add_advance_to_progress(work_progress_id, work_advance_id):
     try:
@@ -51,3 +52,11 @@ def change_work_progress_status(work_progress_id, new_status):
     except Exception as e:
         print(f"Error changing status of work progress: {e}")
         return None
+
+def validate_customer(code, email):
+        customer = Customer.objects.get(email=email)
+        work_order = WorkProgress.objects.get(work_order__quote__code=code)
+        if work_order and customer:
+            return work_order
+        else:
+            return None

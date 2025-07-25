@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .service import add_advance_to_progress, remove_advance_from_progress, get_work_progress_by_id, get_all_work_progresses, change_work_progress_status
+from .service import add_advance_to_progress, remove_advance_from_progress, get_work_progress_by_id, get_all_work_progresses, change_work_progress_status, validate_customer
 from .models import WorkAdvance
 from .serializer import WorkAdvanceSerializer
 from drf_yasg.utils import swagger_auto_schema
@@ -163,5 +163,23 @@ def change_work_progress_status_view(request, work_progress_id):
             return Response({'message': 'wor_progress updated succefully'}, status=200)
         else:
             return Response({"error": "Work progress not found."}, status=404)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+    
+@api_view(['POST'])
+def validate_customer_view(request):
+    data = request.data
+    try:
+        code = data.get('code')
+        email = data.get('email')
+        if not code or not email:
+            return Response({"error": "Code and email are required."}, status=400)
+        
+        work_order = validate_customer(code, email)
+        if work_order:
+            serializer = WorkProgressSerializer(work_order)
+            return Response(serializer.data, status=200)
+        else:
+            return Response({"error": "Invalid code or email."}, status=404)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
