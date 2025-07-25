@@ -43,7 +43,7 @@ def get_all_work_progresses():
 def change_work_progress_status(work_progress_id, new_status):
     try:
         work_progress = WorkProgress.objects.get(id=work_progress_id)
-        work_progress.status = new_status
+        work_progress.state = new_status
         work_progress.save()
         return work_progress
     except WorkProgress.DoesNotExist:
