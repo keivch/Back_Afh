@@ -100,7 +100,7 @@ def add_work_advance_view(request):
 def update_work_advance_view(request, work_advance_id):
     data = request.data
     try:
-        exhibits_ids = data.get('exhibits_ids', [])
+        exhibits_ids = data.get('exhibits_ids')
         description = data.get('description')
         date = data.get('date')
 
