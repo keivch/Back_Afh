@@ -1,6 +1,47 @@
 from .models import WorkProgress
 from WorkAdvance.models import WorkAdvance
 from Customer.models import Customer
+from service.pusher import pusher_client
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.conf import settings
+
+def send_notification(work_progress):
+    canal_name = str(work_progress.id)
+    try:
+        pusher_client.trigger(
+            canal_name,
+            'Nuevo avance registrado',
+            {
+                'title': 'Nuevo avance registrado por afh',
+                'content': 'Tienes un nuevo avance por revisar'
+            }
+        )
+
+        subject = 'Tienes un nuevo avance de tu proyecto ' + work_progress.work_order.quote.code
+        recipient = work_progress.work_order.quote.customer.email
+        context = {
+            'name_customer': work_progress.work_order.quote.customer.name,
+            'code':work_progress.work_order.quote.code
+        }
+
+        html_content = render_to_string('advanceEmail.html', context)
+        text_content = strip_tags(html_content)
+
+        new_email  = EmailMultiAlternatives(
+            subject,
+            text_content,
+            settings.EMAIL_HOST_USER,
+            [recipient]
+        )
+        new_email.attach_alternative(html_content, "text/html")
+        
+        new_email.send()
+    except Exception as e:
+        print(str(e))
+
+
 
 def add_advance_to_progress(work_progress_id, work_advance_id):
     try:
@@ -8,6 +49,7 @@ def add_advance_to_progress(work_progress_id, work_advance_id):
         work_advance = WorkAdvance.objects.get(id=work_advance_id)
         work_progress.work_advance.add(work_advance)
         work_progress.save()
+        send_notification(work_progress=work_progress)
         return work_progress
     except Exception as e:
         print(f"Error adding advance to progress: {e}")

@@ -1,6 +1,7 @@
 from .models import WorkAdvance
 from exhibit.models import Exhibit
 
+
 def add_work_advance(exhibits_ids, description, date):
     """
     Create a new WorkAdvance instance and associate it with the given exhibits.
