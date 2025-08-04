@@ -9,4 +9,5 @@ urlpatterns = [
     path('get_all/', views.get_all_work_progresses_view, name='get-all-work-progresses'),
     path('change_status/<int:work_progress_id>/', views.change_work_progress_status_view, name='change-work-progress-status'),
     path('validate_customer/', views.validate_customer_view, name='validate-customer'),
+    path('change_percentage/<int:work_progress_id>/', views.change_percentage_view, name='change-percentage')
 ]

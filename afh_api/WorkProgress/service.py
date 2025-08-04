@@ -15,7 +15,7 @@ def send_notification(work_progress):
             'Nuevo avance registrado',
             {
                 'title': 'Nuevo avance registrado por afh',
-                'content': 'Tienes un nuevo avance por revisar'
+                'content': 'Tienes un nuevo avance del trabajo '+ work_progress.work_order.quote.code
             }
         )
 
@@ -102,3 +102,11 @@ def validate_customer(code, email):
             return work_order
         else:
             return None
+
+def change_progress_percentage(percentage, work_progress_id):
+    try:
+        work = WorkProgress.objects.get(id=work_progress_id)
+        work.progress_percentage = percentage
+        work.save()
+    except Exception as e:
+        raise e
