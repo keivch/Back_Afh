@@ -44,7 +44,7 @@ def get_balans_pdf(request):
         buffer = generate_financial_report_pdf(start_date=start, end_date=end)
 
         response = HttpResponse(buffer, content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="Reporte_financiero.pdf"'
+        response['Content-Disposition'] = 'attachment; filename="Reporte_financiero.pdf"'
         return response
     except Exception as e:
         return Response({'error': str(e)}, 500)

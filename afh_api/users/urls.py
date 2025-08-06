@@ -6,7 +6,6 @@ router = routers.DefaultRouter()
 router.register('administrator', views.UserViewSet, basename='users')
 
 urlpatterns = [
-    path('', include(router.urls)),  # Esto incluirá todas las rutas generadas por el router
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout')

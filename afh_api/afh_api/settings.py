@@ -17,6 +17,7 @@ import os
 import cloudinary
 import cloudinary.api
 import cloudinary.uploader
+import pusher
 import dj_database_url 
 
 
@@ -66,7 +67,10 @@ INSTALLED_APPS = [
     'Delivery_certificate',
     'exhibit',
     'Financial_movement',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'drf_yasg',
+    'WorkAdvance',
+    'WorkProgress',  
 ]
 
 MIDDLEWARE = [
@@ -193,3 +197,12 @@ cloudinary.config(
     api_key= os.getenv("API_KEY"),
     api_secret= os.getenv("API_SECRET")
 )
+
+#configuracion de pusher
+PUSHER_CONFIG = {
+    'app_id' :os.getenv("APP_ID"),
+    'key': os.getenv("KEY"),
+    'secret':os.getenv("SECRET"),
+    "cluster": os.getenv("CLUSTER"),
+    'ssl': True
+}

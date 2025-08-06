@@ -12,7 +12,7 @@ class Quotes(models.Model):
     ]
     code = models.CharField(max_length=100, verbose_name='Code', null=False, blank=False)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='Customer', null=False, blank=False)
-    description = models.TextField(verbose_name='Description', null=True, blank=True)
+    description = models.TextField(verbose_name='Description', blank=True)
     issue_date = models.DateField(verbose_name='Issue Date', null=False, blank=False)
     state = models.IntegerField(choices=STATE_CHOICES, verbose_name='State', null=False, blank=False)
     options = models.ForeignKey(Option, verbose_name='Options', blank=True, on_delete=models.CASCADE, null=True)
@@ -23,10 +23,10 @@ class Quotes(models.Model):
     administration = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Administration', null=True, blank=True, default=0.0)
     revision = models.IntegerField(verbose_name='Revision', null=True, blank=True, default=1)
     construction = models.CharField(max_length=100, verbose_name='Construction', null=True, blank=True, default=None)
-    method_of_payment = models.CharField(max_length=100, verbose_name='Method of Payment', null=True, blank=True, default='')
+    method_of_payment = models.CharField(max_length=100, verbose_name='Method of Payment', blank=True, default='')
     contractor_materials = models.JSONField(verbose_name="contractor_materials", null=True, blank=True)
     contracting_materials = models.JSONField(verbose_name="contracting_materials", null=True, blank=True)
-    delivery_time = models.CharField(max_length=200,verbose_name="delivery_time", null=True, blank=True, default="36 días hábiles")
+    delivery_time = models.CharField(max_length=200,verbose_name="delivery_time", blank=True, default="36 días hábiles")
 
     @property
     def iva_value(self):

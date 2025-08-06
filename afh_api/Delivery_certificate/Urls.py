@@ -6,7 +6,6 @@ router = routers.DefaultRouter()
 router.register('DeliveryCertificate', views.DeliveryCertificateViewSet, basename='CrudDeliveryCertificate')
 
 urlpatterns = [
-    path('', include(router.urls)),
     path('create/', views.create_delivery_certificate_view, name='create-delivery-certificate'),
     path('update/<int:id>/', views.update_delivery_certificate_view, name='update-delivery-certificate'),
     path('get/', views.get_delivery_certificates_view, name='get-delivery-certificates'),

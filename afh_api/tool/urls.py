@@ -6,7 +6,6 @@ router = routers.DefaultRouter()
 router.register('Tool', views.ToolViewSet, basename='CrudTool')
 
 urlpatterns = [
-    path('', include(router.urls)), 
     path('addtool/', views.addTool, name='anadir-herramienta'),
     path('updatetool/', views.updateTool, name='update-tool'),
     path('gettools/', views.geTools, name='get-tools'),

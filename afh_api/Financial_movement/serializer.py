@@ -20,7 +20,8 @@ class EgressSerializer(serializers.ModelSerializer):
     def get_amount_formatted(self, obj):
         try:
             return "${:,.0f}".format(obj.amount).replace(",", ".")
-        except:
+        except Exception as e:
+            print(f"Error formatting amount: {e}")
             return str(obj.amount)
 class IncomeSerializer(serializers.ModelSerializer):
     amount_formatted = serializers.SerializerMethodField()
@@ -41,5 +42,6 @@ class IncomeSerializer(serializers.ModelSerializer):
     def get_amount_formatted(self, obj):
         try:
             return "${:,.0f}".format(obj.amount).replace(",", ".")
-        except:
+        except Exception as e:
+            print(f"Error formatting amount: {e}")
             return str(obj.amount)

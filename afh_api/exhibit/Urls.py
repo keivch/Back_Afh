@@ -6,7 +6,6 @@ router = routers.DefaultRouter()
 router.register('Exhibit', views.ExhibitViewSet, basename='CrudExhibit')
 
 urlpatterns = [
-    path('', include(router.urls)),
     path('create/', views.add_exhibit_view, name='create-exhibit'),
     path('update/<int:id>/', views.update_exhibit_view, name='update-exhibit'),
     path('get/', views.get_exhibits_view, name='get-exhibits'),

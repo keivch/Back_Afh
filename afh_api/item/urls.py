@@ -7,7 +7,6 @@ router = routers.DefaultRouter()
 router.register('Item', views.ItemViewSet, basename='CrudItem')
 
 urlpatterns = [
-    path('', include(router.urls)),
     path('additem/', views.add_item, name='anadir-item'),
     path('updateitem/<int:item_id>', views.update_item_view, name='update-item'),
     path('getitems/', views.get_items_view, name='get-items'),
