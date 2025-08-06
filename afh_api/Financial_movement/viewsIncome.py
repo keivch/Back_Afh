@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from .models import Income
 from .serializer import IncomeSerializer
 from .service import create_income, update_income, get_income_by_id, get_incomes
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 class IncomeViewSet(viewsets.ModelViewSet):
@@ -12,6 +13,7 @@ class IncomeViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_income_view(request):
     data = request.data
     try:
@@ -35,6 +37,7 @@ def create_income_view(request):
         return Response({'Error': str(e)})
 
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def update_income_view(request, income_id):
     data = request.data
     try:

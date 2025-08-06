@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from .models import Egress
 from .serializer import EgressSerializer
 from .service import create_egress, update_egress, get_egress_by_id, get_egress
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 class EgressViewSet(viewsets.ModelViewSet):
@@ -11,6 +12,7 @@ class EgressViewSet(viewsets.ModelViewSet):
     queryset = Egress.objects.all()
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_egrees_view(request):
     data = request.data
     try:
@@ -34,6 +36,7 @@ def create_egrees_view(request):
         return Response({'Error': str(e)}, 500)
     
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def update_egress_view(request, egress_id):
     data = request.data
     try:

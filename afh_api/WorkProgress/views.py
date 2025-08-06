@@ -42,6 +42,7 @@ from .serializer import WorkProgressSerializer
     }
 )
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def add_work_advance_view(request, work_progress_id, work_advance_id):
     try:
         add_advance_to_progress(work_progress_id=work_progress_id, work_advance_id=work_advance_id)
@@ -81,6 +82,7 @@ def add_work_advance_view(request, work_progress_id, work_advance_id):
     }
 )    
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def remove_work_advance_view(request, work_progress_id, work_advance_id):
     try:
         remove_advance_from_progress(work_progress_id=work_progress_id, work_advance_id=work_advance_id)
@@ -151,6 +153,7 @@ def get_all_work_progresses_view(request):
     }
 )
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def change_work_progress_status_view(request, work_progress_id):
     data = request.data
     try:
@@ -167,6 +170,7 @@ def change_work_progress_status_view(request, work_progress_id):
         return Response({"error": str(e)}, status=400)
     
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def validate_customer_view(request):
     data = request.data
     try:
@@ -238,6 +242,7 @@ def validate_customer_view(request):
     }
 )
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def change_percentage_view(request, work_progress_id):
     data = request.data
     try:
