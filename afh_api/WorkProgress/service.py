@@ -7,30 +7,33 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 
-def send_notification(work_progress):
+def send_notification(work_progress, tittle, content, type, subject):
     canal_name = str(work_progress.id)
     try:
         pusher_client.trigger(
             canal_name,
             'Nuevo avance registrado',
             {
-                'title': 'Nuevo avance registrado por afh',
-                'content': 'Tienes un nuevo avance del trabajo '+ work_progress.work_order.quote.code
+                'title': tittle,
+                'content': content + work_progress.work_order.quote.code
             }
         )
 
-        subject = 'Tienes un nuevo avance de tu proyecto ' + work_progress.work_order.quote.code
+        subject_email = subject + work_progress.work_order.quote.code
         recipient = work_progress.work_order.quote.customer.email
         context = {
             'name_customer': work_progress.work_order.quote.customer.name,
             'code':work_progress.work_order.quote.code
         }
 
-        html_content = render_to_string('advanceEmail.html', context)
+        if type == 1:
+            html_content = render_to_string('advanceEmail.html', context)
+        if type == 2:
+            html_content = render_to_string('noti_status.html', context)
         text_content = strip_tags(html_content)
 
         new_email  = EmailMultiAlternatives(
-            subject,
+            subject_email,
             text_content,
             settings.EMAIL_HOST_USER,
             [recipient]
@@ -49,7 +52,11 @@ def add_advance_to_progress(work_progress_id, work_advance_id):
         work_advance = WorkAdvance.objects.get(id=work_advance_id)
         work_progress.work_advance.add(work_advance)
         work_progress.save()
-        send_notification(work_progress=work_progress)
+        tittle = 'Nuevo avance registrado por afh'
+        content = 'Tienes un nuevo avance del trabajo '
+        type = 1
+        subject = 'Tienes un nuevo avance de tu proyecto '
+        send_notification(work_progress=work_progress, tittle=tittle, content=content, subject=subject, type=type)
         return work_progress
     except Exception as e:
         print(f"Error adding advance to progress: {e}")
@@ -87,6 +94,11 @@ def change_work_progress_status(work_progress_id, new_status):
         work_progress = WorkProgress.objects.get(id=work_progress_id)
         work_progress.state = new_status
         work_progress.save()
+        tittle = 'Tu Trabajo ha cambiado de estado'
+        content = 'El estado de tu trabajo ha sido actualizado '
+        type = 2
+        subject = 'Tu Trabajo ha cambiado de estado '
+        send_notification(work_progress=work_progress, tittle=tittle, content=content, subject=subject, type=type)
         return work_progress
     except WorkProgress.DoesNotExist:
         print(f"WorkProgress with id {work_progress_id} does not exist.")
