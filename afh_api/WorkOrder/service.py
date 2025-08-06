@@ -8,11 +8,40 @@ from .Serializer import WorkOrderSerializer
 from Quotes.models import Quotes
 from Delivery_certificate.models import Delivery_certificate
 from WorkProgress.models import WorkProgress
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.conf import settings
 
 # Zona horaria de Colombia
 ZONA_COLOMBIA = pytz.timezone('America/Bogota')
 # Hora actual en Colombia
 HORA_COLOMBIA = datetime.now(ZONA_COLOMBIA)
+
+def send_email(customer, code):
+    try:
+        subject = "Bienvenido al portal para clientes de AFH"
+        recipient = customer.email
+
+        context={
+        'nombre': customer.name,
+        'link': 'http://localhost:4200/login-customer',
+        'code': code
+    }
+
+        html_content = render_to_string('email.html', context)
+        text_content = strip_tags(html_content)
+
+        new_email  = EmailMultiAlternatives(
+            subject,
+            text_content,
+            settings.EMAIL_HOST_USER,
+            [recipient]
+        )
+        new_email.attach_alternative(html_content, "text/html")
+        new_email.send()
+    except Exception as e:
+        print(str(e))
 
 def create_work_order(quote_id, start_date, days_of_execution, description, workplace, number_technicians, number_officers, number_auxiliaries, activity, permissions, number_supervisors):
     try:
@@ -34,6 +63,8 @@ def create_work_order(quote_id, start_date, days_of_execution, description, work
         new_work_order.save()
         #creacion del progreso de trabajo
         WorkProgress.objects.create(work_order = new_work_order)
+        #enviar correo al cliente
+        send_email(quote.customer, quote.code)
         
         return new_work_order
     except Exception as e:

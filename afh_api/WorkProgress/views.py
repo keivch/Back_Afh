@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .service import add_advance_to_progress, remove_advance_from_progress, get_work_progress_by_id, get_all_work_progresses, change_work_progress_status, validate_customer
+from .service import add_advance_to_progress, remove_advance_from_progress, get_work_progress_by_id, get_all_work_progresses, change_work_progress_status, validate_customer, change_progress_percentage
 from .models import WorkAdvance
 from .serializer import WorkAdvanceSerializer
 from drf_yasg.utils import swagger_auto_schema
@@ -183,3 +183,69 @@ def validate_customer_view(request):
             return Response({"error": "Invalid code or email."}, status=404)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
+    
+
+
+@swagger_auto_schema(
+    method='put',
+    operation_description="Actualiza el porcentaje de un progreso de trabajo existente.",
+    manual_parameters=[
+        openapi.Parameter(
+            'work_progress_id',
+            openapi.IN_PATH,
+            description="ID del progreso de trabajo a actualizar",
+            type=openapi.TYPE_INTEGER,
+            required=True
+        )
+    ],
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['percentage'],
+        properties={
+            'percentage': openapi.Schema(
+                type=openapi.TYPE_INTEGER,
+                format='integer',
+                description='Nuevo valor del porcentaje de avance',
+                example=85.0
+            )
+        }
+    ),
+    responses={
+        200: openapi.Response(
+            description="Porcentaje actualizado exitosamente.",
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'message': openapi.Schema(
+                        type=openapi.TYPE_STRING,
+                        example='Porcentaje actualizado exitosamente'
+                    )
+                }
+            )
+        ),
+        400: openapi.Response(
+            description="Falta el campo 'percentage'.",
+            examples={
+                "application/json": {"error": "Debe enviar el porcentaje"}
+            }
+        ),
+        500: openapi.Response(
+            description="Error interno del servidor.",
+            examples={
+                "application/json": {"error": "Error inesperado"}
+            }
+        )
+    }
+)
+@api_view(['PUT'])
+def change_percentage_view(request, work_progress_id):
+    data = request.data
+    try:
+        percentage = data.get('percentage')
+        
+        if not percentage:
+            return Response({'error': 'Debe enviar el porcentaje'})
+        change_progress_percentage(percentage, work_progress_id=work_progress_id)
+        return Response({'message': 'Porcentaje actualizado exitosamente'}, 200)
+    except Exception as e:
+        return Response({'error': str(e)}, 500)

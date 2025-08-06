@@ -17,7 +17,7 @@ import os
 import cloudinary
 import cloudinary.api
 import cloudinary.uploader
-
+import pusher
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -187,3 +187,12 @@ cloudinary.config(
     api_key= os.getenv("API_KEY"),
     api_secret= os.getenv("API_SECRET")
 )
+
+#configuracion de pusher
+PUSHER_CONFIG = {
+    'app_id' :os.getenv("APP_ID"),
+    'key': os.getenv("KEY"),
+    'secret':os.getenv("SECRET"),
+    "cluster": os.getenv("CLUSTER"),
+    'ssl': True
+}
