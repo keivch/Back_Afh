@@ -25,7 +25,7 @@ def send_email(customer, code):
 
         context={
         'nombre': customer.name,
-        'link': 'http://localhost:4200/login-customer',
+        'link': 'https://metalmecanicos.vercel.app/login-customer',
         'code': code
     }
 

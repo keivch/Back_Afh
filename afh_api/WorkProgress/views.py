@@ -170,7 +170,6 @@ def change_work_progress_status_view(request, work_progress_id):
         return Response({"error": str(e)}, status=400)
     
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def validate_customer_view(request):
     data = request.data
     try:
