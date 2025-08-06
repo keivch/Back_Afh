@@ -39,6 +39,7 @@ class WorkAdvanceViewSet(viewsets.ModelViewSet):
 )
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_work_advance_view(request):
     data = request.data
     try:
@@ -97,6 +98,7 @@ def add_work_advance_view(request):
     }
 )
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def update_work_advance_view(request, work_advance_id):
     data = request.data
     try:
@@ -110,6 +112,7 @@ def update_work_advance_view(request, work_advance_id):
         return Response({'error': str(e)}, status=500)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_work_order_view(request, work_advance_id):
     try:
         delete_work_advance(work_advance_id)
