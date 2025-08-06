@@ -44,7 +44,7 @@ def update_exhibit_view(request, id):
             return Response({'error': 'Debe proporcionar al menos un título o una imagen'}, status=400)
         updated_exhibit = update_exhibit(id, tittle, image)
         if updated_exhibit:
-            return Response({'message': 'Exhibit updated successfully',  'exhibit_id': update_exhibit.id}, status=200)
+            return Response({'message': 'Exhibit updated successfully',  'exhibit_id': updated_exhibit.id}, status=200)
         else:
             return Response({'error': 'Exhibit not found'}, status=404)
     except Exception as e:

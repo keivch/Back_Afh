@@ -43,28 +43,35 @@ class QuotesSerializer(serializers.ModelSerializer):
             'delivery_time'
         ]
 
+        
+
     def get_iva_value(self, obj):
         try:
             return "${:,.0f}".format(obj.iva_value).replace(",", ".")
-        except:
+        except Exception as e:
+            print(f"Error formatting IVA value: {e}")
             return str(obj.iva_value)
     def get_utility_value(self, obj):
         try:
             return "${:,.0f}".format(obj.utility_value).replace(",", ".")
-        except:
+        except Exception as e:
+            print(f"Error formatting utility value: {e}")
             return str(obj.utility_value)
     def get_unforeseen_value(self, obj):
         try:
             return "${:,.0f}".format(obj.unforeseen_value).replace(",", ".")
-        except:
+        except Exception as e:
+            print(f"Error formatting unforeseen value: {e}")
             return str(obj.unforeseen_value)
     def get_administration_value(self, obj):
         try:
             return "${:,.0f}".format(obj.administration_value).replace(",", ".")
-        except:
+        except Exception as e:
+            print(f"Error formatting administration value: {e}")
             return str(obj.administration_value)
     def get_total_value(self, obj):
         try:
             return "${:,.0f}".format(obj.total_value).replace(",", ".")
-        except:
+        except Exception as e:
+            print(f"Error formatting total value: {e}")
             return str(obj.total_value)

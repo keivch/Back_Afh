@@ -44,7 +44,6 @@ def create_egress(responsible, amount, date, reason, payment_method,  origin_acc
         
         return new_egress
     except Exception as e:
-        print("Error al crear el egreso:", str(e))
         raise e
     
 
@@ -70,7 +69,6 @@ def update_egress(id, responsible = None, date = None , reason = None, payment_m
         
         egress.save()
     except Exception as e:
-        print("Error el egreso:", str(e))
         raise e
     
 def create_income(responsible, amount, date, reason,  destination_account, payment_method, observations = None, voucher = None):
@@ -95,7 +93,6 @@ def create_income(responsible, amount, date, reason,  destination_account, payme
 
         return new_income
     except Exception as e:
-        print("Error el egreso:", str(e))
         raise e
 
 def update_income(id, responsible = None, date = None, reason = None, payment_method = None, observations = None, voucher = None,destination_account = None):
@@ -121,7 +118,6 @@ def update_income(id, responsible = None, date = None, reason = None, payment_me
         
         income.save()
     except Exception as e:
-        print("Error el egreso:", str(e))
         raise e
     
 def get_incomes():
@@ -207,7 +203,7 @@ def get_monthly_balans(start, end):
 
         resultado = []
         for mes in meses:
-            año, mes_num = mes.split('-')
+            anio, mes_num = mes.split('-')
             nombre_mes = calendar.month_name[int(mes_num)]
             ingresos = ingresos_dict.get(mes, 0)
             egresos = egresos_dict.get(mes, 0)
@@ -250,11 +246,15 @@ def generate_financial_report_pdf(start_date, end_date):
         total_income = balance_data['ingresos']
         
         for method in income_methods_raw:
+            total_monto = method['total']
+            if isinstance(total_monto, list):
+                total_monto = total_monto[0] if total_monto else 0
+
             income_methods.append({
-                'payment_method': method['payment_method'] or 'No especificado',
-                'cantidad': method['cantidad'],
-                'total': method['total'],
-                'porcentaje': round((method['total'] / total_income * 100), 2) if total_income > 0 else 0
+                'payment_method': method.get('payment_method') or 'No especificado',
+                'cantidad': method.get('cantidad', 0),
+                'total': total_monto,
+                'porcentaje': round((total_monto / total_income * 100), 2) if total_income > 0 else 0
             })
         
         # 3. Obtener egresos por cuenta de origen
@@ -274,7 +274,7 @@ def generate_financial_report_pdf(start_date, end_date):
         monthly_balance = get_monthly_balans(start_date, end_date)
         
         # 5. Calcular estadísticas adicionales
-        stats = calculate_additional_stats(balance_data, monthly_balance)
+        stats = calculate_additional_stats(monthly_balance)
 
         template = get_template('balans.html')
         
@@ -301,37 +301,41 @@ def generate_financial_report_pdf(start_date, end_date):
         return buffer
         
     except Exception as e:
-        print(f"Error generando reporte: {str(e)}")
+        print(f"Error generating financial report PDF: {e}")
         raise e
     
-def calculate_additional_stats(balance_data, monthly_balance):
+def calculate_additional_stats(monthly_balance):
     """
     Calcula estadísticas adicionales para el reporte.
     """
-    stats = {
-        'total_months': len(monthly_balance),
-        'positive_months': len([m for m in monthly_balance if m['balance'] > 0]),
-        'negative_months': len([m for m in monthly_balance if m['balance'] < 0]),
-        'best_month': None,
-        'worst_month': None,
-        'avg_monthly_income': 0,
-        'avg_monthly_expense': 0,
-        'max_monthly_amount': 0,
-    }
-    
-    if monthly_balance:
-        # Mejor y peor mes
-        stats['best_month'] = max(monthly_balance, key=lambda x: x['balance'])
-        stats['worst_month'] = min(monthly_balance, key=lambda x: x['balance'])
+    try:
+        stats = {
+            'total_months': len(monthly_balance),
+            'positive_months': len([m for m in monthly_balance if m['balance'] > 0]),
+            'negative_months': len([m for m in monthly_balance if m['balance'] < 0]),
+            'best_month': None,
+            'worst_month': None,
+            'avg_monthly_income': 0,
+            'avg_monthly_expense': 0,
+            'max_monthly_amount': 0,
+        }
         
-        # Promedios mensuales
-        stats['avg_monthly_income'] = sum(m['ingresos'] for m in monthly_balance) / len(monthly_balance)
-        stats['avg_monthly_expense'] = sum(m['egresos'] for m in monthly_balance) / len(monthly_balance)
+        if monthly_balance:
+            # Mejor y peor mes
+            stats['best_month'] = max(monthly_balance, key=lambda x: x['balance'])
+            stats['worst_month'] = min(monthly_balance, key=lambda x: x['balance'])
+            
+            # Promedios mensuales
+            stats['avg_monthly_income'] = sum(m['ingresos'] for m in monthly_balance) / len(monthly_balance)
+            stats['avg_monthly_expense'] = sum(m['egresos'] for m in monthly_balance) / len(monthly_balance)
+            
+            # Máximo para los gráficos
+            stats['max_monthly_amount'] = max(
+                max(m['ingresos'] for m in monthly_balance),
+                max(m['egresos'] for m in monthly_balance)
+            )
         
-        # Máximo para los gráficos
-        stats['max_monthly_amount'] = max(
-            max(m['ingresos'] for m in monthly_balance),
-            max(m['egresos'] for m in monthly_balance)
-        )
-    
-    return stats
+        return stats
+    except Exception as e:
+        print(f"Error calculating additional stats: {e}")
+        raise e

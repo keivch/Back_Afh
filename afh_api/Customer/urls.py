@@ -7,7 +7,6 @@ router = routers.DefaultRouter()
 router.register('Customer', views.CustomerViewSet, basename='CrudCustomer')
 
 urlpatterns = [
-    path('', include(router.urls)),
     path('addcustomer/', views.add_customer, name='anadir-cliente'),
     path('updatecustomer/<int:customer_id>', views.update_customer_view, name='update-customer'),
     path('getcustomers/', views.get_customers_view, name='get-customers'),

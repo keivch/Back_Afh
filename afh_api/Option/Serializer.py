@@ -19,6 +19,7 @@ class OptionSerializer(serializers.ModelSerializer):
     def get_subtotal(self, obj):
         try:
             return "${:,.0f}".format(obj.subtotal).replace(",", ".")
-        except:
+        except Exception as e:
+            print(f"Error formatting subtotal: {e}")
             return str(obj.subtotal)
         
