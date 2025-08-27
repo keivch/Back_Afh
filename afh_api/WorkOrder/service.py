@@ -128,7 +128,7 @@ def create_pdf(id):
             "tasks": data['quote']['tasks'],
             "opcion": data['quote']['options'],
             "fecha": work.start_date.strftime("%d/%m/%Y"),
-            "logo_url": 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png',
+            "logo_url": 'https://res.cloudinary.com/dp4tvthea/image/upload/v1756313054/afhlogoazul_rxcpcv.png',
             "iva": data['quote']['iva_value'],
             "utility": data['quote']['utility_value'],
             "unforeseen": data['quote']['unforeseen_value'],

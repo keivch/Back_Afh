@@ -106,7 +106,7 @@ def pdfCreator(ticket, type):
             'descripcion': ticket.description,
             'lugar': ticket.place,
             'herramientas': ticket.tools.all(),
-            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png',
+            'logo_url': 'https://res.cloudinary.com/dp4tvthea/image/upload/v1756313054/afhlogoazul_rxcpcv.png',
             'responsible': ticket.responsible
 
     })
@@ -121,7 +121,7 @@ def pdfCreator(ticket, type):
             'descripcion': ticket.description,
             'lugar': ticket.place,
             'herramientas': ticket.tools.all(),
-            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png',
+            'logo_url': 'https://res.cloudinary.com/dp4tvthea/image/upload/v1756313054/afhlogoazul_rxcpcv.png',
             'responsible': ticket.responsible
         })
          # Crear el PDF
@@ -173,7 +173,7 @@ def pdfCreator(ticket, type):
             'herramientas_inactivas': toolsInactive,
             'herramientas_en_uso': toolsInUseWithPlace,
             'herramientas_en_reserva': toolsInReserve,
-            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png'
+            'logo_url': 'https://res.cloudinary.com/dp4tvthea/image/upload/v1756313054/afhlogoazul_rxcpcv.png'
         })
 
         
