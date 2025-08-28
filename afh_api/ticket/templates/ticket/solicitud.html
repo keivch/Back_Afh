@@ -1,163 +1,156 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>AFH - Solicitud de Herramientas</title>
-    <style>
-      @page {
-        size: letter portrait;
-        margin: 2cm;
-      }
 
-      body {
-        font-family: Arial, sans-serif;
-        font-size: 12px;
-        margin: 0;
-        padding: 0;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <title>AFH - Solicitud de Herramientas</title>
+  <style>
+    @page {
+      size: letter portrait;
+      margin: 2cm;
+    }
 
-      .container {
-        width: 100%;
-        position: relative;
-      }
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      margin: 0;
+      padding: 0;
+    }
 
-      .header {
-        text-align: center;
-        margin-bottom: 20px;
-      }
+    .container {
+      width: 100%;
+      position: relative;
+    }
 
-      .logo {
-        display: block;
-        margin: 0 auto;
-        max-width: 200px;
-        max-height: 80px;
-      }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-      h2 {
-        text-align: center;
-        margin-top: 10px;
-        font-size: 18px;
-      }
+    .logo {
+      display: block;
+      margin: 0 auto;
+      width: 100px;
+      height: 100px;
+    }
 
-      .section {
-        margin-bottom: 20px;
-      }
+    h2 {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 18px;
+    }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 30px;
-      }
+    .section {
+      margin-bottom: 20px;
+    }
 
-      table,
-      th,
-      td {
-        border: 1px solid #000;
-      }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
 
-      th,
-      td {
-        padding: 5px;
-        text-align: left;
-        font-size: 12px;
-      }
+    table,
+    th,
+    td {
+      border: 1px solid #000;
+    }
 
-      .imagen-herramienta {
-        width: 50px;
-        height: 50px;
-      }
+    th,
+    td {
+      padding: 5px;
+      text-align: left;
+      font-size: 12px;
+    }
 
-      .firmas-container {
-        position: fixed;
-        bottom: 2cm;
-        left: 0;
-        width: 100%;
-        text-align: center;
-      }
+    .imagen-herramienta {
+      width: 50px;
+      height: 50px;
+    }
 
-      .firma {
-        display: inline-block;
-        margin: 0 40px;
-        text-align: center;
-      }
+    .firmas-container {
+      position: fixed;
+      bottom: 2cm;
+      left: 0;
+      width: 100%;
+      text-align: center;
+    }
 
-      .firma p {
-        margin: 5px 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <img src="{{ logo_url }}" class="logo" alt="Logo AFH" />
-        <h2>AFH - {{titulo}}</h2>
-      </div>
+    .firma {
+      display: inline-block;
+      margin: 0 40px;
+      text-align: center;
+    }
 
-      <div class="section">
-        <p><strong>Fecha de Solicitud:</strong> {{ fecha_solicitud }}</p>
-        {% if fecha_entrega %}
-        <p><strong>Fecha de Entrega:</strong> {{ fecha_entrega }}</p>
-        {% endif %}
-        <p><strong>Solicitante:</strong> {{ solicitante }}</p>
-        <p><strong>Recibe:</strong> {{ responsible }}</p>
-        <p><strong>Descripción del trabajo:</strong> {{ descripcion }}</p>
-        <p><strong>Lugar de trabajo:</strong> {{ lugar }}</p>
-      </div>
+    .firma p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
 
-      <div class="section">
-        <h3>Herramientas solicitadas:</h3>
-        <table cellpadding="5" cellspacing="0">
-          <thead>
-            <tr>
-              <th width="20%">Imagen</th>
-              <th width="40%">Nombre</th>
-              <th width="40%">Código</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for herramienta in herramientas %}
-            <tr>
-              <td align="center">
-                {% if herramienta.image %}
-                <img
-                  src="{{ herramienta.image }}"
-                  class="imagen-herramienta"
-                  width="50"
-                  height="50"
-                />
-                {% else %} No disponible {% endif %}
-              </td>
-              <td>{{ herramienta.name }}</td>
-              <td>{{ herramienta.code }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      <div class="firmas-container">
-        <table
-          border="0"
-          cellpadding="0"
-          cellspacing="0"
-          style="border: none; margin-top: 20px"
-        >
-          <tr style="border: none">
-            <td width="50%" align="center" style="border: none">
-              <div class="firma">
-                <p>__________________________</p>
-                <p>Firma {{responsible}}</p>
-              </div>
-            </td>
-            <td width="50%" align="center" style="border: none">
-              <div class="firma">
-                <p>__________________________</p>
-                <p>Firma  {{receptor}}</p>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src={{logo_url}} class="logo" alt="Logo AFH" />
+      <h2>AFH - {{titulo}}</h2>
     </div>
-  </body>
+
+    <div class="section">
+      <p><strong>Fecha de Solicitud:</strong> {{ fecha_solicitud }}</p>
+      {% if fecha_entrega %}
+      <p><strong>Fecha de Entrega:</strong> {{ fecha_entrega }}</p>
+      {% endif %}
+      <p><strong>Solicitante:</strong> {{ solicitante }}</p>
+      <p><strong>Recibe:</strong> {{ responsible }}</p>
+      <p><strong>Descripción del trabajo:</strong> {{ descripcion }}</p>
+      <p><strong>Lugar de trabajo:</strong> {{ lugar }}</p>
+    </div>
+
+    <div class="section">
+      <h3>Herramientas solicitadas:</h3>
+      <table cellpadding="5" cellspacing="0">
+        <thead>
+          <tr>
+            <th width="20%">Imagen</th>
+            <th width="40%">Nombre</th>
+            <th width="40%">Código</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for herramienta in herramientas %}
+          <tr>
+            <td align="center">
+              {% if herramienta.image %}
+              <img src="{{ herramienta.image }}" class="imagen-herramienta" width="50" height="50" />
+              {% else %} No disponible {% endif %}
+            </td>
+            <td>{{ herramienta.name }}</td>
+            <td>{{ herramienta.code }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="firmas-container">
+      <table border="0" cellpadding="0" cellspacing="0" style="border: none; margin-top: 20px">
+        <tr style="border: none">
+          <td width="50%" align="center" style="border: none">
+            <div class="firma">
+              <p>__________________________</p>
+              <p>Firma {{responsible}}</p>
+            </div>
+          </td>
+          <td width="50%" align="center" style="border: none">
+            <div class="firma">
+              <p>__________________________</p>
+              <p>Firma {{receptor}}</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</body>
+
 </html>

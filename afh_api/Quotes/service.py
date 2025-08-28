@@ -155,7 +155,7 @@ def pdf_quote(id_quote):
             "tasks": data['tasks'],
             "opcion": data['options'],
             "fecha": quote.issue_date.strftime("%d/%m/%Y"),
-            "logo_url": 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png',
+            "logo_url": 'https://res.cloudinary.com/dp4tvthea/image/upload/v1756313054/afhlogoazul_rxcpcv.png',
             "iva": data['iva_value'],
             "utility": data['utility_value'],
             "unforeseen": data['unforeseen_value'],
