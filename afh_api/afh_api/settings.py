@@ -18,6 +18,8 @@ import cloudinary
 import cloudinary.api
 import cloudinary.uploader
 import pusher
+import dj_database_url 
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,9 +38,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['back-afh.onrender.com']
 
 
 # Application definition
@@ -108,11 +110,9 @@ WSGI_APPLICATION = 'afh_api.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+     'default': dj_database_url.config(default= env('URL_DB'))
 }
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -158,6 +158,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -171,14 +173,22 @@ EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
-#Configuracion del corsheaders
-CORS_ALLOW_ALL_ORIGINS = True 
+# settings.py
+
+CORS_ALLOWED_ORIGINS = [
+     "https://metalmecanicos.vercel.app", 
+     env('BACKURL')
+]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:4200",  # Permite CSRF desde Angular
+     "https://metalmecanicos.vercel.app",
+     env('BACKURL')
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 
 #configuracion de cloudinary
