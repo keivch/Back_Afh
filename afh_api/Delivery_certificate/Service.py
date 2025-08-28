@@ -91,7 +91,7 @@ def create_pdf(id):
             'observations': delivery.observations,
             'recommendations': delivery.recommendations,
             'exhibits': delivery.exhibit.all(),
-            'logo_url': 'https://www.afhmetalmecanico.com/wp-glass/wp-content/uploads/2017/04/logoafme3.png',
+            'logo_url': 'https://res.cloudinary.com/dp4tvthea/image/upload/v1756313054/afhlogoazul_rxcpcv.png',
             'in_charge': delivery.in_charge,
             'post': delivery.post
             })
