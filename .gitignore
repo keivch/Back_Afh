@@ -1,21 +1,8 @@
 .settings.py
 venv
 .env
-
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-
-*$py.class
-
-# Archivos de configuración de herramientas
-*.log
-*.pot
-*.pyc
-*.pyo
-*.pyd
-
-.venv/
+db.sqlite3
+__pycache__
 
 msys2-x86_64-20250622.exe
 
