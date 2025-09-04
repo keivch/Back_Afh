@@ -12,6 +12,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
+from babel.dates import format_date
 
 # Zona horaria de Colombia
 ZONA_COLOMBIA = pytz.timezone('America/Bogota')
@@ -127,7 +128,7 @@ def create_pdf(id):
             "descripcion": data['quote']['description'],
             "tasks": data['quote']['tasks'],
             "opcion": data['quote']['options'],
-            "fecha": work.start_date.strftime("%d/%m/%Y"),
+            "fecha": format_date(work.start_date, "d 'de' MMMM 'de' y", locale="es"),
             "logo_url": 'https://res.cloudinary.com/dp4tvthea/image/upload/v1756313054/afhlogoazul_rxcpcv.png',
             "iva": data['quote']['iva_value'],
             "utility": data['quote']['utility_value'],
