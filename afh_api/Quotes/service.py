@@ -15,6 +15,7 @@ from Option.models import Option
 from Option.service import create_option
 from .Serializer import QuotesSerializer
 from decimal import Decimal
+from babel.dates import format_date
 
 YEAR = datetime.now().year
 # Zona horaria de Colombia
@@ -154,7 +155,7 @@ def pdf_quote(id_quote):
             "descripcion": data['description'],
             "tasks": data['tasks'],
             "opcion": data['options'],
-            "fecha": quote.issue_date.strftime("%d/%m/%Y"),
+            "fecha": format_date(quote.issue_date, "d 'de' MMMM 'de' y", locale="es"),
             "logo_url": 'https://res.cloudinary.com/dp4tvthea/image/upload/v1756313054/afhlogoazul_rxcpcv.png',
             "iva": data['iva_value'],
             "utility": data['utility_value'],

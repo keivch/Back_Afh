@@ -6,6 +6,23 @@
   <meta charset="UTF-8" />
   <title>Cotización {{ code }}</title>
   <style>
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+
+    /* Rectángulo en el área superior izquierda */
+    @page {
+      @top-left-corner {
+        content: "";
+        display: block;
+        width: 6mm;
+        height: 25mm;
+        background: #99E63C;
+        border-radius: 2px;
+      }
+    }
+
     body {
       font-family: Arial, sans-serif;
       font-size: 15px;
@@ -84,11 +101,15 @@
     td {
       border: 1px solid #000;
       padding: 6px;
-      text-align: left;
+      text-align: center;
     }
 
     th {
       background-color: #f2f2f2;
+    }
+
+    .item {
+      text-align: left;
     }
 
     .total {
@@ -99,6 +120,13 @@
     ol.tareas {
       margin-top: 10px;
       padding-left: 20px;
+    }
+
+    ol.tareas li {
+      margin-bottom: 6px;
+      /* separación entre ítems */
+      line-height: 1.4;
+      /* mejora la legibilidad */
     }
 
     .firma {
@@ -199,12 +227,12 @@
     .valores-amount {
       text-align: right;
       flex-shrink: 0;
-      /* Evita que se encoja */
     }
   </style>
 </head>
 
 <body>
+  <div class="decorativo-rectangulo"></div>
   <div class="table-cotizacion">
     <table class="tabla-cotizacion">
       <tr>
@@ -215,13 +243,13 @@
         <td class="titulo" colspan="1">COTIZACIONES</td>
         <td class="datos-superior">
           <strong>Código:</strong> F-GC-05<br />
-          <strong>Fecha de Creación:</strong> {{ fecha}}
+          <strong>Fecha de Creación:</strong> 19-07-2022
         </td>
       </tr>
       <tr>
         <td class="version">RV-{{revision}}</td>
         <td class="datos-inferior">
-          <strong>Fecha de Revisión:</strong> {{fecha}} <br />
+          <strong>Fecha de Revisión:</strong> 19-07-2022 <br />
         </td>
       </tr>
     </table>
@@ -232,12 +260,11 @@
   </div>
 
   <div>
-    Palmira, {{ fecha }}
-    <br /><br />
-    Señores:<br />
+    Palmira, {{fecha}}
+
+    <br>Señores:<br />
     {{ customer }}<br />
-    {{representative}}<br/>
-    {{ contacto_cliente }}<br /><br />
+    {{representative}}<br />
     Agradeciéndole de antemano su amable invitación para cotizarle el
     siguiente trabajo:<br />
     <strong>"{{ descripcion }}"</strong>
@@ -274,7 +301,7 @@
         {% for item in opcion.items %}
         <tr>
           <td>{{ forloop.counter }}</td> <!-- Número del ítem -->
-          <td>{{ item.description }}</td>
+          <td class="item">{{ item.description }}</td>
           <td>{{ item.units }}</td>
           <td>{{ item.amount }}</td>
           <td>{{ item.unit_value_formatted }}</td>
@@ -331,27 +358,38 @@
 
     <h3>CORRE POR CUENTA DEL CONTRATISTA</h3>
     <ul>
-    {% for item in contractor_materials %}
-        <li>{{ item }}</li>
-    {% endfor %}
+      {% for item in contractor_materials %}
+      <li>{{ item }}</li>
+      {% endfor %}
     </ul>
-    
+
 
     <h3>CORRE POR CUENTA DEL CONTRATANTE</h3>
     <ul>
       {% for item in contracting_materials %}
-        <li>{{ item }}</li>
-    {% endfor %}
+      <li>{{ item }}</li>
+      {% endfor %}
     </ul>
 
     <h3>FORMA DE PAGO</h3>
-    <p>{{method_of_payment}}</p>
+    <p>Nos permitimos solicitar la siguiente forma de pago:</p>
+    <ul>
+      <li>
+        <p>{{method_of_payment}}</p>
+      </li>
+    </ul>
+
 
     <h3>PLAZO DE ENTREGA</h3>
     <p>{{delivery_time}}</p>
 
+
     <h3>VALIDEZ DE LA PROPUESTA</h3>
     <p>30 días desde su emisión.</p>
+     
+    <p>Agradecemos su amable atención a la presente, esperamos que nuestra oferta cumpla sus requerimientos y gustosamente les atendemos para cualquier aclaración al respecto</p>
+      
+
   </div>
 
   <div class="firma">

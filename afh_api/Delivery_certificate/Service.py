@@ -4,6 +4,7 @@ from exhibit.models import Exhibit
 import weasyprint
 from io import BytesIO
 from django.template.loader import get_template
+from babel.dates import format_date
 
 def create_delivery_certificarte(work_order_id, osbervations, recommendations, exhibit_ids, description, development, in_charge, post):
     try:
@@ -85,7 +86,7 @@ def create_pdf(id):
         template = get_template('delivery_certificate.html')
         html = template.render({
             'work_order': delivery.work_order,
-            'date': delivery.date.strftime("%d/%m/%Y"),
+            'date': format_date(delivery.date, "d 'de' MMMM 'de' y", locale="es"),
             'description': delivery.description,
             'development': delivery.development,
             'observations': delivery.observations,
