@@ -68,7 +68,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'drf_yasg',
     'WorkAdvance',
-    'WorkProgress',  
+    'WorkProgress', 
+    'Maintenance' 
 ]
 
 MIDDLEWARE = [
