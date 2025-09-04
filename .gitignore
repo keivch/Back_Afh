@@ -1,8 +1,19 @@
-.settings.py
-venv
-.env
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Django
 db.sqlite3
-__pycache__
+/media/
+/staticfiles/
+
+# Entorno virtual
+venv/
+.venv/
+
+.env
+
+.settings.py
 
 msys2-x86_64-20250622.exe
 

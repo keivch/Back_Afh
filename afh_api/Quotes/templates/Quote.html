@@ -1,490 +1,388 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8" />
-    <title>Cotización {{ code }}</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <title>Cotización {{ code }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+      color: #000;
+      margin: 20px;
+      position: relative;
+      padding-bottom: 100px;
+      /* Espacio para el footer */
+    }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            font-size: 12px;
-            color: #333;
-            line-height: 1.4;
-            background: white;
-        }
+    /* Imagen de fondo con opacidad */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      background-image: url("https://res.cloudinary.com/dp4tvthea/image/upload/v1756313054/afhlogoazul_rxcpcv.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.08;
+      z-index: -1;
+      pointer-events: none;
+    }
 
-        .page {
-            width: 21cm;
-            min-height: 29.7cm;
-            margin: 0 auto;
-            background: white;
-            position: relative;
-            padding: 0;
-        }
+    .header,
+    .datos-cotizacion,
+    .opcion,
+    .condiciones,
+    .firma {
+      position: relative;
+      z-index: 1;
+    }
 
-        /* Barra verde lateral izquierda */
-        .sidebar-left {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 15px;
-            height: 100%;
-            background: linear-gradient(180deg, #7ED321 0%, #4A9B0E 100%);
-            z-index: 1;
-        }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
 
-        /* Barra verde lateral derecha */
-        .sidebar-right {
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: 15px;
-            height: 100%;
-            background: linear-gradient(180deg, #7ED321 0%, #4A9B0E 100%);
-            z-index: 1;
-        }
+    .logo {
+      height: 70px;
+    }
 
-        /* Header con logo y título */
-        .header {
-            position: relative;
-            padding: 30px 40px 20px 40px;
-            margin-left: 15px;
-            margin-right: 15px;
-        }
+    .titulo {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
 
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 30px;
-        }
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+    }
 
-        .logo-section {
-            display: flex;
-            align-items: center;
-        }
+    .datos-cotizacion,
+    .condiciones,
+    .firma {
+      margin-top: 30px;
+    }
 
-        .logo {
-            height: 60px;
-            margin-right: 15px;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background-color: rgba(255, 255, 255, 0.9);
+    }
 
-        .company-name {
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-            text-transform: uppercase;
-        }
+    th,
+    td {
+      border: 1px solid #000;
+      padding: 6px;
+      text-align: center;
+    }
 
-        .document-info {
-            text-align: right;
-            font-size: 11px;
-            color: #666;
-        }
+    th {
+      background-color: #f2f2f2;
+    }
 
-        .document-title {
-            background: linear-gradient(90deg, #7ED321 0%, #4A9B0E 100%);
-            color: white;
-            text-align: center;
-            padding: 15px;
-            margin: 20px 0;
-            font-size: 18px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+    .total {
+      font-weight: bold;
+      text-align: right;
+    }
 
-        /* Contenido principal */
-        .content {
-            padding: 0 40px;
-            margin-left: 15px;
-            margin-right: 15px;
-        }
+    ol.tareas {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
 
-        .cotization-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    .firma {
+      margin-top: 50px;
+    }
 
-        .cotization-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
+    .tabla-cotizacion {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid black;
+    }
 
-        .date-location {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 20px;
-        }
+    .tabla-cotizacion td {
+      border: 1px solid black;
+      padding: 8px;
+      vertical-align: middle;
+    }
 
-        .client-info {
-            margin-bottom: 25px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-left: 4px solid #7ED321;
-        }
+    .logo {
+      text-align: center;
+      width: 20%;
+    }
 
-        .client-info p {
-            margin-bottom: 5px;
-        }
+    .logo img {
+      width: 80px;
+      margin-bottom: 5px;
+    }
 
-        .description-section {
-            margin-bottom: 25px;
-        }
+    .estado-vigente {
+      color: green;
+      font-weight: bold;
+    }
 
-        .section-title {
-            background: #7ED321;
-            color: white;
-            padding: 8px 15px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            font-size: 13px;
-        }
+    .titulo {
+      text-align: center;
+      font-weight: bold;
+    }
 
-        .tasks-list {
-            padding-left: 20px;
-            margin-bottom: 20px;
-        }
+    .version {
+      text-align: center;
+    }
 
-        .tasks-list li {
-            margin-bottom: 8px;
-        }
+    .datos-superior,
+    .datos-inferior {
+      width: 30%;
+      font-size: 14px;
+    }
 
-        /* Tabla de cotización */
-        .quote-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+    .table-cotizacion {
+      margin-bottom: 20px;
+    }
 
-        .quote-table th {
-            background: linear-gradient(90deg, #7ED321 0%, #4A9B0E 100%);
-            color: white;
-            padding: 12px 8px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 11px;
-            text-transform: uppercase;
-        }
+    .footer {
+      bottom: 0;
+      right: 0;
+      font-size: 12px;
+      color: #000;
+      background-color: rgba(255, 255, 255, 0.8);
+      /* Opacidad sutil */
+      padding: 8px 12px;
+      text-align: right;
+      z-index: 999;
+      border: none;
+      box-shadow: none;
+      opacity: 0.6;
+      /* Opacidad del footer */
+    }
 
-        .quote-table td {
-            padding: 10px 8px;
-            border-bottom: 1px solid #eee;
-            text-align: center;
-        }
+    .valores {
+      margin-top: 0;
+      /* Elimina el margen superior */
+      text-align: right;
+      /* Alinea el contenido a la derecha */
+    }
 
-        .quote-table tbody tr:hover {
-            background: #f8f9fa;
-        }
+    .valores-grid {
+      display: inline-block;
+      /* Para que se ajuste al contenido */
+      text-align: left;
+      /* Mantiene el texto alineado a la izquierda dentro del bloque */
+    }
 
-        .quote-table td:first-child {
-            background: #f8f9fa;
-            font-weight: bold;
-            color: #7ED321;
-        }
+    .valores-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 2px 0;
+      /* Espaciado mínimo entre líneas */
+      min-width: 200px;
+      /* Ancho mínimo para mantener consistencia */
+    }
 
-        /* Sección de valores */
-        .values-section {
-            margin: 30px 0;
-            display: flex;
-            justify-content: flex-end;
-        }
+    .valores-label {
+      font-weight: bold;
+      margin-right: 20px;
+      /* Espacio entre columnas */
+    }
 
-        .values-table {
-            width: 300px;
-            border-collapse: collapse;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .values-table tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-
-        .values-table td {
-            padding: 8px 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .values-table td:first-child {
-            font-weight: bold;
-            text-align: right;
-            width: 60%;
-        }
-
-        .values-table td:last-child {
-            text-align: right;
-            font-weight: bold;
-        }
-
-        .values-table tr:last-child {
-            background: #7ED321;
-            color: white;
-        }
-
-        .values-table tr:last-child td {
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        /* Condiciones comerciales */
-        .conditions {
-            margin: 30px 0;
-        }
-
-        .conditions ul {
-            padding-left: 20px;
-            margin-bottom: 15px;
-        }
-
-        .conditions li {
-            margin-bottom: 5px;
-        }
-
-        /* Firma */
-        .signature {
-            margin: 40px 0;
-            text-align: center;
-        }
-
-        .signature-line {
-            width: 200px;
-            border-bottom: 2px solid #333;
-            margin: 20px auto 10px;
-        }
-
-        /* Footer */
-        .footer {
-            position: absolute;
-            bottom: 20px;
-            right: 40px;
-            font-size: 10px;
-            color: #666;
-            text-align: right;
-            line-height: 1.3;
-        }
-
-        /* Marca de agua */
-        .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 100px;
-            color: rgba(126, 211, 33, 0.05);
-            font-weight: bold;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* Líneas decorativas */
-        .decorative-line {
-            height: 3px;
-            background: linear-gradient(90deg, #7ED321 0%, #4A9B0E 100%);
-            margin: 20px 0;
-        }
-
-        /* Responsivo para vista previa */
-        @media screen and (max-width: 800px) {
-            .page {
-                width: 100%;
-                padding: 10px;
-            }
-            
-            .header, .content {
-                padding: 20px;
-                margin-left: 0;
-                margin-right: 0;
-            }
-            
-            .sidebar-left, .sidebar-right {
-                display: none;
-            }
-        }
-    </style>
+    .valores-amount {
+      text-align: right;
+      flex-shrink: 0;
+      /* Evita que se encoja */
+    }
+  </style>
 </head>
 
 <body>
-    <div class="page">
-        <!-- Barras laterales verdes -->
-        <div class="sidebar-left"></div>
-        <div class="sidebar-right"></div>
+  <div class="table-cotizacion">
+    <table class="tabla-cotizacion">
+      <tr>
+        <td rowspan="2" class="logo">
+          <img src={{logo_url}} alt="Logo de la empresa" />
+          <div class="estado-vigente">DOCUMENTO VIGENTE</div>
+        </td>
+        <td class="titulo" colspan="1">COTIZACIONES</td>
+        <td class="datos-superior">
+          <strong>Código:</strong> F-GC-05<br />
+          <strong>Fecha de Creación:</strong> {{ fecha}}
+        </td>
+      </tr>
+      <tr>
+        <td class="version">RV-{{revision}}</td>
+        <td class="datos-inferior">
+          <strong>Fecha de Revisión:</strong> {{fecha}} <br />
+        </td>
+      </tr>
+    </table>
+  </div>
 
-        <!-- Marca de agua -->
-        <div class="watermark">AFH</div>
+  <div class="header">
+    <div class="titulo">COTIZACIÓN N.º {{ code }} - {{revision}}</div>
+  </div>
 
-        <!-- Header -->
-        <div class="header">
-            <div class="header-top">
-                <div class="logo-section">
-                    <img src="{{ logo_url }}" alt="Logo AFH" class="logo" />
-                    <div class="company-name">
-                        AFH Metalmecánico<br>
-                        <span style="font-size: 11px; font-weight: normal;">Metalmecánicos</span>
-                    </div>
-                </div>
-                <div class="document-info">
-                    <strong>Código:</strong> F-GC-05<br>
-                    <strong>Fecha:</strong> {{ fecha }}<br>
-                    <strong>Revisión:</strong> RV-{{ revision }}
-                </div>
-            </div>
+  <div>
+    Palmira, {{ fecha }}
 
-            <div class="document-title">
-                Cotización
-            </div>
-        </div>
+    <br>Señores:<br />
+    {{ customer }}<br />
+    {{representative}}<br/>
+    Agradeciéndole de antemano su amable invitación para cotizarle el
+    siguiente trabajo:<br />
+    <strong>"{{ descripcion }}"</strong>
+  </div>
 
-        <!-- Contenido -->
-        <div class="content">
-            <div class="cotization-header">
-                <div class="cotization-number">COTIZACIÓN N.º {{ code }} - {{ revision }}</div>
-                <div class="date-location">Palmira, {{ fecha }}</div>
-            </div>
+  <div class="datos-cotizacion">
+    <h3>ALCANCE DE LA OFERTA</h3>
+    <p>
+      A.F.H Metalmecánico S.A.S, ofrece el suministro de personal con
+      experiencia, para desarrollar trabajo, dirección técnica y supervisión,
+      concerniente a: <strong> {{ descripcion }}. </strong>
+    </p>
 
-            <div class="client-info">
-                <p><strong>Señores:</strong></p>
-                <p>{{ customer }}</p>
-                <p>{{ representative }}</p>
-                <p>{{ contacto_cliente }}</p>
-            </div>
+    <ol class="tareas">
+      {% for task in tasks %}
+      <li>{{ task }}</li>
+      {% endfor %}
+    </ol>
+  </div>
 
-            <p style="margin-bottom: 20px;">
-                Agradeciéndole de antemano su amable invitación para cotizarle el siguiente trabajo:<br>
-                <strong>"{{ descripcion }}"</strong>
-            </p>
+  <div class="opcion">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th> <!-- Nueva columna para el número del ítem -->
+          <th>DESCRIPCIÓN</th>
+          <th>UND</th>
+          <th>CANT</th>
+          <th>VALOR UNITARIO</th>
+          <th>VALOR TOTAL</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in opcion.items %}
+        <tr>
+          <td>{{ forloop.counter }}</td> <!-- Número del ítem -->
+          <td>{{ item.description }}</td>
+          <td>{{ item.units }}</td>
+          <td>{{ item.amount }}</td>
+          <td>{{ item.unit_value_formatted }}</td>
+          <td>{{ item.total_value_formatted }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-            <div class="description-section">
-                <div class="section-title">Alcance de la Oferta</div>
-                <p style="margin-bottom: 15px;">
-                    A.F.H Metalmecánico S.A.S, ofrece el suministro de personal con experiencia, para desarrollar trabajo, 
-                    dirección técnica y supervisión, concerniente a: <strong>{{ descripcion }}</strong>.
-                </p>
-
-                <ol class="tasks-list">
-                    {% for task in tasks %}
-                    <li>{{ task }}</li>
-                    {% endfor %}
-                </ol>
-            </div>
-
-            <div class="decorative-line"></div>
-
-            <!-- Tabla de cotización -->
-            <table class="quote-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;">#</th>
-                        <th style="width: 40%;">Descripción</th>
-                        <th style="width: 10%;">Und</th>
-                        <th style="width: 10%;">Cant</th>
-                        <th style="width: 17.5%;">Valor Unitario</th>
-                        <th style="width: 17.5%;">Valor Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in opcion.items %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td style="text-align: left;">{{ item.description }}</td>
-                        <td>{{ item.units }}</td>
-                        <td>{{ item.amount }}</td>
-                        <td style="text-align: right;">{{ item.unit_value_formatted }}</td>
-                        <td style="text-align: right;">{{ item.total_value_formatted }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            <!-- Sección de valores -->
-            <div class="values-section">
-                <table class="values-table">
-                    <tr>
-                        <td>Sub-Total:</td>
-                        <td>{{ opcion.subtotal }}</td>
-                    </tr>
-                    {% if construction %}
-                    <tr>
-                        <td>Utilidad:</td>
-                        <td>{{ utility }}</td>
-                    </tr>
-                    <tr>
-                        <td>Imprevistos:</td>
-                        <td>{{ unforeseen }}</td>
-                    </tr>
-                    <tr>
-                        <td>Administración:</td>
-                        <td>{{ administration }}</td>
-                    </tr>
-                    {% endif %}
-                    <tr>
-                        <td>IVA:</td>
-                        <td>{{ iva }}</td>
-                    </tr>
-                    <tr>
-                        <td>TOTAL:</td>
-                        <td>{{ total_value }}</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="decorative-line"></div>
-
-            <!-- Condiciones comerciales -->
-            <div class="conditions">
-                <div class="section-title">Condiciones Comerciales</div>
-                <ul>
-                    <li>El valor estimado de los trabajos a realizar está desglosado en los cuadros anteriores.</li>
-                    <li>El valor final se ajustará según obra ejecutada y precios unitarios propuestos.</li>
-                </ul>
-
-                <div class="section-title" style="margin-top: 25px;">Corre por Cuenta del Contratista</div>
-                <ul>
-                    {% for item in contractor_materials %}
-                    <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
-
-                <div class="section-title" style="margin-top: 25px;">Corre por Cuenta del Contratante</div>
-                <ul>
-                    {% for item in contracting_materials %}
-                    <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
-
-                <div class="section-title" style="margin-top: 25px;">Forma de Pago</div>
-                <p>{{ method_of_payment }}</p>
-
-                <div class="section-title" style="margin-top: 25px;">Plazo de Entrega</div>
-                <p>{{ delivery_time }}</p>
-
-                <div class="section-title" style="margin-top: 25px;">Validez de la Propuesta</div>
-                <p>30 días desde su emisión.</p>
-            </div>
-
-            <!-- Firma -->
-            <div class="signature">
-                <p>Atentamente,</p>
-                <div class="signature-line"></div>
-                <strong>ANDRES FELIPE HERNANDEZ</strong><br>
-                <span style="color: #666;">Gerente General</span>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            Carrera 13A # 40 - 37 B/Primero de Mayo, Palmira - Colombia<br>
-            Cel (+57) 311 616 7972 | Fijo (602) 287 2362<br>
-            afh@afhmetalmecanico.com | www.afhmetalmecanico.com
-        </div>
+  <div class="valores">
+    <div class="valores-grid">
+      <div class="valores-row">
+        <span class="valores-label">Sub-Total:</span>
+        <span class="valores-amount">{{opcion.subtotal}}</span>
+      </div>
+      {% if construction %}
+      <div class="valores-row">
+        <span class="valores-label">Utilidad:</span>
+        <span class="valores-amount">{{utility}}</span>
+      </div>
+      <div class="valores-row">
+        <span class="valores-label">Imprevistos:</span>
+        <span class="valores-amount">{{unforeseen}}</span>
+      </div>
+      <div class="valores-row">
+        <span class="valores-label">Administración:</span>
+        <span class="valores-amount">{{administration}}</span>
+      </div>
+      {% endif %}
+      <div class="valores-row">
+        <span class="valores-label">IVA:</span>
+        <span class="valores-amount">{{iva}}</span>
+      </div>
+      <div class="valores-row">
+        <span class="valores-label">Total:</span>
+        <span class="valores-amount">{{total_value}}</span>
+      </div>
     </div>
+  </div>
+
+  <div class="condiciones">
+    <h3>CONDICIONES COMERCIALES</h3>
+    <ul>
+      <li>
+        El valor estimado de los trabajos a realizar está desglosado en los
+        cuadros anteriores.
+      </li>
+      <li>
+        El valor final se ajustará según obra ejecutada y precios unitarios
+        propuestos.
+      </li>
+    </ul>
+
+    <h3>CORRE POR CUENTA DEL CONTRATISTA</h3>
+    <ul>
+    {% for item in contractor_materials %}
+        <li>{{ item }}</li>
+    {% endfor %}
+    </ul>
+    
+
+    <h3>CORRE POR CUENTA DEL CONTRATANTE</h3>
+    <ul>
+      {% for item in contracting_materials %}
+        <li>{{ item }}</li>
+    {% endfor %}
+    </ul>
+
+    <h3>FORMA DE PAGO</h3>
+    <ul>
+      <li>
+        <p>{{method_of_payment}}</p>
+      </li>
+    </ul>
+    
+
+    <h3>PLAZO DE ENTREGA</h3>
+    <ul>
+      <li>
+        <p>{{delivery_time}}</p>
+      </li>
+    </ul>
+    
+
+    <h3>VALIDEZ DE LA PROPUESTA</h3>
+    <ul>
+      <li>
+        <p>30 días desde su emisión.</p>
+      </li>
+    </ul>
+    
+  </div>
+
+  <div class="firma">
+    <p>Atentamente,</p>
+    <br /><br />
+    <strong>ANDRES FELIPE HERNANDEZ</strong><br />
+    Gerente General
+  </div>
+
+  <footer class="footer">
+    <p>
+      Carrera 13A # 40 - 37 B/Primero de Mayo, Palmira - Colombia<br />
+      Cel (+57) 311 616 7972 | Fijo (602) 287 2362<br />
+      afh@afhmetalmecanico.com<br />
+      www.afhmetalmecanico.com
+    </p>
+  </footer>
 </body>
+
 </html>
