@@ -15,8 +15,8 @@ def create(technician_name, tool_id, date, maintenance_days, observations, next_
             observations = observations,
             next_maintenance_date= next_date
         )
-        tool.state=5
-        tool.save()
+        
+        new_maintenance.change_status_tool()
         return new_maintenance
     except Exception as e:
         raise str(e)
