@@ -1,3 +1,7 @@
+from io import BytesIO
+from django.template.loader import get_template
+import weasyprint
+from xhtml2pdf import pisa
 from .models import Maintenance, Tool
 from users.models import Users, User
 def create(technician_name, tool_id, date, maintenance_days, observations, next_date, type, user_email):
@@ -23,7 +27,7 @@ def create(technician_name, tool_id, date, maintenance_days, observations, next_
         new_maintenance.change_status_tool()
         return new_maintenance
     except Exception as e:
-        raise str(e)
+        raise e
         
 def update_maintenance(maintenance_id, technician_name = None, tool_id = None, maintenance_days = None, observations = None, next_date = None, date = None, type = None):
     try:
@@ -47,18 +51,34 @@ def update_maintenance(maintenance_id, technician_name = None, tool_id = None, m
             maintenance.type = type
         maintenance.save()
     except Exception as e:
-        raise str(e)
+        raise e
 
 def get_maintenances():
     try:
         maintenances = Maintenance.objects.all()
         return maintenances
     except Exception as e:
-        raise str(e)
+        raise e
 
 def get_maintenance_id(maintenance_id):
     try:
         maintenance = Maintenance.objects.get(id = maintenance_id)
         return maintenance
     except Exception as e:
-        raise str(e)
+        raise e
+
+def get_pdf(maintenance_id):
+    try:
+        maintenance = Maintenance.objects.get(id = maintenance_id)
+        template = get_template('maintenance.html')
+        html = template.render({
+            'maintenance': maintenance
+        })
+
+        buffer = BytesIO()
+        weasyprint.HTML(string=html).write_pdf(buffer)
+        buffer.seek(0)
+        return buffer
+    except Exception as e:
+        raise e
+

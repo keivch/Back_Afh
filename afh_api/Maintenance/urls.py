@@ -13,4 +13,6 @@ urlpatterns = [
     
     # Obtener mantenimiento por ID
     path('get/<int:maintenance_id>/', views.get_maintenance_by_id, name='get_maintenance_by_id'),
+
+    path('get_pdf/<int:maintenance_id>/', views.get_pdf, name='obtener_pdf')
 ]

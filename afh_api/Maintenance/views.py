@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from drf_yasg.utils import swagger_auto_schema
@@ -372,3 +373,69 @@ def get_maintenance_by_id(request, maintenance_id):
         return Response(serializer.data, 200)
     except Exception as e:
         return Response({'error': str(e)}, 500)
+
+@swagger_auto_schema(
+    method='get',
+    operation_summary="Generar PDF del ticket de mantenimiento",
+    operation_description="Genera y descarga un PDF del ticket de entrega de herramienta a mantenimiento",
+    manual_parameters=[
+        openapi.Parameter(
+            'maintenance_id',
+            openapi.IN_PATH,
+            description="ID del mantenimiento para generar el PDF",
+            type=openapi.TYPE_INTEGER,
+            required=True
+        )
+    ],
+    responses={
+        200: openapi.Response(
+            description='PDF generado exitosamente',
+            content={
+                'application/pdf': {
+                    'schema': {
+                        'type': 'string',
+                        'format': 'binary'
+                    }
+                }
+            }
+        ),
+        400: openapi.Response(
+            description='Error en la solicitud',
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING, example='id del mantenimiento es requerido')
+                }
+            )
+        ),
+        404: openapi.Response(
+            description='Mantenimiento no encontrado',
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING, example='Mantenimiento con ID 123 no encontrado')
+                }
+            )
+        ),
+        500: openapi.Response(
+            description='Error interno del servidor',
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING, example='Error generando PDF: [detalle del error]')
+                }
+            )
+        )
+    }
+)
+@api_view(['GET'])
+def get_pdf(request, maintenance_id):
+    try:
+        if not maintenance_id:
+            return Response({'error': 'id del mantenimiento es requerido'}, 400)
+        buffer = service.get_pdf(maintenance_id)
+        response = HttpResponse(buffer, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="Ticket-{maintenance_id}.pdf"'
+        return response
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
