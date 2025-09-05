@@ -40,6 +40,12 @@ from .serializer import MaintenanceSerializer
                 type=openapi.TYPE_STRING,
                 format=openapi.FORMAT_DATE,
                 description='Fecha programada para el próximo mantenimiento (formato: YYYY-MM-DD)'
+            ),
+            'type': openapi.Schema(
+                type=openapi.TYPE_INTEGER,
+                description='Tipo de mantenimiento: 1=Correctivo, 2=Preventivo',
+                enum=[1, 2],
+                default=1
             )
         }
     ),
@@ -84,8 +90,9 @@ def add_maintenance_view(request):
         maintenance_days = data.get('maintenance_days')
         observations = data.get('observations')
         next_maintenance_date = data.get('next_maintenance_date')
+        type = data.get('type')
     
-        new_maintenance = service.create(maintenance_technician_name, tool_id, date, maintenance_days, observations, next_maintenance_date)
+        new_maintenance = service.create(maintenance_technician_name, tool_id, date, maintenance_days, observations, next_maintenance_date, type)
 
         if new_maintenance:
             return Response({'message': 'Nuevo mantenimiento agendado con éxito'}, 201)
@@ -136,6 +143,11 @@ def add_maintenance_view(request):
                 type=openapi.TYPE_STRING,
                 format=openapi.FORMAT_DATE,
                 description='Fecha programada para el próximo mantenimiento (formato: YYYY-MM-DD)'
+            ),
+            'type': openapi.Schema(
+                type=openapi.TYPE_INTEGER,
+                description='Tipo de mantenimiento: 1=Correctivo, 2=Preventivo',
+                enum=[1, 2]
             )
         }
     ),
@@ -170,8 +182,9 @@ def update_maintenance_view(request, maintenance_id):
         maintenance_days = data.get('maintenance_days')
         observations = data.get('observations')
         next_maintenance_date = data.get('next_maintenance_date')
+        type = data.get('type')
         
-        service.update_maintenance(maintenance_id, maintenance_technician_name, tool_id, maintenance_days, observations, next_maintenance_date, date)
+        service.update_maintenance(maintenance_id, maintenance_technician_name, tool_id, maintenance_days, observations, next_maintenance_date, date, type)
         return Response({'message': 'Mantenimiento actualizado con éxito'}, 200)
     except Exception as e:
         return Response({'error': str(e)}, 500)
@@ -203,7 +216,8 @@ def update_maintenance_view(request, maintenance_id):
                         'date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Fecha del mantenimiento'),
                         'maintenance_days': openapi.Schema(type=openapi.TYPE_INTEGER, description='Días de mantenimiento'),
                         'observations': openapi.Schema(type=openapi.TYPE_STRING, description='Observaciones'),
-                        'next_maintenance_date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Próxima fecha de mantenimiento')
+                        'next_maintenance_date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Próxima fecha de mantenimiento'),
+                        'type': openapi.Schema(type=openapi.TYPE_INTEGER, description='Tipo de mantenimiento: 1=Correctivo, 2=Preventivo')
                     }
                 )
             )
@@ -262,7 +276,8 @@ def get_all_maintenances(request):
                     'date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Fecha del mantenimiento'),
                     'maintenance_days': openapi.Schema(type=openapi.TYPE_INTEGER, description='Días de mantenimiento'),
                     'observations': openapi.Schema(type=openapi.TYPE_STRING, description='Observaciones'),
-                    'next_maintenance_date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Próxima fecha de mantenimiento')
+                    'next_maintenance_date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Próxima fecha de mantenimiento'),
+                    'type': openapi.Schema(type=openapi.TYPE_INTEGER, description='Tipo de mantenimiento: 1=Correctivo, 2=Preventivo')
                 }
             )
         ),

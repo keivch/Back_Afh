@@ -1,8 +1,8 @@
 from .models import Maintenance, Tool
 
-def create(technician_name, tool_id, date, maintenance_days, observations, next_date):
+def create(technician_name, tool_id, date, maintenance_days, observations, next_date, type):
     try:
-        if not technician_name or not tool_id or  not date or not maintenance_days or not next_date:
+        if not technician_name or not tool_id or  not date or not maintenance_days or not next_date or not type:
             return None
         tool = Tool.objects.get(id=tool_id)
         if not tool:
@@ -13,7 +13,8 @@ def create(technician_name, tool_id, date, maintenance_days, observations, next_
             date = date,
             maintenance_days = maintenance_days,
             observations = observations,
-            next_maintenance_date= next_date
+            next_maintenance_date= next_date,
+            type = type
         )
         
         new_maintenance.change_status_tool()
@@ -21,7 +22,7 @@ def create(technician_name, tool_id, date, maintenance_days, observations, next_
     except Exception as e:
         raise str(e)
         
-def update_maintenance(maintenance_id, technician_name = None, tool_id = None, maintenance_days = None, observations = None, next_date = None, date = None):
+def update_maintenance(maintenance_id, technician_name = None, tool_id = None, maintenance_days = None, observations = None, next_date = None, date = None, type = None):
     try:
         maintenance = Maintenance.objects.get(id=maintenance_id)
         if not maintenance:
@@ -39,6 +40,8 @@ def update_maintenance(maintenance_id, technician_name = None, tool_id = None, m
             maintenance.next_maintenance_date = next_date
         if date:
             maintenance.date = date
+        if type:
+            maintenance.type = type
         maintenance.save()
     except Exception as e:
         raise str(e)
