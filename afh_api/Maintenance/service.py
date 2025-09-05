@@ -1,12 +1,14 @@
 from .models import Maintenance, Tool
-
-def create(technician_name, tool_id, date, maintenance_days, observations, next_date, type):
+from users.models import Users, User
+def create(technician_name, tool_id, date, maintenance_days, observations, next_date, type, user_email):
     try:
-        if not technician_name or not tool_id or  not date or not maintenance_days or not next_date or not type:
+        if not technician_name or not tool_id or  not date or not maintenance_days or not next_date or not type or not user_email:
             return None
         tool = Tool.objects.get(id=tool_id)
         if not tool:
             return None
+        user = User.objects.filter(email = user_email).first()
+        user_delivery = Users.objects.filter(user = user).first()
         new_maintenance = Maintenance.objects.create(
             maintenance_technician_name = technician_name,
             tool=tool,
@@ -14,7 +16,8 @@ def create(technician_name, tool_id, date, maintenance_days, observations, next_
             maintenance_days = maintenance_days,
             observations = observations,
             next_maintenance_date= next_date,
-            type = type
+            type = type,
+            user_delivery = user_delivery
         )
         
         new_maintenance.change_status_tool()

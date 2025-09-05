@@ -46,6 +46,11 @@ from .serializer import MaintenanceSerializer
                 description='Tipo de mantenimiento: 1=Correctivo, 2=Preventivo',
                 enum=[1, 2],
                 default=1
+            ),
+            'user_email': openapi.Schema(
+                type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_EMAIL,
+                description='Email del usuario que entrega la herramienta para mantenimiento'
             )
         }
     ),
@@ -91,8 +96,9 @@ def add_maintenance_view(request):
         observations = data.get('observations')
         next_maintenance_date = data.get('next_maintenance_date')
         type = data.get('type')
+        user_email = data.get('user_email')
     
-        new_maintenance = service.create(maintenance_technician_name, tool_id, date, maintenance_days, observations, next_maintenance_date, type)
+        new_maintenance = service.create(maintenance_technician_name, tool_id, date, maintenance_days, observations, next_maintenance_date, type, user_email)
 
         if new_maintenance:
             return Response({'message': 'Nuevo mantenimiento agendado con éxito'}, 201)
@@ -213,11 +219,44 @@ def update_maintenance_view(request, maintenance_id):
                                 'state': openapi.Schema(type=openapi.TYPE_INTEGER)
                             }
                         ),
+                        'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID del mantenimiento'),
+                        'maintenance_technician_name': openapi.Schema(type=openapi.TYPE_STRING, description='Nombre del técnico encargado del mantenimiento'),
+                        'tool': openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            description='Información de la herramienta',
+                            properties={
+                                'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID de la herramienta'),
+                                'name': openapi.Schema(type=openapi.TYPE_STRING, description='Nombre de la herramienta'),
+                                'code': openapi.Schema(type=openapi.TYPE_STRING, description='Código de la herramienta'),
+                                'state': openapi.Schema(type=openapi.TYPE_INTEGER, description='Estado de la herramienta: 1=Activa, 2=Inactiva, 3=En uso, 4=Reservada, 5=En mantenimiento'),
+                                'image': openapi.Schema(type=openapi.TYPE_STRING, description='URL de la imagen de la herramienta'),
+                                'marca': openapi.Schema(type=openapi.TYPE_STRING, description='Marca de la herramienta')
+                            }
+                        ),
                         'date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Fecha del mantenimiento'),
                         'maintenance_days': openapi.Schema(type=openapi.TYPE_INTEGER, description='Días de mantenimiento'),
                         'observations': openapi.Schema(type=openapi.TYPE_STRING, description='Observaciones'),
                         'next_maintenance_date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Próxima fecha de mantenimiento'),
-                        'type': openapi.Schema(type=openapi.TYPE_INTEGER, description='Tipo de mantenimiento: 1=Correctivo, 2=Preventivo')
+                        'type': openapi.Schema(type=openapi.TYPE_INTEGER, description='Tipo de mantenimiento: 1=Correctivo, 2=Preventivo'),
+                        'user_delivery': openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            description='Información del usuario que entrega la herramienta',
+                            properties={
+                                'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID del usuario'),
+                                'role': openapi.Schema(type=openapi.TYPE_INTEGER, description='Rol del usuario: 1=ADMIN, 2=NO ADMIN'),
+                                'user': openapi.Schema(
+                                    type=openapi.TYPE_OBJECT,
+                                    description='Información del usuario de Django',
+                                    properties={
+                                        'username': openapi.Schema(type=openapi.TYPE_STRING, description='Nombre de usuario'),
+                                        'first_name': openapi.Schema(type=openapi.TYPE_STRING, description='Nombre'),
+                                        'last_name': openapi.Schema(type=openapi.TYPE_STRING, description='Apellido'),
+                                        'email': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_EMAIL, description='Email del usuario')
+                                    }
+                                )
+                            }
+                        ),
+                        'delivery_date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Fecha de entrega calculada (fecha + días de mantenimiento)')
                     }
                 )
             )
@@ -273,11 +312,44 @@ def get_all_maintenances(request):
                             'state': openapi.Schema(type=openapi.TYPE_INTEGER)
                         }
                     ),
+                    'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID del mantenimiento'),
+                    'maintenance_technician_name': openapi.Schema(type=openapi.TYPE_STRING, description='Nombre del técnico encargado del mantenimiento'),
+                    'tool': openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        description='Información de la herramienta',
+                        properties={
+                            'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID de la herramienta'),
+                            'name': openapi.Schema(type=openapi.TYPE_STRING, description='Nombre de la herramienta'),
+                            'code': openapi.Schema(type=openapi.TYPE_STRING, description='Código de la herramienta'),
+                            'state': openapi.Schema(type=openapi.TYPE_INTEGER, description='Estado de la herramienta: 1=Activa, 2=Inactiva, 3=En uso, 4=Reservada, 5=En mantenimiento'),
+                            'image': openapi.Schema(type=openapi.TYPE_STRING, description='URL de la imagen de la herramienta'),
+                            'marca': openapi.Schema(type=openapi.TYPE_STRING, description='Marca de la herramienta')
+                        }
+                    ),
                     'date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Fecha del mantenimiento'),
                     'maintenance_days': openapi.Schema(type=openapi.TYPE_INTEGER, description='Días de mantenimiento'),
                     'observations': openapi.Schema(type=openapi.TYPE_STRING, description='Observaciones'),
                     'next_maintenance_date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Próxima fecha de mantenimiento'),
-                    'type': openapi.Schema(type=openapi.TYPE_INTEGER, description='Tipo de mantenimiento: 1=Correctivo, 2=Preventivo')
+                    'type': openapi.Schema(type=openapi.TYPE_INTEGER, description='Tipo de mantenimiento: 1=Correctivo, 2=Preventivo'),
+                    'user_delivery': openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        description='Información del usuario que entrega la herramienta',
+                        properties={
+                            'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID del usuario'),
+                            'role': openapi.Schema(type=openapi.TYPE_INTEGER, description='Rol del usuario: 1=ADMIN, 2=NO ADMIN'),
+                            'user': openapi.Schema(
+                                type=openapi.TYPE_OBJECT,
+                                description='Información del usuario de Django',
+                                properties={
+                                    'username': openapi.Schema(type=openapi.TYPE_STRING, description='Nombre de usuario'),
+                                    'first_name': openapi.Schema(type=openapi.TYPE_STRING, description='Nombre'),
+                                    'last_name': openapi.Schema(type=openapi.TYPE_STRING, description='Apellido'),
+                                    'email': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_EMAIL, description='Email del usuario')
+                                }
+                            )
+                        }
+                    ),
+                    'delivery_date': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Fecha de entrega calculada (fecha + días de mantenimiento)')
                 }
             )
         ),
