@@ -30,6 +30,7 @@
       margin: 20px;
       position: relative;
       padding-bottom: 100px;
+      line-height: 1.6;
       /* Espacio para el footer */
     }
 
@@ -82,12 +83,16 @@
     h2,
     h3 {
       margin: 0;
+      text-decoration: underline;
+      margin-bottom: 15px;
+      margin-top: 25px;
     }
 
     .datos-cotizacion,
     .condiciones,
     .firma {
       margin-top: 30px;
+      margin-bottom: 25px;
     }
 
     table {
@@ -100,7 +105,7 @@
     th,
     td {
       border: 1px solid #000;
-      padding: 6px;
+      padding: 10px;
       text-align: center;
     }
 
@@ -118,15 +123,32 @@
     }
 
     ol.tareas {
-      margin-top: 10px;
-      padding-left: 20px;
+      margin-top: 15px;
+      padding-left: 25px;
+      margin-bottom: 20px;
     }
 
     ol.tareas li {
-      margin-bottom: 6px;
+      margin-bottom: 12px;
       /* separación entre ítems */
-      line-height: 1.4;
+      line-height: 1.6;
       /* mejora la legibilidad */
+    }
+
+    ul {
+      margin-top: 15px;
+      padding-left: 25px;
+      margin-bottom: 20px;
+    }
+
+    ul li {
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    p {
+      margin-bottom: 15px;
+      line-height: 1.6;
     }
 
     .firma {
@@ -141,7 +163,7 @@
 
     .tabla-cotizacion td {
       border: 1px solid black;
-      padding: 8px;
+      padding: 12px;
       vertical-align: middle;
     }
 
@@ -228,6 +250,28 @@
       text-align: right;
       flex-shrink: 0;
     }
+
+    .total-row {
+      background-color: #c1e6c1;
+      color: black;
+      font-weight: bold;
+      padding: 12px 0;
+      margin: 10px 0;
+      width: 100%;
+      display: block;
+    }
+
+    .total-final {
+      background-color: transparent;
+      color: black;
+      font-weight: bold;
+    }
+
+    .total-label {
+      background-color: transparent;
+      color: black;
+      font-weight: bold;
+    }
   </style>
 </head>
 
@@ -259,13 +303,13 @@
     <div class="titulo">COTIZACIÓN N.º {{ code }} - {{revision}}</div>
   </div>
 
-  <div>
+  <div style="margin-bottom: 25px;">
     Palmira, {{fecha}}
 
-    <br>Señores:<br />
+    <br><br>Señores:<br />
     {{ customer }}<br />
     {{representative}}<br />
-    Agradeciéndole de antemano su amable invitación para cotizarle el
+    <br>Agradeciéndole de antemano su amable invitación para cotizarle el
     siguiente trabajo:<br />
     <strong>"{{ descripcion }}"</strong>
   </div>
@@ -336,9 +380,11 @@
         <span class="valores-label">IVA:</span>
         <span class="valores-amount">{{iva}}</span>
       </div>
-      <div class="valores-row">
-        <span class="valores-label">Total:</span>
-        <span class="valores-amount">{{total_value}}</span>
+    </div>
+    <div class="total-row">
+      <div style="display: flex; justify-content: flex-end; align-items: center; padding: 0 2px; gap: 110px;">
+        <span class="total-label">Total:</span>
+        <span class="total-final">{{total_value}}</span>
       </div>
     </div>
   </div>
@@ -409,4 +455,5 @@
   </footer>
 </body>
 
+</html>
 </html>
