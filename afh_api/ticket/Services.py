@@ -22,6 +22,7 @@ def createTicket(applicant_email, tools, description, place, responsible):
 
 
     entry_date = HORA_COLOMBIA
+
         
     newTicket = Ticket.objects.create(
         description = description,
@@ -34,6 +35,9 @@ def createTicket(applicant_email, tools, description, place, responsible):
         )
 
     for tool in tools:
+        if tool.state != 1:
+            newTicket.delete()
+            return
         tool.state = 4
         tool.save()
 

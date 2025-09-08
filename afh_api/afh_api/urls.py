@@ -51,6 +51,7 @@ urlpatterns = [
     path('balans/', include('Financial_movement.urls_balans')),
     path('workadvance/', include('WorkAdvance.urls')), #endpoints de los avances de trabajo
     path('workprogress/', include('WorkProgress.urls')), #endpoints de los progresos de trabajo
+    path('maintenance/', include('Maintenance.urls')),#endpoints de mantenimiento
 
     #rutas de la documentacion
     # rutas para swagger
