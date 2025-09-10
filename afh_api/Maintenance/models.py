@@ -9,13 +9,13 @@ class Maintenance(models.Model):
         (2, 'preventivo')
     ]
     maintenance_technician_name = models.CharField(max_length=700, blank=False)
-    tool = models.OneToOneField(Tool, on_delete=models.CASCADE, null=False)
+    tool = models.ForeignKey(Tool, on_delete=models.CASCADE, null=False)
     date = models.DateField(auto_now_add=True)
     maintenance_days = models.IntegerField(null=False)
     observations = models.TextField(blank=True)
     next_maintenance_date = models.DateField(null = False)
     type = models.IntegerField(choices=STATE_CHOICES, default=1)
-    user_delivery = models.OneToOneField(Users, on_delete=models.CASCADE, null=True)
+    user_delivery = models.ForeignKey(Users, on_delete=models.CASCADE, null=True)
 
     @property
     def delivery_date(self):

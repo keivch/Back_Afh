@@ -69,7 +69,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     'WorkAdvance',
     'WorkProgress', 
-    'Maintenance' 
+    'Maintenance',
+    'Costs'
 ]
 
 MIDDLEWARE = [
