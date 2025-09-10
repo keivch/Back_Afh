@@ -49,6 +49,7 @@ urlpatterns = [
     path('egress/', include('Financial_movement.urls_egress')),#enpoints de los egress
     path('income/', include('Financial_movement.urls_income')),
     path('balans/', include('Financial_movement.urls_balans')),
+    path('account/', include('Financial_movement.urls_account')),
     path('workadvance/', include('WorkAdvance.urls')), #endpoints de los avances de trabajo
     path('workprogress/', include('WorkProgress.urls')), #endpoints de los progresos de trabajo
     path('maintenance/', include('Maintenance.urls')),#endpoints de mantenimiento
