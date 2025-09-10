@@ -28,3 +28,7 @@ class Maintenance(models.Model):
     def change_status_tool(self):
         self.tool.state = 5
         self.tool.save()
+
+    def end_maintenance(self):
+        self.tool.state = 1
+        self.tool.save()

@@ -439,3 +439,46 @@ def get_pdf(request, maintenance_id):
         return response
     except Exception as e:
         return Response({'error': str(e)}, status=500)
+
+
+@swagger_auto_schema(
+    method='put',
+    operation_summary="Finalizar mantenimiento",
+    operation_description="Finaliza un mantenimiento específico",
+    manual_parameters=[
+        openapi.Parameter(
+            'maintenance_id',
+            openapi.IN_PATH,
+            description="ID del mantenimiento a finalizar",
+            type=openapi.TYPE_INTEGER,
+            required=True
+        )
+    ],
+    responses={
+        200: openapi.Response(
+            description='Mantenimiento finalizado exitosamente',
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'message': openapi.Schema(type=openapi.TYPE_STRING, example='Mantenimiento finalizado con éxito')
+                }
+            )
+        ),
+        500: openapi.Response(
+            description='Error interno del servidor',
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING, example='Error interno del servidor')
+                }
+            )
+        )
+    }
+)
+@api_view(['PUT'])
+def end_maintenance_view(request, maintenance_id):
+    try:
+        service.end_maintenance(maintenance_id)
+        return Response({'message': 'Mantenimiento finalizado con éxito'}, 200)
+    except Exception as e:
+        return Response({'error': str(e)}, 500)

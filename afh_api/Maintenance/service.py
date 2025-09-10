@@ -82,3 +82,10 @@ def get_pdf(maintenance_id):
     except Exception as e:
         raise e
 
+def end_maintenance(maintenance_id):
+    try:
+        maintenance = Maintenance.objects.get(id=maintenance_id)
+        maintenance.end_maintenance()
+        return maintenance
+    except Exception as e:
+        raise e
