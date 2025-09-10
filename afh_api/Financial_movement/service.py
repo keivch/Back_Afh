@@ -38,6 +38,7 @@ def create_egress(responsible, amount, date, reason, payment_method,  origin_acc
         )
 
         account.initial_amount = account.initial_amount - amount
+        account.save()
 
         if voucher:
             url = upload_image(voucher)
@@ -71,6 +72,7 @@ def update_account(id_account, type = None, name = None):
             account.type = type
         if name:
             account.name = name
+        account.save()
     except Exception as e:
         raise e
     
@@ -128,6 +130,7 @@ def create_income(responsible, amount, date, reason,  destination_account, payme
         )
 
         account.initial_amount = account.initial_amount + amount
+        account.save()
 
         if voucher:
             url = upload_image(voucher)

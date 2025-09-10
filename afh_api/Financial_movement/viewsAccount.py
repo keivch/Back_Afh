@@ -75,7 +75,6 @@ def update_account_view(request, id_account):
     data = request.data
     try:
         type = data.get('type')
-        initial_amount = data.get('initial_amount')
         name = data.get('name')
 
         service.update_account(id_account, type, name)
