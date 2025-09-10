@@ -232,7 +232,7 @@
     <table class="tabla-certificado">
       <tr>
         <td rowspan="2" class="logo">
-          <img src='../../public/logo.png' alt="Logo de la empresa" />
+          <img src='{{ logo_url }}' alt="Logo de la empresa" />
           <div class="estado-vigente">DOCUMENTO VIGENTE</div>
         </td>
         <td class="titulo" colspan="1">CERTIFICADO DE ENTREGA</td>
@@ -260,8 +260,7 @@
     Señores:<br />
     {{ work_order.quote.customer }}<br />
     {{ work_order.quote.customer_contact }}<br /><br />
-    Por medio del presente documento certificamos la entrega de los trabajos realizados según la orden de trabajo N.º {{
-    work_order.quote.code }}.
+    Por medio del presente documento certificamos la entrega de los trabajos realizados según la orden de trabajo N.º {{ work_order.quote.code }}.
   </div>
 
   <div class="datos-certificado">

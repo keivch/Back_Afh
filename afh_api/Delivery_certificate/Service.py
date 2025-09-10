@@ -83,6 +83,9 @@ def add_exhibit_to_delivery_certificate(delivery_certificate_id, exhibit_id):
 def create_pdf(id):
     try:
         delivery = get_delivery_certificate_by_id(id)
+        if not delivery:
+            work = WorkOrder.objects.get(id=id)
+            delivery = Delivery_certificate.objects.get(work_order=work)
         template = get_template('delivery_certificate.html')
         html = template.render({
             'work_order': delivery.work_order,
