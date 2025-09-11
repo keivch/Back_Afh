@@ -56,7 +56,10 @@ def login(request):
     
     
     user = User.objects.filter(email=email).first()
+    users = Users.objects.filter(user = user).first()
     type = Users.objects.filter(user = user).first()
+
+    serializer = UserSerializer(users)
     
     if not user or not user.check_password(password):
         return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -66,7 +69,7 @@ def login(request):
         
     csrf_token = get_token(request)
     
-    return Response({'token': token.key, 'csrf_token': csrf_token, 'role': type.role}, status=status.HTTP_200_OK)
+    return Response({'token': token.key, 'csrf_token': csrf_token, 'role': type.role, 'user': serializer.data}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

@@ -46,11 +46,8 @@ def update_delivery_certificate_view(request, id):
         description = data.get('description')
         in_charge = data.get('in_charge')
         post = data.get('post')
-
-        if not observations and not recommendations:
-            return Response({'error': 'Debe proporcionar al menos una observación o recomendación'}, status=400)
         
-        update_delivery_certificate(id, observations, recommendations, development, description, in_charge, post)
+        update_delivery_certificate(id, observations = observations, recommendations = recommendations, description = description, development = development, in_charge = in_charge, post = post)
 
         return Response({'message': 'Certificado de entrega actualizado exitosamente'}, status=200)
     except Exception as e:
