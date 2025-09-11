@@ -19,5 +19,4 @@ __pycache__/
 
 msys2-x86_64-20250622.exe
 
-backup.json
-tools_backup.json
+backup/
