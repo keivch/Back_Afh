@@ -92,10 +92,25 @@ def get_pdf_view(request, id):
     try:
         buffer = create_pdf(id)
         if not buffer:
-            return Response({'error': 'No se pudo generar el PDF'}, status=404)
+            return Response({'error': 'No se pudo generar el PDF. Verifique que el certificado de entrega existe.'}, status=404)
+        
+        # Intentar obtener el certificado para el nombre del archivo
         delivery = get_delivery_certificate_by_id(id)
+        if not delivery:
+            # Si no se encuentra por ID, intentar por work_order
+            try:
+                from WorkOrder.models import WorkOrder
+                work = WorkOrder.objects.get(id=id)
+                delivery = Delivery_certificate.objects.get(work_order=work)
+            except:
+                delivery = None
+        
+        filename = "certificado_entrega.pdf"
+        if delivery and delivery.work_order and delivery.work_order.quote:
+            filename = f"certificado_entrega_{delivery.work_order.quote.code}.pdf"
+        
         response = HttpResponse(buffer, content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="certificado_entrega_{delivery.work_order.quote.code}.pdf"'
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
     except Exception as e:
         return Response({'error': str(e)}, status=500)

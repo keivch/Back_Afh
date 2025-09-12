@@ -8,7 +8,7 @@
   <style>
     @page {
       size: A4;
-      margin: 20mm;
+      margin: 15mm 20mm 20mm 20mm;
     }
 
     /* Rectángulo en el área superior izquierda */
@@ -17,7 +17,7 @@
         content: "";
         display: block;
         width: 6mm;
-        height: 25mm;
+        height: 15mm;
         background: #99E63C;
         border-radius: 2px;
       }
@@ -130,20 +130,12 @@
 
     ol.tareas li {
       margin-bottom: 12px;
-      /* separación entre ítems */
-      line-height: 1.6;
-      /* mejora la legibilidad */
     }
 
     ul {
-      margin-top: 15px;
+      margin-top: 5px;
       padding-left: 25px;
-      margin-bottom: 20px;
-    }
-
-    ul li {
-      margin-bottom: 12px;
-      line-height: 1.6;
+      margin-bottom: 2px;
     }
 
     p {
@@ -163,42 +155,51 @@
 
     .tabla-cotizacion td {
       border: 1px solid black;
-      padding: 12px;
+      padding: 8px;
       vertical-align: middle;
     }
 
     .logo {
       text-align: center;
-      width: 20%;
+      width: 18%;
     }
 
     .logo img {
-      width: 80px;
-      margin-bottom: 5px;
+      width: 60px;
+      margin-bottom: 3px;
     }
 
     .estado-vigente {
       color: green;
       font-weight: bold;
+      font-size: 10px;
     }
 
     .titulo {
       text-align: center;
       font-weight: bold;
+      font-size: 14px;
     }
 
     .version {
       text-align: center;
+      font-size: 12px;
     }
 
     .datos-superior,
     .datos-inferior {
-      width: 30%;
-      font-size: 14px;
+      width: 28%;
+      font-size: 11px;
+    }
+
+    .paginas {
+      width: 12%;
+      font-size: 11px;
+      text-align: center;
     }
 
     .table-cotizacion {
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     .footer {
@@ -249,16 +250,6 @@
     .valores-amount {
       text-align: right;
       flex-shrink: 0;
-    }
-
-    .total-row {
-      background-color: #c1e6c1;
-      color: black;
-      font-weight: bold;
-      padding: 12px 0;
-      margin: 10px 0;
-      width: 100%;
-      display: block;
     }
 
     .total-final {
@@ -333,7 +324,7 @@
     <table>
       <thead>
         <tr>
-          <th>#</th> <!-- Nueva columna para el número del ítem -->
+          <th>ITEM</th> <!-- Nueva columna para el número del ítem -->
           <th>DESCRIPCIÓN</th>
           <th>UND</th>
           <th>CANT</th>
@@ -380,11 +371,9 @@
         <span class="valores-label">IVA:</span>
         <span class="valores-amount">{{iva}}</span>
       </div>
-    </div>
-    <div class="total-row">
-      <div style="display: flex; justify-content: flex-end; align-items: center; padding: 0 2px; gap: 110px;">
-        <span class="total-label">Total:</span>
-        <span class="total-final">{{total_value}}</span>
+      <div class="valores-row">
+        <span class="valores-label">Total:</span>
+        <span class="valores-amount">{{total_value}}</span>
       </div>
     </div>
   </div>
