@@ -1,7 +1,5 @@
 from datetime import datetime
 import pytz
-
-from afh_api.Costs.models import Costs
 from .models import WorkOrder
 from django.template.loader import get_template
 import weasyprint
@@ -15,7 +13,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 from babel.dates import format_date
-from Cost.models import Cost
+from Costs.models import Costs
 
 # Zona horaria de Colombia
 ZONA_COLOMBIA = pytz.timezone('America/Bogota')
