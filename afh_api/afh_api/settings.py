@@ -40,7 +40,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['127.0.0.1'])
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -181,12 +181,12 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 CORS_ALLOWED_ORIGINS = [
      env('FRONT_URL'),
-     env('DJANGO_ALLOWED_HOSTS')
+     env('BACKURL')
 ]
 
 CSRF_TRUSTED_ORIGINS = [
      env('FRONT_URL'),
-     env('DJANGO_ALLOWED_HOSTS')
+     env('BACKURL')
 ]
 
 CORS_ALLOW_CREDENTIALS = True
