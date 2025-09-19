@@ -40,7 +40,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['back-afh.onrender.com']
+ALLOWED_HOSTS = env('BACKURL')
 
 
 # Application definition
@@ -70,7 +70,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'drf_yasg',
     'WorkAdvance',
-    'WorkProgress',  
+    'WorkProgress', 
+    'Maintenance',
+    'Costs'
 ]
 
 MIDDLEWARE = [
@@ -144,11 +146,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
+
+USE_L10N = True
 
 USE_TZ = True
 
@@ -176,12 +180,12 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 # settings.py
 
 CORS_ALLOWED_ORIGINS = [
-     "https://metalmecanicos.vercel.app", 
+     env('FRONT_URL'),
      env('BACKURL')
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-     "https://metalmecanicos.vercel.app",
+     env('FRONT_URL'),
      env('BACKURL')
 ]
 

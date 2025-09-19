@@ -1,4 +1,4 @@
-from .models import Egress, Income
+from .models import Account, Egress, Income
 import cloudinary
 import cloudinary.uploader
 from decimal import Decimal
@@ -26,14 +26,19 @@ def create_egress(responsible, amount, date, reason, payment_method,  origin_acc
     try:
         amount = Decimal(amount)
         
+        account = Account.objects.get(id = origin_account)
+
         new_egress = Egress.objects.create(
             responsible = responsible,
             amount = amount,
             date = date,
             reason = reason,
             payment_method = payment_method, 
-            origin_account = origin_account
+            origin_account = account
         )
+
+        account.initial_amount = account.initial_amount - amount
+        account.save()
 
         if voucher:
             url = upload_image(voucher)
@@ -45,7 +50,45 @@ def create_egress(responsible, amount, date, reason, payment_method,  origin_acc
         return new_egress
     except Exception as e:
         raise e
+
+def create_account(type, initial_amount, name):
+    try:
+        initial_amount_decimal = Decimal(initial_amount)
+        new_account = Account.objects.create(
+            type = type,
+            initial_amount = initial_amount_decimal,
+            name = name
+        )
+
+        return new_account
     
+    except Exception as e:
+        raise e
+
+def update_account(id_account, type = None, name = None):
+    try:
+        account = Account.objects.get(id = id_account)
+        if type:
+            account.type = type
+        if name:
+            account.name = name
+        account.save()
+    except Exception as e:
+        raise e
+    
+def get_accounts():
+    try:
+        accounts = Account.objects.all()
+        return accounts
+    except Exception as e:
+        raise e
+
+def get_account(id_account):
+    try:
+        account = Account.objects.get(id= id_account)
+        return account
+    except Exception as e:
+        raise e
 
 def update_egress(id, responsible = None, date = None , reason = None, payment_method = None, observations = None, origin_account = None, voucher = None):
     try:
@@ -75,14 +118,19 @@ def create_income(responsible, amount, date, reason,  destination_account, payme
     try:
         amount = Decimal(amount)
 
+        account = Account.objects.get(id = destination_account)
+
         new_income = Income.objects.create(
             responsible = responsible,
             amount = amount,
             date = date,
             reason = reason,
             payment_method = payment_method,
-            destination_account = destination_account
+            destination_account = account
         )
+
+        account.initial_amount = account.initial_amount + amount
+        account.save()
 
         if voucher:
             url = upload_image(voucher)
@@ -90,6 +138,7 @@ def create_income(responsible, amount, date, reason,  destination_account, payme
         if observations:
             new_income.observations = observations
         new_income.save()
+
 
         return new_income
     except Exception as e:
@@ -150,13 +199,20 @@ def get_egress_by_id(id):
         return str(e)
     
 
-def get_balance(start_date=None, end_date=None):
-    filters = {}
+def get_balance(start_date=None, end_date=None, account_id=None):
+    filters_incomes = {}
+    filters_egress = {}
     if start_date and end_date:
-        filters['date__range'] = (start_date, end_date)
+        filters_incomes['date__range'] = (start_date, end_date)
+        filters_egress['date__range'] = (start_date, end_date)
 
-    total_incomes = Income.objects.filter(**filters).aggregate(total=Sum('amount'))['total'] or 0
-    total_egress = Egress.objects.filter(**filters).aggregate(total=Sum('amount'))['total'] or 0
+    # Filtrar por cuenta cuando se provee
+    if account_id:
+        filters_incomes['destination_account_id'] = account_id
+        filters_egress['origin_account_id'] = account_id
+
+    total_incomes = Income.objects.filter(**filters_incomes).aggregate(total=Sum('amount'))['total'] or 0
+    total_egress = Egress.objects.filter(**filters_egress).aggregate(total=Sum('amount'))['total'] or 0
 
     return {
         'ingresos': total_incomes,
@@ -164,21 +220,35 @@ def get_balance(start_date=None, end_date=None):
         'balance': total_incomes - total_egress
     }
 
-def get_by_method_of_paymenth(option):
+def get_by_method_of_paymenth(option, account_id=None):
     if option == 1:
-        return Income.objects.values('payment_method').annotate(total=Sum('amount'), cantidad=Count('id'))
+        qs = Income.objects.all()
+        if account_id:
+            qs = qs.filter(destination_account_id=account_id)
+        return qs.values('payment_method').annotate(total=Sum('amount'), cantidad=Count('id'))
     if option == 2:
-        return Egress.objects.values('origin_account').annotate(total=Sum('amount'), cantidad=Count('id'))
+        qs = Egress.objects.all()
+        if account_id:
+            qs = qs.filter(origin_account_id=account_id)
+        return (
+            qs
+            .values('origin_account', 'origin_account__name', 'origin_account__type')
+            .annotate(total=Sum('amount'), cantidad=Count('id'))
+            .order_by('origin_account__name')
+        )
     
-def get_monthly_balans(start, end):
+def get_monthly_balans(start, end, account_id=None):
     try:
         filters = {}
         if start and end:
             filters['date__range'] = (start, end)
 
         # Agrupar ingresos por mes
+        income_qs = Income.objects.filter(**filters)
+        if account_id:
+            income_qs = income_qs.filter(destination_account_id=account_id)
         ingresos_mensuales = (
-            Income.objects.filter(**filters)
+            income_qs
             .annotate(month=TruncMonth('date'))
             .values('month')
             .annotate(total=Sum('amount'))
@@ -186,8 +256,11 @@ def get_monthly_balans(start, end):
         )
 
         # Agrupar egresos por mes
+        egress_qs = Egress.objects.filter(**filters)
+        if account_id:
+            egress_qs = egress_qs.filter(origin_account_id=account_id)
         egresos_mensuales = (
-            Egress.objects.filter(**filters)
+            egress_qs
             .annotate(month=TruncMonth('date'))
             .values('month')
             .annotate(total=Sum('amount'))
@@ -218,7 +291,7 @@ def get_monthly_balans(start, end):
         raise e
     
 
-def generate_financial_report_pdf(start_date, end_date):
+def generate_financial_report_pdf(start_date, end_date, account_id=None):
     """
     Genera un reporte financiero en PDF usando WeasyPrint y template HTML.
     
@@ -238,10 +311,10 @@ def generate_financial_report_pdf(start_date, end_date):
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
         
         # 1. Obtener balance general usando tu método
-        balance_data = get_balance(start_date, end_date)
+        balance_data = get_balance(start_date, end_date, account_id=account_id)
         
         # 2. Obtener ingresos por método de pago
-        income_methods_raw = get_by_method_of_paymenth(1)
+        income_methods_raw = get_by_method_of_paymenth(1, account_id=account_id)
         income_methods = []
         total_income = balance_data['ingresos']
         
@@ -258,20 +331,24 @@ def generate_financial_report_pdf(start_date, end_date):
             })
         
         # 3. Obtener egresos por cuenta de origen
-        expense_accounts_raw = get_by_method_of_paymenth(2)
+        expense_accounts_raw = get_by_method_of_paymenth(2, account_id=account_id)
         expense_accounts = []
         total_expense = balance_data['egresos']
         
         for account in expense_accounts_raw:
+            account_name = account.get('origin_account__name') or 'No especificado'
+            account_type = account.get('origin_account__type')
+            type_display = dict(Account.STATE_CHOICES).get(account_type, '')
+
             expense_accounts.append({
-                'origin_account': account['origin_account'] or 'No especificado',
-                'cantidad': account['cantidad'],
-                'total': account['total'],
-                'porcentaje': round((account['total'] / total_expense * 100), 2) if total_expense > 0 else 0
+                'origin_account': account_name if not type_display else f"{account_name} ({type_display})",
+                'cantidad': account.get('cantidad', 0),
+                'total': account.get('total', 0),
+                'porcentaje': round((account.get('total', 0) / total_expense * 100), 2) if total_expense > 0 else 0
             })
         
         # 4. Obtener balance mensual
-        monthly_balance = get_monthly_balans(start_date, end_date)
+        monthly_balance = get_monthly_balans(start_date, end_date, account_id=account_id)
         
         # 5. Calcular estadísticas adicionales
         stats = calculate_additional_stats(monthly_balance)

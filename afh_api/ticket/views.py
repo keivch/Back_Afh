@@ -36,6 +36,9 @@ def addTicket(request):
         
         newTicket = createTicket(applicant_email, tools, description, place, responsible)
 
+        if not newTicket:
+            return Response({'error': 'Hay una herramienta que no esta activa (en uso, inactiva o mantenimiento)'}, 400)
+
         fecha_colombia = newTicket.entry_date.astimezone(zona_colombia)
 
         sendMail(fecha_colombia, newTicket.place)
