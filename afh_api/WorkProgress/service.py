@@ -6,6 +6,9 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
+import os
+
+CONST_URL = os.getenv("FRONT_URL")
 
 def send_notification(work_progress, tittle, content, type, subject):
     canal_name = str(work_progress.id)
@@ -23,7 +26,8 @@ def send_notification(work_progress, tittle, content, type, subject):
         recipient = work_progress.work_order.quote.customer.email
         context = {
             'name_customer': work_progress.work_order.quote.customer.name,
-            'code':work_progress.work_order.quote.code
+            'code':work_progress.work_order.quote.code,
+            'url': CONST_URL + '/login-customer'
         }
 
         if type == 1:
