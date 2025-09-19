@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from . import service, serializer
+from django.http import HttpResponse
 # Create your views here.
 
 
@@ -357,5 +358,15 @@ def list_all_view(request):
         costs = service.list_all()
         data = serializer.CostsSerializer(costs, many=True).data
         return Response(data, 200)
+    except Exception as e:
+        return Response({'error': str(e)}, 400)
+
+@api_view(['GET'])
+def generate_pdf_view(request, cost_id):
+    try:
+        pdf = service.generate_pdf(cost_id)
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="Costos.pdf"'
+        return response
     except Exception as e:
         return Response({'error': str(e)}, 400)

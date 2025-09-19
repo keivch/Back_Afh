@@ -14,6 +14,7 @@ class QuotesSerializer(serializers.ModelSerializer):
     unforeseen_value = serializers.SerializerMethodField()
     administration_value = serializers.SerializerMethodField()
     total_value = serializers.SerializerMethodField()
+    total_value_formatted = serializers.SerializerMethodField()
     class Meta:
         model = Quotes
         fields = [
@@ -38,6 +39,7 @@ class QuotesSerializer(serializers.ModelSerializer):
             'method_of_payment',
             'construction',
             'total_value',
+            'total_value_formatted',
             'contractor_materials',
             'contracting_materials',
             'delivery_time'
@@ -70,6 +72,13 @@ class QuotesSerializer(serializers.ModelSerializer):
             print(f"Error formatting administration value: {e}")
             return str(obj.administration_value)
     def get_total_value(self, obj):
+        try:
+            return "${:,.0f}".format(obj.total_value).replace(",", ".")
+        except Exception as e:
+            print(f"Error formatting total value: {e}")
+            return str(obj.total_value)
+    
+    def get_total_value_formatted(self, obj):
         try:
             return "${:,.0f}".format(obj.total_value).replace(",", ".")
         except Exception as e:
