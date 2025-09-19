@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
@@ -59,6 +60,7 @@ from django.http import HttpResponse
     tags=['Costos']
 )
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_view(request):
     data = request.data
     try:
@@ -218,6 +220,7 @@ def get_view(request, cost_id):
     tags=['Costos']
 )
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def update_view(request, cost_id):
     data = request.data
     work_order_id = data.get('work_order_id', None)
@@ -287,6 +290,7 @@ def update_view(request, cost_id):
     tags=['Costos']
 )
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_view(request, cost_id):
     try:
         result = service.delete(cost_id)

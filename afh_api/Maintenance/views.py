@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from drf_yasg.utils import swagger_auto_schema
@@ -85,7 +86,9 @@ from .serializer import MaintenanceSerializer
         )
     }
 )
+
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_maintenance_view(request):
     try:
         data = request.data
@@ -180,6 +183,7 @@ def add_maintenance_view(request):
     }
 )
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def update_maintenance_view(request, maintenance_id):
     try:
         data = request.data
@@ -476,6 +480,7 @@ def get_pdf(request, maintenance_id):
     }
 )
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def end_maintenance_view(request, maintenance_id):
     try:
         service.end_maintenance(maintenance_id)
