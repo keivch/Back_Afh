@@ -82,10 +82,26 @@ def add_exhibit_to_delivery_certificate(delivery_certificate_id, exhibit_id):
     
 def create_pdf(id):
     try:
+        # Primero intentar obtener el certificado de entrega por ID
         delivery = get_delivery_certificate_by_id(id)
+        
+        # Si no se encuentra, intentar obtenerlo por work_order_id
         if not delivery:
-            work = WorkOrder.objects.get(id=id)
-            delivery = Delivery_certificate.objects.get(work_order=work)
+            try:
+                work = WorkOrder.objects.get(id=id)
+                delivery = Delivery_certificate.objects.get(work_order=work)
+            except WorkOrder.DoesNotExist:
+                print(f"WorkOrder with id {id} not found")
+                return None
+            except Delivery_certificate.DoesNotExist:
+                print(f"Delivery certificate for work order {id} not found")
+                return None
+        
+        # Verificar que delivery no sea None antes de continuar
+        if not delivery:
+            print("No delivery certificate found")
+            return None
+            
         template = get_template('delivery_certificate.html')
         html = template.render({
             'work_order': delivery.work_order,

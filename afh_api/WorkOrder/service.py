@@ -13,6 +13,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 from babel.dates import format_date
+from Costs.models import Costs
 
 # Zona horaria de Colombia
 ZONA_COLOMBIA = pytz.timezone('America/Bogota')
@@ -171,3 +172,10 @@ def get_work_order_whitout_certificate():
         return works
     except Exception as e:
         raise Exception(f"Error retrieving work orders without delivery certificate: {str(e)}")
+
+def get_work_order_whitout_costs():
+    try:
+        works = WorkOrder.objects.filter().exclude(id__in = Costs.objects.values_list('work_order_id', flat=True))
+        return works
+    except Exception as e:
+        raise Exception(f"Error retrieving work orders without costs: {str(e)}")

@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .Serializer import WorkOrderSerializer
 from .models import WorkOrder
-from .service import get_work_orders, get_work_order_by_id,create_pdf, create_work_order, update_work_order, get_work_order_whitout_certificate
+from .service import get_work_orders, get_work_order_by_id,create_pdf, create_work_order, update_work_order, get_work_order_whitout_certificate, get_work_order_whitout_costs
 
 
 # Create your views here.
@@ -122,6 +122,13 @@ def get_work_order_whitout_certificate_view(request):
     except Exception as e:
         return Response({'error': str(e)}, status=500)
     
-        
+@api_view(['GET'])
+def get_work_order_whitout_costs_view(request):
+    try:
+        work_orders = get_work_order_whitout_costs()
+        serializer = WorkOrderSerializer(work_orders, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
     
 
