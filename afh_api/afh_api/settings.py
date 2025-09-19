@@ -40,7 +40,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['back-afh.onrender.com']
+ALLOWED_HOSTS = env('BACKURL')
 
 
 # Application definition
@@ -180,12 +180,12 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 # settings.py
 
 CORS_ALLOWED_ORIGINS = [
-     "https://metalmecanicos.vercel.app", 
+     env('FRONT_URL'),
      env('BACKURL')
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-     "https://metalmecanicos.vercel.app",
+     env('FRONT_URL'),
      env('BACKURL')
 ]
 
