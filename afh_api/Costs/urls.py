@@ -7,4 +7,5 @@ urlpatterns = [
     path('update/<int:cost_id>/', views.update_view, name='update_cost'),
     path('delete/<int:cost_id>/', views.delete_view, name='delete_cost'),
     path('get/', views.list_all_view, name='list_all_costs'),
+    path('generate-pdf/<int:cost_id>/', views.generate_pdf_view, name='generate_pdf_cost'),
 ]

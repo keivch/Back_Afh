@@ -6,6 +6,7 @@ from item.Serializer import ItemSerializer
 class OptionSerializer(serializers.ModelSerializer):
     items = ItemSerializer(many=True, read_only=True)
     subtotal = serializers.SerializerMethodField()
+    subtotal_numeric = serializers.SerializerMethodField()
 
     class Meta:
         model = Option
@@ -14,6 +15,7 @@ class OptionSerializer(serializers.ModelSerializer):
             'name',
             'items',
             'subtotal',
+            'subtotal_numeric',
         ]
     
     def get_subtotal(self, obj):
@@ -22,4 +24,11 @@ class OptionSerializer(serializers.ModelSerializer):
         except Exception as e:
             print(f"Error formatting subtotal: {e}")
             return str(obj.subtotal)
+    
+    def get_subtotal_numeric(self, obj):
+        try:
+            return float(obj.subtotal)
+        except Exception as e:
+            print(f"Error getting numeric subtotal: {e}")
+            return 0.0
         
