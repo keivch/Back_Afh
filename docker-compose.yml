@@ -1,0 +1,11 @@
+services:
+  api:
+    image: api
+    container_name: api
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`afhintranet-backend-15debd-57a9da-72-60-125-23.traefik.me`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls=true"
+      - "traefik.http.routers.api.tls.certresolver=myresolver"
