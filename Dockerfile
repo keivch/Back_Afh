@@ -27,28 +27,22 @@ RUN apt-get update && apt-get install -y \
     libxcb1-dev \
     && rm -rf /var/lib/apt/lists/*
 
-
 # Crear directorio de trabajo
 WORKDIR /app
 
-# Copiar archivos de dependencias
-COPY afh_api/requirements.txt .
-
-# Instalar dependencias de Python
+# Copiar e instalar dependencias
+COPY afh_api/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar el código de la aplicación
 COPY . .
 
-# Crear directorio para archivos estáticos
-RUN mkdir -p /app/staticfiles
-
-# Crear directorio para media files
-RUN mkdir -p /app/media
+# Crear directorio para archivos estáticos y media
+RUN mkdir -p /app/staticfiles /app/media
 
 # Cambiar al directorio de la aplicación Django
-WORKDIR /afh_api/afh_api
+WORKDIR /app/afh_api
 
 # Crear usuario no-root para seguridad
 RUN adduser --disabled-password --gecos '' appuser
