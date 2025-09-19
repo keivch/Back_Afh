@@ -12,6 +12,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
+from babel.dates import format_date
+from Costs.models import Costs
 
 # Zona horaria de Colombia
 ZONA_COLOMBIA = pytz.timezone('America/Bogota')
@@ -127,7 +129,7 @@ def create_pdf(id):
             "descripcion": data['quote']['description'],
             "tasks": data['quote']['tasks'],
             "opcion": data['quote']['options'],
-            "fecha": work.start_date.strftime("%d/%m/%Y"),
+            "fecha": format_date(work.start_date, "d 'de' MMMM 'de' y", locale="es"),
             "logo_url": 'https://res.cloudinary.com/dp4tvthea/image/upload/v1756313054/afhlogoazul_rxcpcv.png',
             "iva": data['quote']['iva_value'],
             "utility": data['quote']['utility_value'],
@@ -170,3 +172,10 @@ def get_work_order_whitout_certificate():
         return works
     except Exception as e:
         raise Exception(f"Error retrieving work orders without delivery certificate: {str(e)}")
+
+def get_work_order_whitout_costs():
+    try:
+        works = WorkOrder.objects.filter().exclude(id__in = Costs.objects.values_list('work_order_id', flat=True))
+        return works
+    except Exception as e:
+        raise Exception(f"Error retrieving work orders without costs: {str(e)}")

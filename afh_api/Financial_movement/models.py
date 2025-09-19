@@ -1,6 +1,27 @@
 from django.db import models
 
 # Create your models here.
+class Account(models.Model):
+    STATE_CHOICES = [
+        (1, 'Banco'),
+        (2, 'Caja')
+    ]
+
+    type = models.IntegerField(choices=STATE_CHOICES, verbose_name="tipo de cuenta", null=False, blank=False)
+    initial_amount = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="monto inicial", blank=False, null=False)
+    name = models.CharField(max_length=100, verbose_name="nombre de la cuenta", blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="fecha de creación")
+
+    class Meta:
+        verbose_name = "Cuenta"
+        verbose_name_plural = "Cuentas"
+        ordering = ['name']
+
+    def __str__(self):
+        return f"{self.name} - {self.get_type_display()}"
+    
+
+
 class FinancialMovement(models.Model):
     responsible = models.CharField(max_length=250, verbose_name="responsabel del movimiento", blank=False, null=False)
     amount = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="monto de dinero", blank=False, null=False)
@@ -15,23 +36,35 @@ class FinancialMovement(models.Model):
 
 
 class Income(FinancialMovement):
-    STATE_CHOICES = [
-        (1, 'CUENTA BANCARIA'),
-        (2, 'CAJA PRINCIPAL')
-    ]
-    destination_account = models.IntegerField(choices=STATE_CHOICES, verbose_name="cuenta destino", null=False, blank=False)
+    destination_account = models.ForeignKey(
+        Account, 
+        on_delete=models.CASCADE, 
+        verbose_name="cuenta destino", 
+        related_name="incomes"
+    )
+
+    class Meta:
+        verbose_name = "Ingreso"
+        verbose_name_plural = "Ingresos"
+        ordering = ['-date']
 
     def __str__(self):
-        return f"Income{self.amount} - {self.date}"
+        return f"Ingreso {self.amount} - {self.destination_account.name} - {self.date}"
 
 
 
 class Egress(FinancialMovement):
-    STATE_CHOICES = [
-        (1, 'CUENTA BANCARIA'),
-        (2, 'CAJA PRINCIPAL')
-    ]
-    origin_account = models.IntegerField(choices=STATE_CHOICES, verbose_name="cuenta de origen", null=False, blank=False)
+    origin_account = models.ForeignKey(
+        Account, 
+        on_delete=models.CASCADE, 
+        verbose_name="cuenta de origen", 
+        related_name="egresses"
+    )
+
+    class Meta:
+        verbose_name = "Egreso"
+        verbose_name_plural = "Egresos"
+        ordering = ['-date']
 
     def __str__(self):
-        return f"Egress {self.amount} - {self.date}"
+        return f"Egreso {self.amount} - {self.origin_account.name} - {self.date}"

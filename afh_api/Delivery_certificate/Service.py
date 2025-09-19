@@ -4,6 +4,7 @@ from exhibit.models import Exhibit
 import weasyprint
 from io import BytesIO
 from django.template.loader import get_template
+from babel.dates import format_date
 
 def create_delivery_certificarte(work_order_id, osbervations, recommendations, exhibit_ids, description, development, in_charge, post):
     try:
@@ -81,11 +82,30 @@ def add_exhibit_to_delivery_certificate(delivery_certificate_id, exhibit_id):
     
 def create_pdf(id):
     try:
+        # Primero intentar obtener el certificado de entrega por ID
         delivery = get_delivery_certificate_by_id(id)
+        
+        # Si no se encuentra, intentar obtenerlo por work_order_id
+        if not delivery:
+            try:
+                work = WorkOrder.objects.get(id=id)
+                delivery = Delivery_certificate.objects.get(work_order=work)
+            except WorkOrder.DoesNotExist:
+                print(f"WorkOrder with id {id} not found")
+                return None
+            except Delivery_certificate.DoesNotExist:
+                print(f"Delivery certificate for work order {id} not found")
+                return None
+        
+        # Verificar que delivery no sea None antes de continuar
+        if not delivery:
+            print("No delivery certificate found")
+            return None
+            
         template = get_template('delivery_certificate.html')
         html = template.render({
             'work_order': delivery.work_order,
-            'date': delivery.date.strftime("%d/%m/%Y"),
+            'date': format_date(delivery.date, "d 'de' MMMM 'de' y", locale="es"),
             'description': delivery.description,
             'development': delivery.development,
             'observations': delivery.observations,

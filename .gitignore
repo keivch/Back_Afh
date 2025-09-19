@@ -1,21 +1,20 @@
-.settings.py
-venv
-.env
-
-# Byte-compiled / optimized / DLL files
+# Python cache
 __pycache__/
 *.py[cod]
 
-*$py.class
+# Django
+db.sqlite3
+/media/
+/staticfiles/
 
-# Archivos de configuración de herramientas
-*.log
-*.pot
-*.pyc
-*.pyo
-*.pyd
-
+# Entorno virtual
+venv/
 .venv/
+
+.env
+
+.settings.py
 
 msys2-x86_64-20250622.exe
 
+backup/
