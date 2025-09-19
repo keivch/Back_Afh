@@ -48,7 +48,7 @@ RUN mkdir -p /app/staticfiles
 RUN mkdir -p /app/media
 
 # Cambiar al directorio de la aplicación Django
-WORKDIR /app/afh_api
+WORKDIR /afh_api/afh_api
 
 # Crear usuario no-root para seguridad
 RUN adduser --disabled-password --gecos '' appuser
