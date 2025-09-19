@@ -1,0 +1,83 @@
+# Docker Compose configuration for Dockploy deployment
+# This file extends the main docker-compose.yml for production deployment
+
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG:-False}
+      - URL_DB=${URL_DB}
+      - BACKURL=${BACKURL}
+      - FRONT_URL=${FRONT_URL}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - CLOUD_NAME=${CLOUD_NAME}
+      - API_KEY=${API_KEY}
+      - API_SECRET=${API_SECRET}
+      - APP_ID=${APP_ID}
+      - KEY=${KEY}
+      - SECRET=${SECRET}
+      - CLUSTER=${CLUSTER}
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      - db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.afh-api.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.afh-api.tls=true"
+      - "traefik.http.routers.afh-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.afh-api.loadbalancer.server.port=8000"
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-afh_db}
+      - POSTGRES_USER=${POSTGRES_USER:-afh_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-afh_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-afh_user} -d ${POSTGRES_DB:-afh_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+  redis_data:
+
+networks:
+  default:
+    external: true
+    name: dockploy
