@@ -27,22 +27,19 @@ RUN apt-get update && apt-get install -y \
     libxcb1-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Crear directorio de trabajo
+# 📌 Crear directorio de trabajo en /app
 WORKDIR /app
 
-# Copiar e instalar dependencias
+# 📌 Copiar solo requirements primero
 COPY afh_api/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar el código de la aplicación
-COPY . .
+# 📌 Copiar el código de la aplicación (solo la carpeta afh_api)
+COPY afh_api/ /app/
 
-# Crear directorio para archivos estáticos y media
+# Crear directorios para archivos estáticos y media
 RUN mkdir -p /app/staticfiles /app/media
-
-# Cambiar al directorio de la aplicación Django
-WORKDIR /app/afh_api
 
 # Crear usuario no-root para seguridad
 RUN adduser --disabled-password --gecos '' appuser
@@ -52,5 +49,7 @@ USER appuser
 # Exponer el puerto 8000
 EXPOSE 8000
 
-# Comando para ejecutar la aplicación
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120", "afh_api.wsgi:application"]
+# 📌 Ejecutar gunicorn apuntando a tu WSGI
+CMD ["gunicorn", "afh_api.wsgi:application", "--bind", "0.0.0.0:8000"]
+
+
