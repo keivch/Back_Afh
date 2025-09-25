@@ -157,21 +157,25 @@
     .opcion table th:nth-child(3),
     .opcion table td:nth-child(3) {
       width: 8%; /* UND */
+      vertical-align: middle; /* Alinear centro */
     }
 
     .opcion table th:nth-child(4),
     .opcion table td:nth-child(4) {
       width: 8%; /* CANT */
+      vertical-align: middle; /* Alinear centro */
     }
 
     .opcion table th:nth-child(5),
     .opcion table td:nth-child(5) {
       width: 15%; /* VALOR UNITARIO */
+      vertical-align: middle; /* Alinear centro */
     }
 
     .opcion table th:nth-child(6),
     .opcion table td:nth-child(6) {
       width: 16%; /* VALOR TOTAL */
+      vertical-align: middle; /* Alinear centro */
     }
 
     .total {
@@ -202,6 +206,13 @@
 
     .firma {
       margin-top: 50px;
+    }
+
+    .signature-image {
+      width: 150px;
+      height: auto;
+      margin: 10px 0;
+      display: block; /* Asegurar que sea un elemento de bloque */
     }
 
     .tabla-cotizacion {
@@ -486,7 +497,8 @@
 
   <div class="firma">
     <p>Atentamente,</p>
-    <br /><br />
+    <img src="https://res.cloudinary.com/dp4tvthea/image/upload/firma_kbadje.png" alt="Firma" class="signature-image" />
+    <br />
     <strong>ANDRES FELIPE HERNANDEZ</strong><br />
     Gerente General
   </div>
