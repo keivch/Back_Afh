@@ -152,6 +152,7 @@ def pdf_quote(id_quote):
             "customer": quote.customer.name,
             "contacto_cliente": quote.customer.email,
             'representative': quote.customer.representative,
+            'cargo': quote.customer.post,
             "descripcion": data['description'],
             "tasks": data['tasks'],
             "opcion": data['options'],

@@ -142,10 +142,14 @@
     }
 
     /* Dar más anchura a la columna de descripción */
-    .opcion table th:nth-child(2),
+    .opcion table th:nth-child(2) {
+      width: 45%; /* Aumentar el ancho de la columna descripción */
+      text-align: center; /* Centrar el título del encabezado */
+    }
+
     .opcion table td:nth-child(2) {
       width: 45%; /* Aumentar el ancho de la columna descripción */
-      text-align: left;
+      text-align: left; /* Mantener el contenido alineado a la izquierda */
     }
 
     /* Ajustar anchos de otras columnas */
@@ -211,7 +215,6 @@
     .signature-image {
       width: 150px;
       height: auto;
-      margin: 10px 0;
       display: block; /* Asegurar que sea un elemento de bloque */
     }
 
@@ -366,8 +369,9 @@
     Palmira, {{fecha}}
 
     <br><br>Señores:<br />
-    {{ customer }}<br />
+    <strong>{{ customer }}</strong><br />
     {{representative}}<br />
+    {{cargo}}<br />
     <br>Agradeciéndole de antemano su amable invitación para cotizarle el
     siguiente trabajo:<br />
     <strong>"{{ descripcion }}"</strong>
@@ -497,8 +501,7 @@
 
   <div class="firma">
     <p>Atentamente,</p>
-    <img src="https://res.cloudinary.com/dp4tvthea/image/upload/firma_kbadje.png" alt="Firma" class="signature-image" />
-    <br />
+    <img src="https://res.cloudinary.com/dp4tvthea/image/upload/v1758817163/firma-png_vgncgw.png" alt="Firma" class="signature-image" />
     <strong>ANDRES FELIPE HERNANDEZ</strong><br />
     Gerente General
   </div>
@@ -506,7 +509,7 @@
   <footer class="footer">
     <p>
       Carrera 13A # 40 - 37 B/Primero de Mayo, Palmira - Colombia<br />
-      Cel (+57) 311 616 7972 | Fijo (602) 287 2362<br />
+      Cel (+57) 311 616 7972 | +57 3126499511<br />
       afh@afhmetalmecanico.com<br />
       www.afhmetalmecanico.com
     </p>
