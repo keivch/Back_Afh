@@ -122,10 +122,56 @@
 
     th {
       background-color: #f2f2f2;
+      /* Evitar repetición del encabezado en páginas siguientes */
+      -weasy-print-page-break: avoid;
+    }
+
+    /* Evitar que el encabezado se repita en páginas siguientes */
+    thead {
+      display: table-header-group;
+      -weasy-print-page-break: avoid;
+    }
+
+    /* Para WeasyPrint, evitar repetición de encabezados */
+    .opcion table thead {
+      display: table-row-group;
     }
 
     .item {
       text-align: left;
+    }
+
+    /* Dar más anchura a la columna de descripción */
+    .opcion table th:nth-child(2),
+    .opcion table td:nth-child(2) {
+      width: 45%; /* Aumentar el ancho de la columna descripción */
+      text-align: left;
+    }
+
+    /* Ajustar anchos de otras columnas */
+    .opcion table th:nth-child(1),
+    .opcion table td:nth-child(1) {
+      width: 8%; /* ITEM */
+    }
+
+    .opcion table th:nth-child(3),
+    .opcion table td:nth-child(3) {
+      width: 8%; /* UND */
+    }
+
+    .opcion table th:nth-child(4),
+    .opcion table td:nth-child(4) {
+      width: 8%; /* CANT */
+    }
+
+    .opcion table th:nth-child(5),
+    .opcion table td:nth-child(5) {
+      width: 15%; /* VALOR UNITARIO */
+    }
+
+    .opcion table th:nth-child(6),
+    .opcion table td:nth-child(6) {
+      width: 16%; /* VALOR TOTAL */
     }
 
     .total {
@@ -455,5 +501,4 @@
   </footer>
 </body>
 
-</html>
 </html>
